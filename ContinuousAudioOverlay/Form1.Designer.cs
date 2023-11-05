@@ -29,128 +29,240 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.button1 = new System.Windows.Forms.Button();
-            this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.volumeLabel = new System.Windows.Forms.Label();
+            this.radioWindowsMediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
+            this.radioGroupBox = new System.Windows.Forms.GroupBox();
+            this.radio1PictureBox = new System.Windows.Forms.PictureBox();
+            this.radio2PictureBox = new System.Windows.Forms.PictureBox();
+            this.volumeSlider = new Ce_TrackBar();
+            this.minimizePictureBox = new System.Windows.Forms.PictureBox();
+            this.pausePlayPictureBox = new System.Windows.Forms.PictureBox();
+            this.nextPictureBox = new System.Windows.Forms.PictureBox();
+            this.prevPictureBox = new System.Windows.Forms.PictureBox();
+            this.outputDeviceDropDown = new ContinuousAudioOverlay.FlatComboBox();
+            this.closePictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.radioWindowsMediaPlayer)).BeginInit();
+            this.radioGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radio1PictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radio2PictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minimizePictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pausePlayPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nextPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.prevPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closePictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // volumeLabel
             // 
-            this.button1.Location = new System.Drawing.Point(245, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Čas Rock";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.volumeLabel.AutoSize = true;
+            this.volumeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.volumeLabel.Location = new System.Drawing.Point(123, 296);
+            this.volumeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.volumeLabel.Name = "volumeLabel";
+            this.volumeLabel.Size = new System.Drawing.Size(41, 13);
+            this.volumeLabel.TabIndex = 8;
+            this.volumeLabel.Text = "label1";
             // 
-            // axWindowsMediaPlayer1
+            // radioWindowsMediaPlayer
             // 
-            this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(2, 2);
-            this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
-            this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(233, 77);
-            this.axWindowsMediaPlayer1.TabIndex = 0;
+            this.radioWindowsMediaPlayer.Enabled = true;
+            this.radioWindowsMediaPlayer.Location = new System.Drawing.Point(8, 77);
+            this.radioWindowsMediaPlayer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radioWindowsMediaPlayer.Name = "radioWindowsMediaPlayer";
+            this.radioWindowsMediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("radioWindowsMediaPlayer.OcxState")));
+            this.radioWindowsMediaPlayer.Size = new System.Drawing.Size(233, 77);
+            this.radioWindowsMediaPlayer.TabIndex = 0;
             // 
-            // button2
+            // radioGroupBox
             // 
-            this.button2.Location = new System.Drawing.Point(245, 40);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Rádio Kiss";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.radioGroupBox.Controls.Add(this.radioWindowsMediaPlayer);
+            this.radioGroupBox.Controls.Add(this.radio1PictureBox);
+            this.radioGroupBox.Controls.Add(this.radio2PictureBox);
+            this.radioGroupBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.radioGroupBox.Location = new System.Drawing.Point(14, 30);
+            this.radioGroupBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radioGroupBox.Name = "radioGroupBox";
+            this.radioGroupBox.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radioGroupBox.Size = new System.Drawing.Size(248, 160);
+            this.radioGroupBox.TabIndex = 12;
+            this.radioGroupBox.TabStop = false;
+            this.radioGroupBox.Text = "Rádio";
+            this.radioGroupBox.Paint += new System.Windows.Forms.PaintEventHandler(this.radioGroupBox_Paint);
             // 
-            // button3
+            // radio1PictureBox
             // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button3.Location = new System.Drawing.Point(83, 85);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(152, 46);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "Pause/Play";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.radio1PictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.radio1PictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.radio1PictureBox.Image = global::ContinuousAudioOverlay.Properties.Resources.Logo_Rock_bez_pozadi;
+            this.radio1PictureBox.Location = new System.Drawing.Point(65, 19);
+            this.radio1PictureBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radio1PictureBox.Name = "radio1PictureBox";
+            this.radio1PictureBox.Size = new System.Drawing.Size(66, 51);
+            this.radio1PictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.radio1PictureBox.TabIndex = 10;
+            this.radio1PictureBox.TabStop = false;
+            this.radio1PictureBox.Click += new System.EventHandler(this.radio1PictureBox_Click);
+            this.radio1PictureBox.MouseEnter += new System.EventHandler(this.ChangeBackgroundColorMouseEnter);
+            this.radio1PictureBox.MouseLeave += new System.EventHandler(this.ChangeBackgroundColorMouseLeave);
             // 
-            // button5
+            // radio2PictureBox
             // 
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button5.Location = new System.Drawing.Point(245, 85);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 46);
-            this.button5.TabIndex = 5;
-            this.button5.Text = "Next";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.radio2PictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.radio2PictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.radio2PictureBox.Image = global::ContinuousAudioOverlay.Properties.Resources.Kiss_BeHappy;
+            this.radio2PictureBox.Location = new System.Drawing.Point(139, 19);
+            this.radio2PictureBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.radio2PictureBox.Name = "radio2PictureBox";
+            this.radio2PictureBox.Size = new System.Drawing.Size(66, 51);
+            this.radio2PictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.radio2PictureBox.TabIndex = 11;
+            this.radio2PictureBox.TabStop = false;
+            this.radio2PictureBox.Click += new System.EventHandler(this.radio2PictureBox_Click);
+            this.radio2PictureBox.MouseEnter += new System.EventHandler(this.ChangeBackgroundColorMouseEnter);
+            this.radio2PictureBox.MouseLeave += new System.EventHandler(this.ChangeBackgroundColorMouseLeave);
             // 
-            // button6
+            // volumeSlider
             // 
-            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button6.Location = new System.Drawing.Point(2, 85);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 46);
-            this.button6.TabIndex = 6;
-            this.button6.Text = "Prev";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.volumeSlider.BallColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.volumeSlider.JumpToMouse = false;
+            this.volumeSlider.Location = new System.Drawing.Point(14, 271);
+            this.volumeSlider.Maximum = 100;
+            this.volumeSlider.Minimum = 0;
+            this.volumeSlider.MinimumSize = new System.Drawing.Size(47, 22);
+            this.volumeSlider.Name = "volumeSlider";
+            this.volumeSlider.Size = new System.Drawing.Size(248, 22);
+            this.volumeSlider.SlideColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.volumeSlider.TabIndex = 18;
+            this.volumeSlider.Text = "ce_TrackBar1";
+            this.volumeSlider.Value = 0;
+            this.volumeSlider.ValueDivison = Ce_TrackBar.ValueDivisor.By1;
+            this.volumeSlider.ValueToSet = 0F;
+            this.volumeSlider.ValueChanged += new Ce_TrackBar.ValueChangedEventHandler(this.volumeSlider_ValueChanged);
+            this.volumeSlider.MouseEnter += new System.EventHandler(this.volumeSlider_MouseEnter);
+            this.volumeSlider.MouseLeave += new System.EventHandler(this.volumeSlider_MouseLeave);
             // 
-            // trackBar1
+            // minimizePictureBox
             // 
-            this.trackBar1.Location = new System.Drawing.Point(2, 137);
-            this.trackBar1.Maximum = 100;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(318, 45);
-            this.trackBar1.TabIndex = 7;
-            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
+            this.minimizePictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.minimizePictureBox.Image = global::ContinuousAudioOverlay.Properties.Resources.Minimize;
+            this.minimizePictureBox.Location = new System.Drawing.Point(216, 4);
+            this.minimizePictureBox.Name = "minimizePictureBox";
+            this.minimizePictureBox.Size = new System.Drawing.Size(20, 20);
+            this.minimizePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.minimizePictureBox.TabIndex = 19;
+            this.minimizePictureBox.TabStop = false;
+            this.minimizePictureBox.Click += new System.EventHandler(this.minimizePictureBox_Click);
+            this.minimizePictureBox.MouseEnter += new System.EventHandler(this.ChangeBackgroundColorMouseEnter);
+            this.minimizePictureBox.MouseLeave += new System.EventHandler(this.ChangeBackgroundColorMouseLeave);
             // 
-            // label1
+            // pausePlayPictureBox
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(143, 174);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "label1";
+            this.pausePlayPictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.pausePlayPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("pausePlayPictureBox.Image")));
+            this.pausePlayPictureBox.Location = new System.Drawing.Point(95, 196);
+            this.pausePlayPictureBox.Name = "pausePlayPictureBox";
+            this.pausePlayPictureBox.Size = new System.Drawing.Size(87, 69);
+            this.pausePlayPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pausePlayPictureBox.TabIndex = 15;
+            this.pausePlayPictureBox.TabStop = false;
+            this.pausePlayPictureBox.Click += new System.EventHandler(this.pausePlayPictureBox_Click);
+            this.pausePlayPictureBox.MouseEnter += new System.EventHandler(this.ChangeBackgroundColorMouseEnter);
+            this.pausePlayPictureBox.MouseLeave += new System.EventHandler(this.ChangeBackgroundColorMouseLeave);
             // 
-            // comboBox1
+            // nextPictureBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(2, 200);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(318, 21);
-            this.comboBox1.TabIndex = 9;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.nextPictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.nextPictureBox.Image = global::ContinuousAudioOverlay.Properties.Resources.NextButton;
+            this.nextPictureBox.Location = new System.Drawing.Point(190, 196);
+            this.nextPictureBox.Name = "nextPictureBox";
+            this.nextPictureBox.Size = new System.Drawing.Size(72, 69);
+            this.nextPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.nextPictureBox.TabIndex = 14;
+            this.nextPictureBox.TabStop = false;
+            this.nextPictureBox.Click += new System.EventHandler(this.nextPictureBox_Click);
+            this.nextPictureBox.MouseEnter += new System.EventHandler(this.ChangeBackgroundColorMouseEnter);
+            this.nextPictureBox.MouseLeave += new System.EventHandler(this.ChangeBackgroundColorMouseLeave);
+            // 
+            // prevPictureBox
+            // 
+            this.prevPictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.prevPictureBox.Image = global::ContinuousAudioOverlay.Properties.Resources.PrevButton;
+            this.prevPictureBox.Location = new System.Drawing.Point(14, 196);
+            this.prevPictureBox.Name = "prevPictureBox";
+            this.prevPictureBox.Size = new System.Drawing.Size(72, 69);
+            this.prevPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.prevPictureBox.TabIndex = 13;
+            this.prevPictureBox.TabStop = false;
+            this.prevPictureBox.Click += new System.EventHandler(this.prevPictureBox_Click);
+            this.prevPictureBox.MouseEnter += new System.EventHandler(this.ChangeBackgroundColorMouseEnter);
+            this.prevPictureBox.MouseLeave += new System.EventHandler(this.ChangeBackgroundColorMouseLeave);
+            // 
+            // outputDeviceDropDown
+            // 
+            this.outputDeviceDropDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.outputDeviceDropDown.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.outputDeviceDropDown.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.outputDeviceDropDown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.outputDeviceDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.outputDeviceDropDown.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.outputDeviceDropDown.FormattingEnabled = true;
+            this.outputDeviceDropDown.Location = new System.Drawing.Point(14, 322);
+            this.outputDeviceDropDown.Name = "outputDeviceDropDown";
+            this.outputDeviceDropDown.Size = new System.Drawing.Size(248, 21);
+            this.outputDeviceDropDown.TabIndex = 16;
+            this.outputDeviceDropDown.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.outputDeviceDropDown_DrawItem);
+            this.outputDeviceDropDown.SelectedIndexChanged += new System.EventHandler(this.outputDeviceDropDown_SelectedIndexChanged);
+            this.outputDeviceDropDown.DropDownClosed += new System.EventHandler(this.outputDeviceDropDown_DropDownClosed);
+            this.outputDeviceDropDown.MouseEnter += new System.EventHandler(this.outputDeviceDropDown_MouseEnter);
+            this.outputDeviceDropDown.MouseLeave += new System.EventHandler(this.outputDeviceDropDown_MouseLeave);
+            this.outputDeviceDropDown.MouseHover += new System.EventHandler(this.outputDeviceDropDown_MouseEnter);
+            // 
+            // closePictureBox
+            // 
+            this.closePictureBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(191)))), ((int)(((byte)(0)))));
+            this.closePictureBox.Image = ((System.Drawing.Image)(resources.GetObject("closePictureBox.Image")));
+            this.closePictureBox.Location = new System.Drawing.Point(242, 4);
+            this.closePictureBox.Name = "closePictureBox";
+            this.closePictureBox.Size = new System.Drawing.Size(20, 20);
+            this.closePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.closePictureBox.TabIndex = 20;
+            this.closePictureBox.TabStop = false;
+            this.closePictureBox.Click += new System.EventHandler(this.closePictureBox_Click);
+            this.closePictureBox.MouseEnter += new System.EventHandler(this.ChangeBackgroundColorMouseEnter);
+            this.closePictureBox.MouseLeave += new System.EventHandler(this.ChangeBackgroundColorMouseLeave);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(327, 226);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.trackBar1);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.axWindowsMediaPlayer1);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.ClientSize = new System.Drawing.Size(275, 356);
+            this.Controls.Add(this.closePictureBox);
+            this.Controls.Add(this.minimizePictureBox);
+            this.Controls.Add(this.volumeSlider);
+            this.Controls.Add(this.outputDeviceDropDown);
+            this.Controls.Add(this.pausePlayPictureBox);
+            this.Controls.Add(this.nextPictureBox);
+            this.Controls.Add(this.prevPictureBox);
+            this.Controls.Add(this.radioGroupBox);
+            this.Controls.Add(this.volumeLabel);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Continuous Audio Overlay";
             this.TopMost = true;
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radioWindowsMediaPlayer)).EndInit();
+            this.radioGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.radio1PictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radio2PictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minimizePictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pausePlayPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nextPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.prevPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closePictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -158,15 +270,18 @@
 
         #endregion
 
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.TrackBar trackBar1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private AxWMPLib.AxWindowsMediaPlayer radioWindowsMediaPlayer;
+        private System.Windows.Forms.Label volumeLabel;
+        private System.Windows.Forms.PictureBox radio1PictureBox;
+        private System.Windows.Forms.PictureBox radio2PictureBox;
+        private System.Windows.Forms.GroupBox radioGroupBox;
+        private System.Windows.Forms.PictureBox prevPictureBox;
+        private System.Windows.Forms.PictureBox nextPictureBox;
+        private System.Windows.Forms.PictureBox pausePlayPictureBox;
+        private FlatComboBox outputDeviceDropDown;
+        private Ce_TrackBar volumeSlider;
+        private System.Windows.Forms.PictureBox minimizePictureBox;
+        private System.Windows.Forms.PictureBox closePictureBox;
     }
 }
 

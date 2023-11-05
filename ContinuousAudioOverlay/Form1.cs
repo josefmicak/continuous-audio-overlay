@@ -1,19 +1,11 @@
-﻿using AudioSwitcher.AudioApi;
-using AudioSwitcher.AudioApi.CoreAudio;
-using NAudio.CoreAudioApi;
+﻿using AudioSwitcher.AudioApi.CoreAudio;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.WebRequestMethods;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ContinuousAudioOverlay
 {
@@ -21,22 +13,30 @@ namespace ContinuousAudioOverlay
     {
         CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
         IEnumerable<CoreAudioDevice> devices = new CoreAudioController().GetPlaybackDevices();
+        Color controlBackgroundColor = Color.FromArgb(255, 191, 0);
+        Color hoverColor = Color.Yellow;
+        bool dropdownEnter = false;
+
+        private const int WM_NCHITTEST = 0x84;
+        private const int HTCLIENT = 0x1;
+        private const int HTCAPTION = 0x2;
+
+        ///
+        /// Handling the window messages
+        ///
+        protected override void WndProc(ref Message message)
+        {
+            base.WndProc(ref message);
+
+            if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
+                message.Result = (IntPtr)HTCAPTION;
+        }
 
         public Form1()
         {
             InitializeComponent();
-            trackBar1.Value = (int)defaultPlaybackDevice.Volume;
+            volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
             InitializeOutputDevices();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            axWindowsMediaPlayer1.URL = "https://icecast9.play.cz/casrock192.mp3";
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            axWindowsMediaPlayer1.URL = "http://icecast4.play.cz/kiss128.mp3";
         }
 
         public enum AppCommands
@@ -126,53 +126,151 @@ namespace ContinuousAudioOverlay
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Send(AppCommands.MediaPlayPause);
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            Send(AppCommands.MediaPrevious);
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            Send(AppCommands.MediaNext);
-        }
-
-        private void trackBar1_ValueChanged(object sender, EventArgs e)
-        {
-            defaultPlaybackDevice.Volume = trackBar1.Value;
-            label1.Text = trackBar1.Value.ToString();
-        }
-
         public void InitializeOutputDevices()
         {
             foreach (CoreAudioDevice d in devices)
             {
-                if(d.Name == "Speakers" || d.Name == "Headphones")
+                if (d.Name == "Speakers" || d.Name == "Headphones")
                 {
-                    comboBox1.Items.Add(d.FullName);
+                    outputDeviceDropDown.Items.Add(d.FullName);
                 }
                 if (d.IsDefaultDevice)
                 {
-                    comboBox1.SelectedIndex = comboBox1.Items.Count - 1;
+                    outputDeviceDropDown.SelectedIndex = outputDeviceDropDown.Items.Count - 1;
                 }
             }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void radio1PictureBox_Click(object sender, EventArgs e)
+        {
+            radioWindowsMediaPlayer.URL = "https://icecast9.play.cz/casrock192.mp3";
+        }
+
+        private void radio2PictureBox_Click(object sender, EventArgs e)
+        {
+            radioWindowsMediaPlayer.URL = "http://icecast4.play.cz/kiss128.mp3";
+        }
+
+        private void ChangeBackgroundColorMouseEnter(object sender, EventArgs e)
+        {
+            var pictureBox = (PictureBox)sender;
+            pictureBox.BackColor = hoverColor;
+        }
+
+        private void ChangeBackgroundColorMouseLeave(object sender, EventArgs e)
+        {
+            var pictureBox = (PictureBox)sender;
+            pictureBox.BackColor = controlBackgroundColor;
+        }
+
+        private void prevPictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.MediaPrevious);
+        }
+
+        private void pausePlayPictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.MediaPlayPause);
+        }
+
+        private void nextPictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.MediaNext);
+        }
+
+        private void radioGroupBox_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics gfx = e.Graphics;
+            Pen p = new Pen(controlBackgroundColor, 1);
+            gfx.DrawLine(p, 0, 5, 0, e.ClipRectangle.Height - 2);
+            gfx.DrawLine(p, 0, 5, 10, 5);
+            gfx.DrawLine(p, 42, 5, e.ClipRectangle.Width - 2, 5);
+            gfx.DrawLine(p, e.ClipRectangle.Width - 2, 5, e.ClipRectangle.Width - 2, e.ClipRectangle.Height - 2);
+            gfx.DrawLine(p, e.ClipRectangle.Width - 2, e.ClipRectangle.Height - 2, 0, e.ClipRectangle.Height - 2);
+        }
+
+        private void outputDeviceDropDown_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            int index = e.Index >= 0 ? e.Index : 0;
+            SolidBrush brush;
+            if (dropdownEnter)
+            {
+                brush = new SolidBrush(hoverColor);
+            }
+            else
+            {
+                brush = new SolidBrush(controlBackgroundColor);
+            }
+            e.DrawBackground();
+            e.Graphics.DrawString(outputDeviceDropDown.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+            e.DrawFocusRectangle();
+        }
+
+        private void outputDeviceDropDown_DropDownClosed(object sender, EventArgs e)
+        {
+            volumeLabel.Focus();
+            var pictureBox = (FlatComboBox)sender;
+            pictureBox.BorderColor = controlBackgroundColor;
+            dropdownEnter = false;
+        }
+
+        private void outputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             foreach (CoreAudioDevice d in devices)
             {
-                if (d.FullName == comboBox1.Text)
+                if (d.FullName == outputDeviceDropDown.Text)
                 {
                     d.SetAsDefault();
                     defaultPlaybackDevice = d;
-                    trackBar1.Value = (int)d.Volume;
-                } 
+                    volumeSlider.Value = (int)d.Volume;
+                }
             }
+        }
+
+        private void outputDeviceDropDown_MouseEnter(object sender, EventArgs e)
+        {
+            dropdownEnter = true;
+            var pictureBox = (FlatComboBox)sender;
+            pictureBox.BorderColor = hoverColor;
+        }
+
+        private void outputDeviceDropDown_MouseLeave(object sender, EventArgs e)
+        {
+            dropdownEnter = false;
+            var pictureBox = (FlatComboBox)sender;
+            pictureBox.BorderColor = controlBackgroundColor;
+        }
+
+        private void volumeSlider_ValueChanged()
+        {
+            defaultPlaybackDevice.Volume = volumeSlider.Value;
+            volumeLabel.Text = volumeSlider.Value.ToString();
+        }
+
+        private void volumeSlider_MouseEnter(object sender, EventArgs e)
+        {
+            var trackBar = (Ce_TrackBar)sender;
+            trackBar.SlideColor = hoverColor;
+            trackBar.BallColor = hoverColor;
+            volumeLabel.ForeColor = hoverColor;
+        }
+
+        private void volumeSlider_MouseLeave(object sender, EventArgs e)
+        {
+            var trackBar = (Ce_TrackBar)sender;
+            trackBar.SlideColor = controlBackgroundColor;
+            trackBar.BallColor = controlBackgroundColor;
+            volumeLabel.ForeColor = controlBackgroundColor;
+        }
+
+        private void minimizePictureBox_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void closePictureBox_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }
