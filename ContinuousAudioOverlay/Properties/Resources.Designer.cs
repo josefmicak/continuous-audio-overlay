@@ -103,6 +103,16 @@ namespace ContinuousAudioOverlay.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Mute {
+            get {
+                object obj = ResourceManager.GetObject("Mute", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap NextButton {
             get {
                 object obj = ResourceManager.GetObject("NextButton", resourceCulture);
@@ -126,6 +136,16 @@ namespace ContinuousAudioOverlay.Properties {
         internal static System.Drawing.Bitmap PrevButton {
             get {
                 object obj = ResourceManager.GetObject("PrevButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Unmute {
+            get {
+                object obj = ResourceManager.GetObject("Unmute", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

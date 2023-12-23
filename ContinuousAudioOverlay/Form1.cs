@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Windows.Media.Control;
 
 namespace ContinuousAudioOverlay
-{
+{    
     public partial class Form1 : Form
     {
         CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
@@ -16,27 +18,29 @@ namespace ContinuousAudioOverlay
         Color controlBackgroundColor = Color.FromArgb(255, 191, 0);
         Color hoverColor = Color.Yellow;
         bool dropdownEnter = false;
+        private readonly System.Windows.Forms.Timer mediaUpdateTimer = new System.Windows.Forms.Timer();
+        private GlobalSystemMediaTransportControlsSessionMediaProperties previousMediaProperties;
+        bool muted = false;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
         private const int HTCAPTION = 0x2;
-
-        ///
-        /// Handling the window messages
-        ///
-        protected override void WndProc(ref Message message)
-        {
-            base.WndProc(ref message);
-
-            if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
-                message.Result = (IntPtr)HTCAPTION;
-        }
 
         public Form1()
         {
             InitializeComponent();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
             InitializeOutputDevices();
+
+            InitializeTimer();
+        }
+
+        protected override void WndProc(ref Message message)
+        {
+            base.WndProc(ref message);
+
+            if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
+                message.Result = (IntPtr)HTCAPTION;
         }
 
         public enum AppCommands
@@ -271,6 +275,80 @@ namespace ContinuousAudioOverlay
         private void closePictureBox_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        static async Task<GlobalSystemMediaTransportControlsSessionMediaProperties> GetMediaInfoAsync()
+        {
+            GlobalSystemMediaTransportControlsSessionManager mediaManager =
+                await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+
+            GlobalSystemMediaTransportControlsSession session =
+                mediaManager.GetCurrentSession();
+
+            if (session != null)
+            {
+                GlobalSystemMediaTransportControlsSessionMediaProperties properties =
+                    await session.TryGetMediaPropertiesAsync();
+
+                return properties;
+            }
+
+            throw new Exception("No media session found.");
+        }
+
+        public void InitializeTimer()
+        {
+            mediaUpdateTimer.Interval = 5000;
+            mediaUpdateTimer.Tick += MediaUpdateTimer_Tick;
+            mediaUpdateTimer.Start();
+        }
+
+        private async void MediaUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            GlobalSystemMediaTransportControlsSessionMediaProperties currentMediaProperties =
+                await GetMediaInfoAsync();
+
+            if (MediaPropertiesChanged(currentMediaProperties, previousMediaProperties))
+            {
+                UpdateTitleTextBox(currentMediaProperties);
+                previousMediaProperties = currentMediaProperties;
+            }
+        }
+
+        private bool MediaPropertiesChanged(GlobalSystemMediaTransportControlsSessionMediaProperties current, GlobalSystemMediaTransportControlsSessionMediaProperties previous)
+        {
+            return current?.Title != previous?.Title;
+        }
+
+        private void UpdateTitleTextBox(GlobalSystemMediaTransportControlsSessionMediaProperties mediaProperties)
+        {
+            string title = mediaProperties.Title;
+            string artist = mediaProperties.Artist;
+            titleTextBox.Text = title + "\r\n" + artist;
+        }
+
+        private void reduceVolumePictureBox_Click(object sender, EventArgs e)
+        {
+            volumeSlider.Value -= 5;
+        }
+
+        private void increaseVolumePictureBox_Click(object sender, EventArgs e)
+        {
+            volumeSlider.Value += 5;
+        }
+
+        private void mutePictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.VolumeMute);
+            muted = !muted;
+            if (muted)
+            {
+                mutePictureBox.Image = Properties.Resources.Mute;
+            }
+            else 
+            {
+                mutePictureBox.Image = Properties.Resources.Unmute;
+            }
         }
     }
 }
