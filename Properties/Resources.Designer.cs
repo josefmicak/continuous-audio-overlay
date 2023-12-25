@@ -71,21 +71,21 @@ namespace ContinuousAudioOverlay.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Bitmap Kiss_BeHappy {
+        internal static System.Drawing.Icon Icon {
             get {
-                object obj = ResourceManager.GetObject("Kiss_BeHappy", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                object obj = ResourceManager.GetObject("Icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Logo_Rock_bez_pozadi {
+        internal static System.Drawing.Bitmap IncreaseVolume {
             get {
-                object obj = ResourceManager.GetObject("Logo_Rock_bez_pozadi", resourceCulture);
+                object obj = ResourceManager.GetObject("IncreaseVolume", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -136,6 +136,16 @@ namespace ContinuousAudioOverlay.Properties {
         internal static System.Drawing.Bitmap PrevButton {
             get {
                 object obj = ResourceManager.GetObject("PrevButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ReduceVolume {
+            get {
+                object obj = ResourceManager.GetObject("ReduceVolume", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
