@@ -43,6 +43,7 @@
             outputDeviceDropDown = new FlatComboBox();
             titleTextBox = new TextBox();
             radioDropDownList = new FlatComboBox();
+            resumeRadioButton = new Button();
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
@@ -60,7 +61,7 @@
             pauseRadioButton.FlatAppearance.BorderSize = 0;
             pauseRadioButton.FlatStyle = FlatStyle.Flat;
             pauseRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            pauseRadioButton.Location = new Point(82, 45);
+            pauseRadioButton.Location = new Point(15, 45);
             pauseRadioButton.Name = "pauseRadioButton";
             pauseRadioButton.Size = new Size(100, 20);
             pauseRadioButton.TabIndex = 1;
@@ -153,7 +154,7 @@
             // mutePictureBox
             // 
             mutePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            mutePictureBox.Image = Properties.Resources.Mute;
+            mutePictureBox.Image = Properties.Resources.Unmute;
             mutePictureBox.Location = new Point(14, 268);
             mutePictureBox.Name = "mutePictureBox";
             mutePictureBox.Size = new Size(22, 20);
@@ -253,12 +254,29 @@
             radioDropDownList.MouseLeave += radioDropDownList_MouseLeave;
             radioDropDownList.MouseHover += radioDropDownList_MouseEnter;
             // 
+            // resumeRadioButton
+            // 
+            resumeRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            resumeRadioButton.FlatAppearance.BorderSize = 0;
+            resumeRadioButton.FlatStyle = FlatStyle.Flat;
+            resumeRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            resumeRadioButton.Location = new Point(147, 45);
+            resumeRadioButton.Name = "resumeRadioButton";
+            resumeRadioButton.Size = new Size(100, 20);
+            resumeRadioButton.TabIndex = 15;
+            resumeRadioButton.Text = "Resume Radio";
+            resumeRadioButton.UseVisualStyleBackColor = false;
+            resumeRadioButton.Click += resumeRadioButton_Click;
+            resumeRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            resumeRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(260, 344);
+            Controls.Add(resumeRadioButton);
             Controls.Add(radioDropDownList);
             Controls.Add(titleTextBox);
             Controls.Add(outputDeviceDropDown);
@@ -311,5 +329,6 @@
         private FlatComboBox outputDeviceDropDown;
         private TextBox titleTextBox;
         private FlatComboBox radioDropDownList;
+        private Button resumeRadioButton;
     }
 }

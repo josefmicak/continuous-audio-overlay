@@ -1,14 +1,10 @@
 using Un4seen.Bass;
-using Un4seen.Bass.Misc;
-using Un4seen.Bass.AddOn.Wma;
 using System.Xml.Linq;
 using Windows.Media.Control;
 using AudioSwitcher.AudioApi.CoreAudio;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.IO;
 using Un4seen.Bass.AddOn.Tags;
-using System.Security.Policy;
+using System.Net;
 
 namespace ContinuousAudioOverlay
 {
@@ -29,6 +25,7 @@ namespace ContinuousAudioOverlay
         bool muted = false;
         bool radioPlaying = false;
         string radioURL = string.Empty;
+        int radioIndex = -1;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
@@ -156,7 +153,7 @@ namespace ContinuousAudioOverlay
         private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
             ReleaseBassResources();
-            if(radioDropDownList.SelectedIndex != radioDropDownList.Items.Count - 1)
+            if (radioDropDownList.SelectedIndex != radioDropDownList.Items.Count - 1)
             {
                 if (!Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
                 {
@@ -169,12 +166,13 @@ namespace ContinuousAudioOverlay
                 if (_streamHandle != 0)
                 {
                     Bass.BASS_ChannelPlay(_streamHandle, true);
-                    Bass.BASS_ChannelSetAttribute(_streamHandle, BASSAttribute.BASS_ATTRIB_VOL, (float)0.05);
+                    Bass.BASS_ChannelSetAttribute(_streamHandle, BASSAttribute.BASS_ATTRIB_VOL, (float)0.1);
                 }
                 else
                 {
                     MessageBox.Show("Radio could not be loaded.\r\nRadio URL: " + radioURL, "Error loading radio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                radioIndex = radioDropDownList.SelectedIndex;
             }
         }
 
@@ -296,6 +294,8 @@ namespace ContinuousAudioOverlay
         {
             defaultPlaybackDevice.Volume = volumeSlider.Value;
             volumeLabel.Text = volumeSlider.Value.ToString();
+            // volumeLabel.Left = ((this.ClientSize.Width - volumeLabel.Width) / 2) + 5;
+            volumeLabel.Left = reduceVolumePictureBox.Right + ((increaseVolumePictureBox.Left - reduceVolumePictureBox.Right - volumeLabel.Width) / 2);
         }
 
         private void mutePictureBox_Click(object sender, EventArgs e)
@@ -326,7 +326,7 @@ namespace ContinuousAudioOverlay
         {
             int index = e.Index >= 0 ? e.Index : 0;
             SolidBrush brush;
-            if (outputDeviceDropdownEnter)
+            if (outputDeviceDropdownEnter || outputDeviceDropDown.DroppedDown)
             {
                 brush = new SolidBrush(hoverColor);
             }
@@ -388,15 +388,14 @@ namespace ContinuousAudioOverlay
 
             GlobalSystemMediaTransportControlsSession session =
                 mediaManager.GetCurrentSession();
-
-            try
+            if (session != null)
             {
                 GlobalSystemMediaTransportControlsSessionMediaProperties properties =
                     await session.TryGetMediaPropertiesAsync();
 
                 return properties;
             }
-            catch
+            else
             {
                 return null;
             }
@@ -407,20 +406,23 @@ namespace ContinuousAudioOverlay
             if (radioPlaying)
             {
                 TAG_INFO currentTagInfo = new TAG_INFO(radioURL);
-                if(TagInfoPropertiesChanged(currentTagInfo, previousTagInfo))
+                if (TagInfoPropertiesChanged(currentTagInfo, previousTagInfo))
                 {
                     UpdateTitleTextBox();
-                }  
+                }
             }
             else
             {
                 GlobalSystemMediaTransportControlsSessionMediaProperties currentMediaProperties =
                     await GetMediaInfoAsync();
 
-                if (MediaPropertiesChanged(currentMediaProperties, previousMediaProperties))
+                if(currentMediaProperties != null)
                 {
-                    UpdateTitleTextBox(currentMediaProperties);
-                    previousMediaProperties = currentMediaProperties;
+                    if (MediaPropertiesChanged(currentMediaProperties, previousMediaProperties))
+                    {
+                        UpdateTitleTextBox(currentMediaProperties);
+                        previousMediaProperties = currentMediaProperties;
+                    }
                 }
             }
         }
@@ -434,14 +436,18 @@ namespace ContinuousAudioOverlay
         {
             return current?.title != previous?.title;
         }
+
         private void UpdateTitleTextBox()
         {
             TAG_INFO tagInfo = new TAG_INFO(radioURL);
             if (BassTags.BASS_TAG_GetFromURL(_streamHandle, tagInfo))
             {
-                string title = tagInfo.title;
-                string artist = tagInfo.artist;
-                titleTextBox.Text = title + "\r\n" + artist;
+                if (tagInfo.title != null && tagInfo.artist != null)
+                {
+                    string title = WebUtility.HtmlDecode(tagInfo.title);
+                    string artist = WebUtility.HtmlDecode(tagInfo.artist);
+                    titleTextBox.Text = title + "\r\n" + artist;
+                }
             }
             else
             {
@@ -460,7 +466,7 @@ namespace ContinuousAudioOverlay
         {
             int index = e.Index >= 0 ? e.Index : 0;
             SolidBrush brush;
-            if (radioDropdownEnter)
+            if (radioDropdownEnter || radioDropDownList.DroppedDown)
             {
                 brush = new SolidBrush(hoverColor);
             }
@@ -493,6 +499,14 @@ namespace ContinuousAudioOverlay
             var pictureBox = (FlatComboBox)sender;
             pictureBox.BorderColor = controlBackgroundColor;
             radioDropdownEnter = false;
+        }
+
+        private void resumeRadioButton_Click(object sender, EventArgs e)
+        {
+            if (radioIndex != -1)
+            {
+                radioDropDownList.SelectedIndex = radioIndex;
+            }
         }
     }
 }
