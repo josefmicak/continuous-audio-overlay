@@ -38,6 +38,7 @@ namespace ContinuousAudioOverlay
             InitializeXml();
             InitializeTimer();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
+            this.TopMost = true;
         }
 
         protected override void WndProc(ref Message message)
@@ -416,7 +417,7 @@ namespace ContinuousAudioOverlay
                 GlobalSystemMediaTransportControlsSessionMediaProperties currentMediaProperties =
                     await GetMediaInfoAsync();
 
-                if(currentMediaProperties != null)
+                if (currentMediaProperties != null)
                 {
                     if (MediaPropertiesChanged(currentMediaProperties, previousMediaProperties))
                     {
@@ -447,6 +448,7 @@ namespace ContinuousAudioOverlay
                     string title = WebUtility.HtmlDecode(tagInfo.title);
                     string artist = WebUtility.HtmlDecode(tagInfo.artist);
                     titleTextBox.Text = title + "\r\n" + artist;
+                    SetTitleTextBoxMargin();
                 }
             }
             else
@@ -460,6 +462,37 @@ namespace ContinuousAudioOverlay
             string title = mediaProperties.Title;
             string artist = mediaProperties.Artist;
             titleTextBox.Text = title + "\r\n" + artist;
+            SetTitleTextBoxMargin();
+        }
+
+        private void SetTitleTextBoxMargin()
+        {
+            if(GetNumberOfLines() < 4)
+            {
+                titleTextBox.Text = "\r\n" + titleTextBox.Text;
+            }
+        }
+
+        private int GetNumberOfLines()
+        {
+            int lineCount = 0;
+
+            if (titleTextBox != null)
+            {
+                for (int charIndex = 0; charIndex < titleTextBox.Text.Length; charIndex++)
+                {
+                    int lineIndex = titleTextBox.GetLineFromCharIndex(charIndex);
+
+                    if (lineIndex > lineCount)
+                    {
+                        lineCount = lineIndex;
+                    }
+                }
+
+                lineCount++;
+            }
+
+            return lineCount;
         }
 
         private void radioDropDownList_DrawItem(object sender, DrawItemEventArgs e)
@@ -507,6 +540,11 @@ namespace ContinuousAudioOverlay
             {
                 radioDropDownList.SelectedIndex = radioIndex;
             }
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
         }
     }
 }

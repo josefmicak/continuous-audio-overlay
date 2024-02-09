@@ -75,7 +75,7 @@
             // 
             minimizePictureBox.BackColor = Color.FromArgb(255, 191, 0);
             minimizePictureBox.Image = Properties.Resources.Minimize;
-            minimizePictureBox.Location = new Point(202, 4);
+            minimizePictureBox.Location = new Point(202, 8);
             minimizePictureBox.Name = "minimizePictureBox";
             minimizePictureBox.Size = new Size(20, 20);
             minimizePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -89,7 +89,7 @@
             // 
             closePictureBox.BackColor = Color.FromArgb(255, 191, 0);
             closePictureBox.Image = Properties.Resources.Close;
-            closePictureBox.Location = new Point(228, 4);
+            closePictureBox.Location = new Point(228, 8);
             closePictureBox.Name = "closePictureBox";
             closePictureBox.Size = new Size(20, 20);
             closePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -227,11 +227,11 @@
             titleTextBox.BackColor = Color.FromArgb(51, 51, 51);
             titleTextBox.BorderStyle = BorderStyle.None;
             titleTextBox.ForeColor = Color.FromArgb(255, 191, 0);
-            titleTextBox.Location = new Point(14, 111);
+            titleTextBox.Location = new Point(15, 98);
             titleTextBox.Multiline = true;
             titleTextBox.Name = "titleTextBox";
             titleTextBox.ReadOnly = true;
-            titleTextBox.Size = new Size(234, 43);
+            titleTextBox.Size = new Size(234, 56);
             titleTextBox.TabIndex = 13;
             titleTextBox.TextAlign = HorizontalAlignment.Center;
             // 
@@ -301,6 +301,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
             TopMost = true;
+            Paint += Form1_Paint;
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).EndInit();
