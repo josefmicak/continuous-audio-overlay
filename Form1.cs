@@ -26,6 +26,7 @@ namespace ContinuousAudioOverlay
         bool radioPlaying = false;
         string radioURL = string.Empty;
         int radioIndex = -1;
+        bool loaded = false;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
@@ -151,7 +152,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+        private async void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
             ReleaseBassResources();
             if (radioDropDownList.SelectedIndex != radioDropDownList.Items.Count - 1)
@@ -174,6 +175,17 @@ namespace ContinuousAudioOverlay
                     MessageBox.Show("Radio could not be loaded.\r\nRadio URL: " + radioURL, "Error loading radio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 radioIndex = radioDropDownList.SelectedIndex;
+            }
+
+            if (loaded)
+            {
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo =
+                    await GetPlaybackInfoAsync();
+                if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
+                {
+                    Send(AppCommands.MediaPause);
+
+                }
             }
         }
 
@@ -228,6 +240,11 @@ namespace ContinuousAudioOverlay
 
         private void pauseRadioButton_Click(object sender, EventArgs e)
         {
+            StopRadio();
+        }
+
+        private void StopRadio()
+        {
             ReleaseBassResources();
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
         }
@@ -279,16 +296,31 @@ namespace ContinuousAudioOverlay
         private void prevPictureBox_Click(object sender, EventArgs e)
         {
             Send(AppCommands.MediaPrevious);
+
+            if (radioPlaying)
+            {
+                StopRadio();
+            }
         }
 
         private void pausePlayPictureBox_Click(object sender, EventArgs e)
         {
             Send(AppCommands.MediaPlayPause);
+
+            if (radioPlaying)
+            {
+                StopRadio();
+            }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void nextPictureBox_Click(object sender, EventArgs e)
         {
             Send(AppCommands.MediaNext);
+
+            if (radioPlaying)
+            {
+                StopRadio();
+            }
         }
 
         private void volumeSlider_ValueChanged(object sender, EventArgs e)
@@ -389,12 +421,32 @@ namespace ContinuousAudioOverlay
 
             GlobalSystemMediaTransportControlsSession session =
                 mediaManager.GetCurrentSession();
+            GlobalSystemMediaTransportControlsSessionPlaybackInfo playbackInfo = session.GetPlaybackInfo();
             if (session != null)
             {
                 GlobalSystemMediaTransportControlsSessionMediaProperties properties =
                     await session.TryGetMediaPropertiesAsync();
 
                 return properties;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        static async Task<GlobalSystemMediaTransportControlsSessionPlaybackInfo> GetPlaybackInfoAsync()
+        {
+            GlobalSystemMediaTransportControlsSessionManager mediaManager =
+                await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+
+            GlobalSystemMediaTransportControlsSession session =
+                mediaManager.GetCurrentSession();
+            if (session != null)
+            {
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo playbackInfo = session.GetPlaybackInfo();
+
+                return playbackInfo;
             }
             else
             {
@@ -467,7 +519,7 @@ namespace ContinuousAudioOverlay
 
         private void SetTitleTextBoxMargin()
         {
-            if(GetNumberOfLines() < 4)
+            if (GetNumberOfLines() < 4)
             {
                 titleTextBox.Text = "\r\n" + titleTextBox.Text;
             }
@@ -534,17 +586,30 @@ namespace ContinuousAudioOverlay
             radioDropdownEnter = false;
         }
 
-        private void resumeRadioButton_Click(object sender, EventArgs e)
+        private async void resumeRadioButton_Click(object sender, EventArgs e)
         {
             if (radioIndex != -1)
             {
                 radioDropDownList.SelectedIndex = radioIndex;
+
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo =
+                    await GetPlaybackInfoAsync();
+                if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
+                {
+                    Send(AppCommands.MediaPause);
+
+                }
             }
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            loaded = true;
         }
     }
 }

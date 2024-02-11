@@ -34,7 +34,7 @@
             closePictureBox = new PictureBox();
             prevPictureBox = new PictureBox();
             pausePlayPictureBox = new PictureBox();
-            pictureBox1 = new PictureBox();
+            nextPictureBox = new PictureBox();
             volumeSlider = new TrackBarCustom();
             mutePictureBox = new PictureBox();
             reduceVolumePictureBox = new PictureBox();
@@ -48,7 +48,7 @@
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pausePlayPictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nextPictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)volumeSlider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)mutePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).BeginInit();
@@ -127,19 +127,19 @@
             pausePlayPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
             pausePlayPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // pictureBox1
+            // nextPictureBox
             // 
-            pictureBox1.BackColor = Color.FromArgb(255, 191, 0);
-            pictureBox1.Image = Properties.Resources.NextButton;
-            pictureBox1.Location = new Point(176, 160);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(72, 69);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 6;
-            pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
-            pictureBox1.MouseEnter += ChangeBackgroundColorMouseEnter;
-            pictureBox1.MouseLeave += ChangeBackgroundColorMouseLeave;
+            nextPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            nextPictureBox.Image = Properties.Resources.NextButton;
+            nextPictureBox.Location = new Point(176, 160);
+            nextPictureBox.Name = "nextPictureBox";
+            nextPictureBox.Size = new Size(72, 69);
+            nextPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            nextPictureBox.TabIndex = 6;
+            nextPictureBox.TabStop = false;
+            nextPictureBox.Click += nextPictureBox_Click;
+            nextPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            nextPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
             // volumeSlider
             // 
@@ -285,7 +285,7 @@
             Controls.Add(reduceVolumePictureBox);
             Controls.Add(mutePictureBox);
             Controls.Add(volumeSlider);
-            Controls.Add(pictureBox1);
+            Controls.Add(nextPictureBox);
             Controls.Add(pausePlayPictureBox);
             Controls.Add(prevPictureBox);
             Controls.Add(closePictureBox);
@@ -301,12 +301,13 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
             TopMost = true;
+            Load += Form1_Load;
             Paint += Form1_Paint;
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)pausePlayPictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nextPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)volumeSlider).EndInit();
             ((System.ComponentModel.ISupportInitialize)mutePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).EndInit();
@@ -321,7 +322,7 @@
         private PictureBox closePictureBox;
         private PictureBox prevPictureBox;
         private PictureBox pausePlayPictureBox;
-        private PictureBox pictureBox1;
+        private PictureBox nextPictureBox;
         private TrackBarCustom volumeSlider;
         private PictureBox mutePictureBox;
         private PictureBox reduceVolumePictureBox;
