@@ -181,10 +181,13 @@ namespace ContinuousAudioOverlay
 
             if (loaded)
             {
-                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfoAsync();
-                if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfo();
+                if(currentMediaPlaybackInfo != null)
                 {
-                    Send(AppCommands.MediaPause);
+                    if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
+                    {
+                        Send(AppCommands.MediaPause);
+                    }
                 }
             }
         }
@@ -447,7 +450,7 @@ namespace ContinuousAudioOverlay
             UpdateTitleTextBox(currentMediaProperties);
         }
 
-        private GlobalSystemMediaTransportControlsSessionPlaybackInfo GetPlaybackInfoAsync()
+        private GlobalSystemMediaTransportControlsSessionPlaybackInfo GetPlaybackInfo()
         {
             GlobalSystemMediaTransportControlsSession session =
                 mediaManager.GetCurrentSession();
@@ -594,10 +597,13 @@ namespace ContinuousAudioOverlay
             {
                 radioDropDownList.SelectedIndex = radioIndex;
 
-                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfoAsync();
-                if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfo();
+                if(currentMediaPlaybackInfo != null)
                 {
-                    Send(AppCommands.MediaPause);
+                    if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
+                    {
+                        Send(AppCommands.MediaPause);
+                    }
                 }
 
                 mediaUpdateTimer.Start();
