@@ -248,6 +248,7 @@ namespace ContinuousAudioOverlay
 
         private void StopRadio()
         {
+            MediaControlsUpdateTitleTextBox();
             mediaUpdateTimer.Stop();
             ReleaseBassResources();
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
