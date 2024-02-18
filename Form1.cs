@@ -5,7 +5,8 @@ using AudioSwitcher.AudioApi.CoreAudio;
 using System.Runtime.InteropServices;
 using Un4seen.Bass.AddOn.Tags;
 using System.Net;
-using static System.Net.Mime.MediaTypeNames;
+using Windows.Storage.Streams;
+using System.Windows.Forms;
 
 namespace ContinuousAudioOverlay
 {
@@ -20,7 +21,7 @@ namespace ContinuousAudioOverlay
         Color hoverColor = Color.Yellow;
         bool outputDeviceDropdownEnter = false;
         bool radioDropdownEnter = false;
-        private readonly System.Windows.Forms.Timer mediaUpdateTimer = new System.Windows.Forms.Timer();
+        private readonly System.Windows.Forms.Timer radioTitleUpdateTimer = new System.Windows.Forms.Timer();
         GlobalSystemMediaTransportControlsSessionManager mediaManager;
         private TAG_INFO previousTagInfo;
         bool muted = false;
@@ -176,13 +177,14 @@ namespace ContinuousAudioOverlay
                     MessageBox.Show("Radio could not be loaded.\r\nRadio URL: " + radioURL, "Error loading radio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 radioIndex = radioDropDownList.SelectedIndex;
-                mediaUpdateTimer.Start();
+                radioTitleUpdateTimer.Start();
+                thumbnailPictureBox.Image = null;
             }
 
             if (loaded)
             {
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfo();
-                if(currentMediaPlaybackInfo != null)
+                if (currentMediaPlaybackInfo != null)
                 {
                     if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
                     {
@@ -249,7 +251,7 @@ namespace ContinuousAudioOverlay
         private void StopRadio()
         {
             MediaControlsUpdateTitleTextBox();
-            mediaUpdateTimer.Stop();
+            radioTitleUpdateTimer.Stop();
             ReleaseBassResources();
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
         }
@@ -413,9 +415,9 @@ namespace ContinuousAudioOverlay
 
         public void InitializeTimer()
         {
-            mediaUpdateTimer.Interval = 5000;
-            mediaUpdateTimer.Tick += MediaUpdateTimer_Tick;
-            //mediaUpdateTimer.Start();
+            radioTitleUpdateTimer.Interval = 5000;
+            radioTitleUpdateTimer.Tick += radioTitleUpdateTimer_Tick;
+            //radioTitleUpdateTimer.Start();
         }
 
         private async Task<GlobalSystemMediaTransportControlsSessionMediaProperties> GetMediaInfoAsync()
@@ -427,10 +429,17 @@ namespace ContinuousAudioOverlay
             //session.TimelinePropertiesChanged += TimelinePropertiesChanged;
             if (session != null)
             {
-                GlobalSystemMediaTransportControlsSessionMediaProperties properties =
-                    await session.TryGetMediaPropertiesAsync();
+                try
+                {
+                    GlobalSystemMediaTransportControlsSessionMediaProperties properties =
+                        await session.TryGetMediaPropertiesAsync();
 
-                return properties;
+                    return properties;
+                }
+                catch
+                {
+                    return null;
+                }
             }
             else
             {
@@ -467,7 +476,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void MediaUpdateTimer_Tick(object sender, EventArgs e)
+        private void radioTitleUpdateTimer_Tick(object sender, EventArgs e)
         {
             if (radioPlaying)
             {
@@ -503,15 +512,39 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void UpdateTitleTextBox(GlobalSystemMediaTransportControlsSessionMediaProperties mediaProperties)
+        private async void UpdateTitleTextBox(GlobalSystemMediaTransportControlsSessionMediaProperties mediaProperties)
         {
             string title = string.Empty;
             string artist = string.Empty;
-            if(mediaProperties != null)
+            if (mediaProperties != null)
             {
+                IRandomAccessStreamReference thumbnailStreamReference = mediaProperties.Thumbnail;
+
+                if (thumbnailStreamReference != null)
+                {
+                    using (IRandomAccessStreamWithContentType stream = await thumbnailStreamReference.OpenReadAsync())
+                    {
+                        MemoryStream memoryStream = new MemoryStream();
+                        await stream.AsStreamForRead().CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+                        Image thumbnailImage = Image.FromStream(memoryStream);
+                        thumbnailPictureBox.Image = thumbnailImage;
+                        memoryStream.Dispose();
+                    }
+                }
+                else
+                {
+                    thumbnailPictureBox.Image = null;
+                }
+
                 title = mediaProperties.Title;
                 artist = mediaProperties.Artist;
             }
+            else
+            {
+                thumbnailPictureBox.Image = null;
+            }
+
             if (titleTextBox.InvokeRequired)
             {
                 titleTextBox.Invoke(new Action<GlobalSystemMediaTransportControlsSessionMediaProperties>(UpdateTitleTextBox), mediaProperties);
@@ -520,7 +553,7 @@ namespace ContinuousAudioOverlay
             {
                 titleTextBox.Text = title + "\r\n" + artist;
                 SetTitleTextBoxMargin();
-            }         
+            }
         }
 
         private void SetTitleTextBoxMargin()
@@ -599,7 +632,7 @@ namespace ContinuousAudioOverlay
                 radioDropDownList.SelectedIndex = radioIndex;
 
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfo();
-                if(currentMediaPlaybackInfo != null)
+                if (currentMediaPlaybackInfo != null)
                 {
                     if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
                     {
@@ -607,7 +640,7 @@ namespace ContinuousAudioOverlay
                     }
                 }
 
-                mediaUpdateTimer.Start();
+                radioTitleUpdateTimer.Start();
             }
         }
 
@@ -622,7 +655,7 @@ namespace ContinuousAudioOverlay
             mediaManager.CurrentSessionChanged += SessionsChanged;
 
             GlobalSystemMediaTransportControlsSession session = mediaManager.GetCurrentSession();
-            if(session != null)
+            if (session != null)
             {
                 MediaControlsUpdateTitleTextBox();
             }
@@ -640,6 +673,12 @@ namespace ContinuousAudioOverlay
                 session.MediaPropertiesChanged += MediaPropertiesChanged;
             }
             MediaControlsUpdateTitleTextBox();
+        }
+
+        private void thumbnailPictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            PictureBox pictureBox = (PictureBox)sender;
+            ControlPaint.DrawBorder(e.Graphics, pictureBox.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
         }
     }
 }

@@ -44,6 +44,7 @@
             titleTextBox = new TextBox();
             radioDropDownList = new FlatComboBox();
             resumeRadioButton = new Button();
+            thumbnailPictureBox = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
@@ -53,6 +54,7 @@
             ((System.ComponentModel.ISupportInitialize)mutePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).BeginInit();
             SuspendLayout();
             // 
             // pauseRadioButton
@@ -103,7 +105,7 @@
             // 
             prevPictureBox.BackColor = Color.FromArgb(255, 191, 0);
             prevPictureBox.Image = Properties.Resources.PrevButton;
-            prevPictureBox.Location = new Point(14, 160);
+            prevPictureBox.Location = new Point(14, 225);
             prevPictureBox.Name = "prevPictureBox";
             prevPictureBox.Size = new Size(72, 69);
             prevPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -117,7 +119,7 @@
             // 
             pausePlayPictureBox.BackColor = Color.FromArgb(255, 191, 0);
             pausePlayPictureBox.Image = Properties.Resources.PausePlayButton;
-            pausePlayPictureBox.Location = new Point(95, 160);
+            pausePlayPictureBox.Location = new Point(95, 225);
             pausePlayPictureBox.Name = "pausePlayPictureBox";
             pausePlayPictureBox.Size = new Size(72, 69);
             pausePlayPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -131,7 +133,7 @@
             // 
             nextPictureBox.BackColor = Color.FromArgb(255, 191, 0);
             nextPictureBox.Image = Properties.Resources.NextButton;
-            nextPictureBox.Location = new Point(176, 160);
+            nextPictureBox.Location = new Point(176, 225);
             nextPictureBox.Name = "nextPictureBox";
             nextPictureBox.Size = new Size(72, 69);
             nextPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -143,7 +145,7 @@
             // 
             // volumeSlider
             // 
-            volumeSlider.Location = new Point(12, 235);
+            volumeSlider.Location = new Point(12, 300);
             volumeSlider.Maximum = 100;
             volumeSlider.Name = "volumeSlider";
             volumeSlider.Size = new Size(236, 45);
@@ -155,7 +157,7 @@
             // 
             mutePictureBox.BackColor = Color.FromArgb(255, 191, 0);
             mutePictureBox.Image = Properties.Resources.Unmute;
-            mutePictureBox.Location = new Point(14, 268);
+            mutePictureBox.Location = new Point(14, 333);
             mutePictureBox.Name = "mutePictureBox";
             mutePictureBox.Size = new Size(22, 20);
             mutePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -169,7 +171,7 @@
             // 
             reduceVolumePictureBox.BackColor = Color.FromArgb(255, 191, 0);
             reduceVolumePictureBox.Image = Properties.Resources.ReduceVolume;
-            reduceVolumePictureBox.Location = new Point(95, 268);
+            reduceVolumePictureBox.Location = new Point(95, 333);
             reduceVolumePictureBox.Name = "reduceVolumePictureBox";
             reduceVolumePictureBox.Size = new Size(22, 20);
             reduceVolumePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -183,7 +185,7 @@
             // 
             volumeLabel.AutoSize = true;
             volumeLabel.ForeColor = Color.FromArgb(255, 191, 0);
-            volumeLabel.Location = new Point(123, 273);
+            volumeLabel.Location = new Point(123, 338);
             volumeLabel.Name = "volumeLabel";
             volumeLabel.Size = new Size(21, 13);
             volumeLabel.TabIndex = 10;
@@ -193,7 +195,7 @@
             // 
             increaseVolumePictureBox.BackColor = Color.FromArgb(255, 191, 0);
             increaseVolumePictureBox.Image = Properties.Resources.IncreaseVolume;
-            increaseVolumePictureBox.Location = new Point(150, 268);
+            increaseVolumePictureBox.Location = new Point(150, 333);
             increaseVolumePictureBox.Name = "increaseVolumePictureBox";
             increaseVolumePictureBox.Size = new Size(22, 20);
             increaseVolumePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -211,7 +213,7 @@
             outputDeviceDropDown.DrawMode = DrawMode.OwnerDrawFixed;
             outputDeviceDropDown.DropDownStyle = ComboBoxStyle.DropDownList;
             outputDeviceDropDown.FormattingEnabled = true;
-            outputDeviceDropDown.Location = new Point(14, 306);
+            outputDeviceDropDown.Location = new Point(14, 371);
             outputDeviceDropDown.Name = "outputDeviceDropDown";
             outputDeviceDropDown.Size = new Size(233, 21);
             outputDeviceDropDown.TabIndex = 12;
@@ -227,7 +229,7 @@
             titleTextBox.BackColor = Color.FromArgb(51, 51, 51);
             titleTextBox.BorderStyle = BorderStyle.None;
             titleTextBox.ForeColor = Color.FromArgb(255, 191, 0);
-            titleTextBox.Location = new Point(15, 98);
+            titleTextBox.Location = new Point(15, 163);
             titleTextBox.Multiline = true;
             titleTextBox.Name = "titleTextBox";
             titleTextBox.ReadOnly = true;
@@ -270,12 +272,23 @@
             resumeRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
             resumeRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
+            // thumbnailPictureBox
+            // 
+            thumbnailPictureBox.Location = new Point(80, 102);
+            thumbnailPictureBox.Name = "thumbnailPictureBox";
+            thumbnailPictureBox.Size = new Size(100, 55);
+            thumbnailPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            thumbnailPictureBox.TabIndex = 16;
+            thumbnailPictureBox.TabStop = false;
+            thumbnailPictureBox.Paint += thumbnailPictureBox_Paint;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
-            ClientSize = new Size(260, 344);
+            ClientSize = new Size(260, 409);
+            Controls.Add(thumbnailPictureBox);
             Controls.Add(resumeRadioButton);
             Controls.Add(radioDropDownList);
             Controls.Add(titleTextBox);
@@ -295,8 +308,8 @@
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(260, 344);
-            MinimumSize = new Size(260, 344);
+            MaximumSize = new Size(260, 409);
+            MinimumSize = new Size(260, 409);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
@@ -312,6 +325,7 @@
             ((System.ComponentModel.ISupportInitialize)mutePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -332,5 +346,6 @@
         private TextBox titleTextBox;
         private FlatComboBox radioDropDownList;
         private Button resumeRadioButton;
+        private PictureBox thumbnailPictureBox;
     }
 }
