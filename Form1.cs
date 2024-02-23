@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using Un4seen.Bass.AddOn.Tags;
 using System.Net;
 using Windows.Storage.Streams;
-using System.Windows.Forms;
+using System.Globalization;
 
 namespace ContinuousAudioOverlay
 {
@@ -42,6 +42,7 @@ namespace ContinuousAudioOverlay
             InitializeTimer();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
             this.TopMost = true;
+            UpdateSourceLabel("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         }
 
         protected override void WndProc(ref Message message)
@@ -179,6 +180,7 @@ namespace ContinuousAudioOverlay
                 radioIndex = radioDropDownList.SelectedIndex;
                 radioTitleUpdateTimer.Start();
                 thumbnailPictureBox.Image = null;
+                UpdateSourceLabel("Radio");
             }
 
             if (loaded)
@@ -454,10 +456,26 @@ namespace ContinuousAudioOverlay
 
         private async void MediaControlsUpdateTitleTextBox()
         {
+            //Update media title and thumbnail
             GlobalSystemMediaTransportControlsSessionMediaProperties currentMediaProperties =
                 await GetMediaInfoAsync();
 
             UpdateTitleTextBox(currentMediaProperties);
+
+            //Update source label
+            GlobalSystemMediaTransportControlsSession session =
+                mediaManager.GetCurrentSession();
+
+            string processName = "<no source>";
+            if (session != null)
+            {
+                if (session.SourceAppUserModelId != null)
+                {
+                    processName = Path.GetFileNameWithoutExtension(session.SourceAppUserModelId);
+                    processName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(processName);
+                }
+            }
+            UpdateSourceLabel(processName);
         }
 
         private GlobalSystemMediaTransportControlsSessionPlaybackInfo GetPlaybackInfo()
@@ -666,19 +684,32 @@ namespace ContinuousAudioOverlay
         private void SessionsChanged(GlobalSystemMediaTransportControlsSessionManager sender, object args)
         {
             GlobalSystemMediaTransportControlsSession session = sender.GetCurrentSession();
-
             if (session != null)
             {
                 session.MediaPropertiesChanged -= MediaPropertiesChanged;
                 session.MediaPropertiesChanged += MediaPropertiesChanged;
             }
-            MediaControlsUpdateTitleTextBox();
+
+            MediaControlsUpdateTitleTextBox();      
         }
 
         private void thumbnailPictureBox_Paint(object sender, PaintEventArgs e)
         {
             PictureBox pictureBox = (PictureBox)sender;
             ControlPaint.DrawBorder(e.Graphics, pictureBox.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
+        }
+
+        private void UpdateSourceLabel(string source)
+        {
+            if (sourceLabel.InvokeRequired)
+            {
+                sourceLabel.Invoke((Action)(() => UpdateSourceLabel(source)));
+            }
+            else
+            {
+                sourceLabel.Text = source;
+                sourceLabel.Location = new Point((this.ClientSize.Width - sourceLabel.Width) / 2, sourceLabel.Location.Y);
+            }
         }
     }
 }

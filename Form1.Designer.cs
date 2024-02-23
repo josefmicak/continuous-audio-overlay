@@ -45,6 +45,7 @@
             radioDropDownList = new FlatComboBox();
             resumeRadioButton = new Button();
             thumbnailPictureBox = new PictureBox();
+            sourceLabel = new Label();
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
@@ -282,12 +283,24 @@
             thumbnailPictureBox.TabStop = false;
             thumbnailPictureBox.Paint += thumbnailPictureBox_Paint;
             // 
+            // sourceLabel
+            // 
+            sourceLabel.AutoSize = true;
+            sourceLabel.ForeColor = Color.FromArgb(255, 191, 0);
+            sourceLabel.Location = new Point(103, 15);
+            sourceLabel.MaximumSize = new Size(100, 20);
+            sourceLabel.Name = "sourceLabel";
+            sourceLabel.Size = new Size(78, 13);
+            sourceLabel.TabIndex = 17;
+            sourceLabel.Text = "SourceLabel";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(260, 409);
+            Controls.Add(sourceLabel);
             Controls.Add(thumbnailPictureBox);
             Controls.Add(resumeRadioButton);
             Controls.Add(radioDropDownList);
@@ -347,5 +360,6 @@
         private FlatComboBox radioDropDownList;
         private Button resumeRadioButton;
         private PictureBox thumbnailPictureBox;
+        private Label sourceLabel;
     }
 }
