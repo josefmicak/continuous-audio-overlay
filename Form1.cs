@@ -29,6 +29,7 @@ namespace ContinuousAudioOverlay
         string radioURL = string.Empty;
         int radioIndex = -1;
         bool loaded = false;
+        bool folded = false;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
@@ -42,7 +43,7 @@ namespace ContinuousAudioOverlay
             InitializeTimer();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
             this.TopMost = true;
-            UpdateSourceLabel("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            UpdateSourceLabel("<no source>");
         }
 
         protected override void WndProc(ref Message message)
@@ -690,7 +691,7 @@ namespace ContinuousAudioOverlay
                 session.MediaPropertiesChanged += MediaPropertiesChanged;
             }
 
-            MediaControlsUpdateTitleTextBox();      
+            MediaControlsUpdateTitleTextBox();
         }
 
         private void thumbnailPictureBox_Paint(object sender, PaintEventArgs e)
@@ -709,6 +710,20 @@ namespace ContinuousAudioOverlay
             {
                 sourceLabel.Text = source;
                 sourceLabel.Location = new Point((this.ClientSize.Width - sourceLabel.Width) / 2, sourceLabel.Location.Y);
+            }
+        }
+
+        private void foldPictureBox_Click(object sender, EventArgs e)
+        {
+            if (!folded)
+            {
+                folded = true;
+                this.Size = new Size(40, 30);
+            }
+            else
+            {
+                folded = false;
+                this.Size = new Size(260, 409);
             }
         }
     }

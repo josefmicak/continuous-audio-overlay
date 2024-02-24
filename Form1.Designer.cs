@@ -46,6 +46,7 @@
             resumeRadioButton = new Button();
             thumbnailPictureBox = new PictureBox();
             sourceLabel = new Label();
+            foldPictureBox = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
@@ -56,6 +57,7 @@
             ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)foldPictureBox).BeginInit();
             SuspendLayout();
             // 
             // pauseRadioButton
@@ -294,12 +296,27 @@
             sourceLabel.TabIndex = 17;
             sourceLabel.Text = "SourceLabel";
             // 
+            // foldPictureBox
+            // 
+            foldPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            foldPictureBox.Image = (Image)resources.GetObject("foldPictureBox.Image");
+            foldPictureBox.Location = new Point(16, 8);
+            foldPictureBox.Name = "foldPictureBox";
+            foldPictureBox.Size = new Size(20, 20);
+            foldPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            foldPictureBox.TabIndex = 18;
+            foldPictureBox.TabStop = false;
+            foldPictureBox.Click += foldPictureBox_Click;
+            foldPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            foldPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(260, 409);
+            Controls.Add(foldPictureBox);
             Controls.Add(sourceLabel);
             Controls.Add(thumbnailPictureBox);
             Controls.Add(resumeRadioButton);
@@ -322,7 +339,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(260, 409);
-            MinimumSize = new Size(260, 409);
+            MinimumSize = new Size(40, 30);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
@@ -339,6 +356,7 @@
             ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)foldPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -361,5 +379,6 @@
         private Button resumeRadioButton;
         private PictureBox thumbnailPictureBox;
         private Label sourceLabel;
+        private PictureBox foldPictureBox;
     }
 }
