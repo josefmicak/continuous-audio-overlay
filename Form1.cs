@@ -34,6 +34,7 @@ namespace ContinuousAudioOverlay
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
         private const int HTCAPTION = 0x2;
+        private const int WM_NCLBUTTONDOWN = 0xA1;
 
         public Form1()
         {
@@ -136,10 +137,15 @@ namespace ContinuousAudioOverlay
         private static ManualResetEvent mre = new ManualResetEvent(false);
         private static Form frm;
 
-        // Pinvoke
         private const int WM_APPCOMMAND = 0x319;
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
 
         public void InitializeOutputDevices()
         {
@@ -724,6 +730,15 @@ namespace ContinuousAudioOverlay
             {
                 folded = false;
                 this.Size = new Size(260, 409);
+            }
+        }
+
+        private void MoveFormOnElementMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
             }
         }
     }

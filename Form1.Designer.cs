@@ -239,6 +239,7 @@
             titleTextBox.Size = new Size(234, 56);
             titleTextBox.TabIndex = 13;
             titleTextBox.TextAlign = HorizontalAlignment.Center;
+            titleTextBox.MouseDown += MoveFormOnElementMouseDown;
             // 
             // radioDropDownList
             // 
@@ -284,6 +285,7 @@
             thumbnailPictureBox.TabIndex = 16;
             thumbnailPictureBox.TabStop = false;
             thumbnailPictureBox.Paint += thumbnailPictureBox_Paint;
+            thumbnailPictureBox.MouseDown += MoveFormOnElementMouseDown;
             // 
             // sourceLabel
             // 
@@ -295,6 +297,7 @@
             sourceLabel.Size = new Size(78, 13);
             sourceLabel.TabIndex = 17;
             sourceLabel.Text = "SourceLabel";
+            sourceLabel.MouseDown += MoveFormOnElementMouseDown;
             // 
             // foldPictureBox
             // 
