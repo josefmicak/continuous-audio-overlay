@@ -671,6 +671,7 @@ namespace ContinuousAudioOverlay
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            e.Graphics.Clear(this.BackColor);
             ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
         }
 
@@ -731,6 +732,7 @@ namespace ContinuousAudioOverlay
                 folded = false;
                 this.Size = new Size(260, 409);
             }
+            this.Invalidate();
         }
 
         private void MoveFormOnElementMouseDown(object sender, MouseEventArgs e)
