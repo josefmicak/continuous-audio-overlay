@@ -683,6 +683,8 @@ namespace ContinuousAudioOverlay
             GlobalSystemMediaTransportControlsSession session = mediaManager.GetCurrentSession();
             if (session != null)
             {
+                session.MediaPropertiesChanged -= MediaPropertiesChanged;
+                session.MediaPropertiesChanged += MediaPropertiesChanged;
                 MediaControlsUpdateTitleTextBox();
             }
 
