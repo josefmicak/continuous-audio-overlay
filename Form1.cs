@@ -1,9 +1,6 @@
-using Un4seen.Bass;
-using System.Xml.Linq;
 using Windows.Media.Control;
 using AudioSwitcher.AudioApi.CoreAudio;
 using System.Runtime.InteropServices;
-using Un4seen.Bass.AddOn.Tags;
 using System.Net;
 using Windows.Storage.Streams;
 using System.Globalization;
@@ -12,9 +9,6 @@ namespace ContinuousAudioOverlay
 {
     public partial class Form1 : Form
     {
-        static int _streamHandle;
-        List<Radio> radioList = new List<Radio>();
-
         CoreAudioDevice defaultPlaybackDevice = new CoreAudioController().DefaultPlaybackDevice;
         IEnumerable<CoreAudioDevice> devices = new CoreAudioController().GetPlaybackDevices();
         Color controlBackgroundColor = Color.FromArgb(255, 191, 0);
@@ -23,13 +17,12 @@ namespace ContinuousAudioOverlay
         bool radioDropdownEnter = false;
         private readonly System.Windows.Forms.Timer radioTitleUpdateTimer = new System.Windows.Forms.Timer();
         GlobalSystemMediaTransportControlsSessionManager mediaManager;
-        private TAG_INFO previousTagInfo;
         bool muted = false;
         bool radioPlaying = false;
-        string radioURL = string.Empty;
         int radioIndex = -1;
         bool loaded = false;
         bool folded = false;
+        BassService bassService;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
@@ -38,14 +31,24 @@ namespace ContinuousAudioOverlay
 
         public Form1()
         {
+            bassService = new BassService();
+
             InitializeComponent();
             InitializeOutputDevices();
-            InitializeXml();
+            InitializeRadioList();
             InitializeTimer();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
             this.TopMost = true;
             SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
             UpdateSourceLabel("<no source>");
+        }
+
+        public void InitializeRadioList()
+        {
+            List<Radio> radioList = bassService.GetRadioList();
+            radioDropDownList.Items.AddRange(radioList.Select(radio => radio.RadioName).ToArray());
+            radioDropDownList.Items.Add("<no radio>");
+            radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
         }
 
         protected override void WndProc(ref Message message)
@@ -165,26 +168,15 @@ namespace ContinuousAudioOverlay
 
         private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ReleaseBassResources();
+            if(bassService.BassInitialized())
+            {
+                ReleaseBassResources();
+            }
+            
             if (radioDropDownList.SelectedIndex != radioDropDownList.Items.Count - 1)
             {
-                if (!Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
-                {
-                    return;
-                }
+                bassService.IndexChanged(radioDropDownList.SelectedIndex);
                 radioPlaying = true;
-                radioURL = radioList[radioDropDownList.SelectedIndex].RadioURL;
-
-                _streamHandle = Bass.BASS_StreamCreateURL(radioURL, 0, BASSFlag.BASS_DEFAULT, null, IntPtr.Zero);
-                if (_streamHandle != 0)
-                {
-                    Bass.BASS_ChannelPlay(_streamHandle, true);
-                    Bass.BASS_ChannelSetAttribute(_streamHandle, BASSAttribute.BASS_ATTRIB_VOL, (float)0.1);
-                }
-                else
-                {
-                    MessageBox.Show("Radio could not be loaded.\r\nRadio URL: " + radioURL, "Error loading radio", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
                 radioIndex = radioDropDownList.SelectedIndex;
                 radioTitleUpdateTimer.Start();
                 thumbnailPictureBox.Image = null;
@@ -206,51 +198,8 @@ namespace ContinuousAudioOverlay
 
         public void ReleaseBassResources()
         {
-            Bass.BASS_ChannelStop(_streamHandle);
-            Bass.BASS_StreamFree(_streamHandle);
-            Bass.BASS_Free();
+            bassService.ReleaseBassResources();
             radioPlaying = false;
-        }
-
-        public void InitializeXml()
-        {
-            string xmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadioList.xml");
-            XDocument doc;
-
-            if (!File.Exists(xmlFilePath))
-            {
-                doc = new XDocument(
-                    new XElement("Radios",
-                        new XElement("Radio",
-                            new XElement("RadioName", "Rádio Èas Rock"),
-                            new XElement("RadioURL", "https://icecast9.play.cz/casrock192.mp3")
-                        ),
-                        new XElement("Radio",
-                            new XElement("RadioName", "Rádio Kiss"),
-                            new XElement("RadioURL", "http://icecast4.play.cz/kiss128.mp3")
-                        )
-                    )
-                );
-                doc.Save(xmlFilePath);
-            }
-
-            if (File.Exists(xmlFilePath))
-            {
-                doc = XDocument.Load(xmlFilePath);
-
-                var radios = doc.Descendants("Radio")
-                                .Select(radio => new Radio
-                                {
-                                    RadioName = radio.Element("RadioName")?.Value,
-                                    RadioURL = radio.Element("RadioURL")?.Value
-                                })
-                                .ToList();
-                radioList.AddRange(radios);
-            }
-
-            radioDropDownList.Items.AddRange(radioList.Select(radio => radio.RadioName).ToArray());
-            radioDropDownList.Items.Add("<no radio>");
-            radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
         }
 
         private void pauseRadioButton_Click(object sender, EventArgs e)
@@ -264,12 +213,6 @@ namespace ContinuousAudioOverlay
             radioTitleUpdateTimer.Stop();
             ReleaseBassResources();
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
-        }
-
-        public class Radio
-        {
-            public string RadioName { get; set; }
-            public string RadioURL { get; set; }
         }
 
         private void minimizePictureBox_Click(object sender, EventArgs e)
@@ -506,31 +449,24 @@ namespace ContinuousAudioOverlay
         {
             if (radioPlaying)
             {
-                TAG_INFO currentTagInfo = new TAG_INFO(radioURL);
-                if (TagInfoPropertiesChanged(currentTagInfo, previousTagInfo))
+                (string title, string artist, bool tagInfoPropertiesChanged) = bassService.GetTitleTags();
+                if (tagInfoPropertiesChanged)
                 {
-                    UpdateTitleTextBox();
+                    UpdateTitleTextBox(title, artist);
                 }
             }
         }
 
-        private bool TagInfoPropertiesChanged(TAG_INFO current, TAG_INFO previous)
+        private void UpdateTitleTextBox(string? title, string? artist)
         {
-            return current?.title != previous?.title;
-        }
-
-        private void UpdateTitleTextBox()
-        {
-            TAG_INFO tagInfo = new TAG_INFO(radioURL);
-            if (BassTags.BASS_TAG_GetFromURL(_streamHandle, tagInfo))
+            if(title == string.Empty && artist == string.Empty)
             {
-                if (tagInfo.title != null && tagInfo.artist != null)
-                {
-                    string title = WebUtility.HtmlDecode(tagInfo.title);
-                    string artist = WebUtility.HtmlDecode(tagInfo.artist);
-                    titleTextBox.Text = title + "\r\n" + artist;
-                    SetTitleTextBoxMargin();
-                }
+                (title, artist, _) = bassService.GetTitleTags();
+            }
+            if (!string.IsNullOrEmpty(title) || !string.IsNullOrEmpty(artist))
+            {
+                titleTextBox.Text = title + "\r\n" + artist;
+                SetTitleTextBoxMargin();
             }
             else
             {
@@ -666,6 +602,7 @@ namespace ContinuousAudioOverlay
                     }
                 }
 
+                UpdateTitleTextBox(string.Empty, string.Empty);
                 radioTitleUpdateTimer.Start();
             }
         }
