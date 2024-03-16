@@ -655,8 +655,11 @@ namespace ContinuousAudioOverlay
             }
             else
             {
-                sourceLabel.Text = source;
-                sourceLabel.Location = new Point((this.ClientSize.Width - sourceLabel.Width) / 2, sourceLabel.Location.Y);
+                if (!folded)
+                {
+                    sourceLabel.Text = source;
+                    sourceLabel.Location = new Point((this.ClientSize.Width - sourceLabel.Width) / 2, sourceLabel.Location.Y);
+                }
             }
         }
 
@@ -671,6 +674,7 @@ namespace ContinuousAudioOverlay
             {
                 folded = false;
                 this.Size = new Size(260, 409);
+                MediaControlsUpdateTitleTextBox();
             }
             this.Invalidate();
         }
