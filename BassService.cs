@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using Un4seen.Bass;
 
@@ -16,6 +17,9 @@ namespace ContinuousAudioOverlay
         Type bassTagsType;
         List<Radio> radioList = new List<Radio>();
         private bool bassInitialized = false;
+        private SYNCPROC _metaDataSync;
+        public delegate void MetaDataChangedHandler(string title, string artist);
+        public event MetaDataChangedHandler OnMetaDataChanged;
 
         public BassService()
         {
@@ -131,6 +135,22 @@ namespace ContinuousAudioOverlay
                     Type[] parameterTypes = new Type[] { typeof(int), typeof(BASSAttribute), typeof(float) }; // Adjust the parameter types as necessary
                     MethodInfo bassChannelSetAttributeMethod = bassType.GetMethod("BASS_ChannelSetAttribute", parameterTypes);
                     bassChannelSetAttributeMethod.Invoke(null, new object[] { _streamHandle, BASSAttribute.BASS_ATTRIB_VOL, 0.1f });
+
+                    _metaDataSync = new SYNCPROC(MetaDataSync);
+                    int syncHandle = Bass.BASS_ChannelSetSync(
+                        _streamHandle,
+                        BASSSync.BASS_SYNC_META,
+                        0,
+                        _metaDataSync,
+                        IntPtr.Zero
+                    );
+
+                    if (syncHandle == 0)
+                    {
+                        MessageBox.Show("Failed to set sync for metadata changes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
                 }
                 else
                 {
@@ -141,6 +161,31 @@ namespace ContinuousAudioOverlay
             {
                 MessageBox.Show("BASS library is not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void MetaDataSync(int handle, int channel, int data, IntPtr user)
+        {
+            string artist = string.Empty;
+            string title = string.Empty;
+
+            IntPtr metaPtr = Bass.BASS_ChannelGetTags(channel, BASSTag.BASS_TAG_META);
+            if (metaPtr != IntPtr.Zero)
+            {
+                string meta = Marshal.PtrToStringAnsi(metaPtr);
+                int startIndex = meta.IndexOf('\'');
+                int endIndex = meta.LastIndexOf('\'');
+
+                if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
+                {
+                    string streamTitle = meta.Substring(startIndex + 1, endIndex - startIndex - 1);
+                    string[] parts = streamTitle.Split(new[] { " - " }, 2, StringSplitOptions.None);
+
+                    artist = parts[0].Trim();
+                    title = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+                }
+            }
+
+            OnMetaDataChanged?.Invoke(title, artist);
         }
 
         public void ReleaseBassResources()
@@ -190,11 +235,10 @@ namespace ContinuousAudioOverlay
 
         public (string, string, bool) GetTitleTags()
         {
-            string radioURL = "https://icecast9.play.cz/casrock192.mp3";
-
+            //Function is likely to be removed in the future - for now it's kept for testing purposes
             if (bassAssembly != null)
             {
-                dynamic tagInfo = Activator.CreateInstance(bassTagsType, radioURL);
+                dynamic tagInfo = Activator.CreateInstance(bassTagsType);
 
                 Type bassTagsTypeLocal = bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.BassTags");
                 MethodInfo getFromUrlMethod = bassTagsTypeLocal?.GetMethod("BASS_TAG_GetFromURL", new[] { typeof(int), bassTagsType });

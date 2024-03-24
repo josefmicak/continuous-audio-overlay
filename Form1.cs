@@ -1,7 +1,6 @@
 using Windows.Media.Control;
 using AudioSwitcher.AudioApi.CoreAudio;
 using System.Runtime.InteropServices;
-using System.Net;
 using Windows.Storage.Streams;
 using System.Globalization;
 
@@ -15,7 +14,6 @@ namespace ContinuousAudioOverlay
         Color hoverColor = Color.Yellow;
         bool outputDeviceDropdownEnter = false;
         bool radioDropdownEnter = false;
-        private readonly System.Windows.Forms.Timer radioTitleUpdateTimer = new System.Windows.Forms.Timer();
         GlobalSystemMediaTransportControlsSessionManager mediaManager;
         bool muted = false;
         bool radioPlaying = false;
@@ -36,11 +34,11 @@ namespace ContinuousAudioOverlay
             InitializeComponent();
             InitializeOutputDevices();
             InitializeRadioList();
-            InitializeTimer();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
             this.TopMost = true;
             SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
             UpdateSourceLabel("<no source>");
+            bassService.OnMetaDataChanged += UpdateRadioTitle;
         }
 
         public void InitializeRadioList()
@@ -178,7 +176,6 @@ namespace ContinuousAudioOverlay
                 bassService.IndexChanged(radioDropDownList.SelectedIndex);
                 radioPlaying = true;
                 radioIndex = radioDropDownList.SelectedIndex;
-                radioTitleUpdateTimer.Start();
                 thumbnailPictureBox.Image = null;
                 UpdateSourceLabel("Radio");
             }
@@ -210,7 +207,6 @@ namespace ContinuousAudioOverlay
         private void StopRadio()
         {
             MediaControlsUpdateTitleTextBox();
-            radioTitleUpdateTimer.Stop();
             ReleaseBassResources();
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
         }
@@ -366,13 +362,6 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        public void InitializeTimer()
-        {
-            radioTitleUpdateTimer.Interval = 5000;
-            radioTitleUpdateTimer.Tick += radioTitleUpdateTimer_Tick;
-            //radioTitleUpdateTimer.Start();
-        }
-
         private async Task<GlobalSystemMediaTransportControlsSessionMediaProperties> GetMediaInfoAsync()
         {
             GlobalSystemMediaTransportControlsSession session =
@@ -445,32 +434,28 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void radioTitleUpdateTimer_Tick(object sender, EventArgs e)
+        private void UpdateTitleTextBox(string title, string artist)
         {
-            if (radioPlaying)
+            if (titleTextBox.InvokeRequired)
             {
-                (string title, string artist, bool tagInfoPropertiesChanged) = bassService.GetTitleTags();
-                if (tagInfoPropertiesChanged)
-                {
-                    UpdateTitleTextBox(title, artist);
-                }
-            }
-        }
-
-        private void UpdateTitleTextBox(string? title, string? artist)
-        {
-            if(title == string.Empty && artist == string.Empty)
-            {
-                (title, artist, _) = bassService.GetTitleTags();
-            }
-            if (!string.IsNullOrEmpty(title) || !string.IsNullOrEmpty(artist))
-            {
-                titleTextBox.Text = title + "\r\n" + artist;
-                SetTitleTextBoxMargin();
+                titleTextBox.Invoke(new Action(() => UpdateTitleTextBox(title, artist)));
             }
             else
             {
-                titleTextBox.Text = "Unknown";
+                if (title == string.Empty && artist == string.Empty)
+                {
+                    //Call likely to be removed in the future - for now it's kept for testing purposes
+                    (title, artist, _) = bassService.GetTitleTags();
+                }
+                if (!string.IsNullOrEmpty(title) || !string.IsNullOrEmpty(artist))
+                {
+                    titleTextBox.Text = $"{title}\r\n{artist}";
+                    SetTitleTextBoxMargin();
+                }
+                else
+                {
+                    titleTextBox.Text = "Unknown";
+                }
             }
         }
 
@@ -603,7 +588,6 @@ namespace ContinuousAudioOverlay
                 }
 
                 UpdateTitleTextBox(string.Empty, string.Empty);
-                radioTitleUpdateTimer.Start();
             }
         }
 
@@ -686,6 +670,11 @@ namespace ContinuousAudioOverlay
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
             }
+        }
+
+        private void UpdateRadioTitle(string artist, string title)
+        {
+            UpdateTitleTextBox(artist, title);
         }
 
         [DllImport("user32.dll")]
