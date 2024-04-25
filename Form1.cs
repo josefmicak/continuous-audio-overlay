@@ -396,6 +396,11 @@ namespace ContinuousAudioOverlay
 
         private async void MediaControlsUpdateTitleTextBox()
         {
+            if (radioPlaying)
+            {
+                //We don't want to update media properties in case radio is currently playing
+                return;
+            }
             //Update media title and thumbnail
             GlobalSystemMediaTransportControlsSessionMediaProperties currentMediaProperties =
                 await GetMediaInfoAsync();
