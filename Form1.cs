@@ -3,6 +3,8 @@ using AudioSwitcher.AudioApi.CoreAudio;
 using System.Runtime.InteropServices;
 using Windows.Storage.Streams;
 using System.Globalization;
+using AudioSwitcher.AudioApi.Observables;
+using System.Diagnostics;
 
 namespace ContinuousAudioOverlay
 {
@@ -33,6 +35,7 @@ namespace ContinuousAudioOverlay
 
             InitializeComponent();
             InitializeOutputDevices();
+            InitializeCoreAudioController();
             InitializeRadioList();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
             this.TopMost = true;
@@ -162,6 +165,22 @@ namespace ContinuousAudioOverlay
                     outputDeviceDropDown.SelectedIndex = outputDeviceDropDown.Items.Count - 1;
                 }
             }
+        }
+
+        private void InitializeCoreAudioController()
+        {
+            CoreAudioController controller = new CoreAudioController();
+            controller
+                .AudioDeviceChanged
+                .Subscribe(x =>
+                {
+                    outputDeviceDropDown.Invoke(new Action(() =>
+                    {
+                        int index = outputDeviceDropDown.Items.IndexOf(x.Device.FullName);
+                        if (index != -1)
+                            outputDeviceDropDown.SelectedIndex = index;
+                    }));
+                });
         }
 
         private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
