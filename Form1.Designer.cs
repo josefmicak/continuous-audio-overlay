@@ -68,9 +68,9 @@
             pauseRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
             pauseRadioButton.Location = new Point(15, 45);
             pauseRadioButton.Name = "pauseRadioButton";
-            pauseRadioButton.Size = new Size(100, 20);
+            pauseRadioButton.Size = new Size(110, 20);
             pauseRadioButton.TabIndex = 1;
-            pauseRadioButton.Text = "Stop Radio";
+            pauseRadioButton.Text = "Stop R";
             pauseRadioButton.UseVisualStyleBackColor = false;
             pauseRadioButton.Click += pauseRadioButton_Click;
             pauseRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
@@ -266,11 +266,11 @@
             resumeRadioButton.FlatAppearance.BorderSize = 0;
             resumeRadioButton.FlatStyle = FlatStyle.Flat;
             resumeRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            resumeRadioButton.Location = new Point(147, 45);
+            resumeRadioButton.Location = new Point(137, 45);
             resumeRadioButton.Name = "resumeRadioButton";
-            resumeRadioButton.Size = new Size(100, 20);
+            resumeRadioButton.Size = new Size(110, 20);
             resumeRadioButton.TabIndex = 15;
-            resumeRadioButton.Text = "Resume Radio";
+            resumeRadioButton.Text = "Prev/Resume R";
             resumeRadioButton.UseVisualStyleBackColor = false;
             resumeRadioButton.Click += resumeRadioButton_Click;
             resumeRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;

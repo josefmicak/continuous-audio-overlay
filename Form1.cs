@@ -19,7 +19,8 @@ namespace ContinuousAudioOverlay
         GlobalSystemMediaTransportControlsSessionManager mediaManager;
         bool muted = false;
         bool radioPlaying = false;
-        int radioIndex = -1;
+        int resumeRadioIndex = -1;
+        int previousRadioIndex = -1;
         bool loaded = false;
         bool folded = false;
         BassService bassService;
@@ -194,7 +195,8 @@ namespace ContinuousAudioOverlay
             {
                 bassService.IndexChanged(radioDropDownList.SelectedIndex);
                 radioPlaying = true;
-                radioIndex = radioDropDownList.SelectedIndex;
+                previousRadioIndex = resumeRadioIndex;
+                resumeRadioIndex = radioDropDownList.SelectedIndex;
                 thumbnailPictureBox.Image = null;
                 UpdateSourceLabel("Radio");
             }
@@ -599,9 +601,16 @@ namespace ContinuousAudioOverlay
 
         private void resumeRadioButton_Click(object sender, EventArgs e)
         {
-            if (radioIndex != -1)
+            if (resumeRadioIndex != -1)
             {
-                radioDropDownList.SelectedIndex = radioIndex;
+                if (radioPlaying && previousRadioIndex != -1)
+                {
+                    radioDropDownList.SelectedIndex = previousRadioIndex;
+                }
+                else
+                {
+                    radioDropDownList.SelectedIndex = resumeRadioIndex;
+                }
 
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfo();
                 if (currentMediaPlaybackInfo != null)
