@@ -47,6 +47,7 @@
             thumbnailPictureBox = new PictureBox();
             sourceLabel = new Label();
             foldPictureBox = new PictureBox();
+            settingsPictureBox = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
@@ -58,6 +59,7 @@
             ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)foldPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)settingsPictureBox).BeginInit();
             SuspendLayout();
             // 
             // pauseRadioButton
@@ -313,12 +315,27 @@
             foldPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
             foldPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
+            // settingsPictureBox
+            // 
+            settingsPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            settingsPictureBox.Image = Properties.Resources.Settings;
+            settingsPictureBox.Location = new Point(42, 8);
+            settingsPictureBox.Name = "settingsPictureBox";
+            settingsPictureBox.Size = new Size(20, 20);
+            settingsPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            settingsPictureBox.TabIndex = 19;
+            settingsPictureBox.TabStop = false;
+            settingsPictureBox.Click += settingsPictureBox_Click;
+            settingsPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            settingsPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(260, 409);
+            Controls.Add(settingsPictureBox);
             Controls.Add(foldPictureBox);
             Controls.Add(sourceLabel);
             Controls.Add(thumbnailPictureBox);
@@ -345,7 +362,7 @@
             MinimumSize = new Size(40, 30);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Form1";
+            Text = "ContinuousAudioOverlay";
             TopMost = true;
             Load += Form1_Load;
             Paint += Form1_Paint;
@@ -360,6 +377,7 @@
             ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)foldPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)settingsPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -383,5 +401,6 @@
         private PictureBox thumbnailPictureBox;
         private Label sourceLabel;
         private PictureBox foldPictureBox;
+        private PictureBox settingsPictureBox;
     }
 }

@@ -24,6 +24,7 @@ namespace ContinuousAudioOverlay
         bool loaded = false;
         bool folded = false;
         BassService bassService;
+        SettingsForm settingsForm;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
@@ -48,6 +49,7 @@ namespace ContinuousAudioOverlay
         public void InitializeRadioList()
         {
             List<Radio> radioList = bassService.GetRadioList();
+            radioDropDownList.Items.Clear();
             radioDropDownList.Items.AddRange(radioList.Select(radio => radio.RadioName).ToArray());
             radioDropDownList.Items.Add("<no radio>");
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
@@ -186,11 +188,11 @@ namespace ContinuousAudioOverlay
 
         private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(bassService.BassInitialized())
+            if (bassService.BassInitialized())
             {
                 ReleaseBassResources();
             }
-            
+
             if (radioDropDownList.SelectedIndex != radioDropDownList.Items.Count - 1)
             {
                 bassService.IndexChanged(radioDropDownList.SelectedIndex);
@@ -718,5 +720,26 @@ namespace ContinuousAudioOverlay
         const UInt32 SWP_NOSIZE = 0x0001;
         const UInt32 SWP_NOMOVE = 0x0002;
         const UInt32 SWP_SHOWWINDOW = 0x0040;
+
+        private void settingsPictureBox_Click(object sender, EventArgs e)
+        {
+            // Check if form2 is already open
+            if (settingsForm == null || settingsForm.IsDisposed)
+            {
+                settingsForm = new SettingsForm();  
+                settingsForm.FormClosed += SettingsForm_FormClosed;
+                settingsForm.Show();         
+            }
+            else
+            {
+                settingsForm.BringToFront();
+            }
+        }
+
+        private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            settingsForm = null;
+            InitializeRadioList();
+        }
     }
 }

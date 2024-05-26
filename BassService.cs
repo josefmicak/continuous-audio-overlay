@@ -95,13 +95,32 @@ namespace ContinuousAudioOverlay
                                     RadioURL = radio.Element("RadioURL")?.Value
                                 })
                                 .ToList();
+                radioList.Clear();
                 radioList.AddRange(radios);
             }
 
             return radioList;
         }
 
+        public void SaveRadioList(List<Radio> radioList)
+        {
+            string xmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadioList.xml");
 
+            XElement root = new XElement("Radios");
+
+            foreach (var radio in radioList)
+            {
+                XElement radioElement = new XElement("Radio",
+                    new XElement("RadioName", radio.RadioName),
+                    new XElement("RadioURL", radio.RadioURL)
+                );
+                root.Add(radioElement);
+            }
+
+            XDocument doc = new XDocument(root);
+
+            doc.Save(xmlFilePath);
+        }
 
         public void IndexChanged(int index)
         {
