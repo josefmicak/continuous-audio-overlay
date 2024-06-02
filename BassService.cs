@@ -124,62 +124,8 @@ namespace ContinuousAudioOverlay
 
         public void IndexChanged(int index)
         {
-            if(!bassInitialized)
-            {
-                bassInitialized = true;
-                LoadBassAssembly();
-            }
             string radioURL = radioList[index].RadioURL;
-
-            if (bassAssembly != null)
-            {
-                bassType = bassAssembly.GetType("Un4seen.Bass.Bass");
-
-                MethodInfo bassInitMethod = bassType.GetMethod("BASS_Init");
-                bool initSuccess = (bool)bassInitMethod.Invoke(null, new object[] { -1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero });
-
-                if (!initSuccess)
-                {
-                    return;
-                }
-
-                MethodInfo bassStreamCreateURLMethod = bassType.GetMethod("BASS_StreamCreateURL");
-                _streamHandle = (int)bassStreamCreateURLMethod.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null, IntPtr.Zero });
-
-                if (_streamHandle != 0)
-                {
-                    MethodInfo bassChannelPlayMethod = bassType.GetMethod("BASS_ChannelPlay");
-                    bassChannelPlayMethod.Invoke(null, new object[] { _streamHandle, true });
-
-                    Type[] parameterTypes = new Type[] { typeof(int), typeof(BASSAttribute), typeof(float) }; // Adjust the parameter types as necessary
-                    MethodInfo bassChannelSetAttributeMethod = bassType.GetMethod("BASS_ChannelSetAttribute", parameterTypes);
-                    bassChannelSetAttributeMethod.Invoke(null, new object[] { _streamHandle, BASSAttribute.BASS_ATTRIB_VOL, 0.1f });
-
-                    _metaDataSync = new SYNCPROC(MetaDataSync);
-                    int syncHandle = Bass.BASS_ChannelSetSync(
-                        _streamHandle,
-                        BASSSync.BASS_SYNC_META,
-                        0,
-                        _metaDataSync,
-                        IntPtr.Zero
-                    );
-
-                    if (syncHandle == 0)
-                    {
-                        MessageBox.Show("Failed to set sync for metadata changes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-
-                    MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
-                }
-                else
-                {
-                    MessageBox.Show($"Radio could not be loaded.\r\nRadio URL: {radioURL}", "Error loading radio", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("BASS library is not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            PlayRadio(radioURL);
         }
 
         private void MetaDataSync(int handle, int channel, int data, IntPtr user)
@@ -294,6 +240,64 @@ namespace ContinuousAudioOverlay
         public bool BassInitialized()
         {
             return bassInitialized;
+        }
+
+        public void PlayRadio(string radioURL)
+        {
+            if (!bassInitialized)
+            {
+                bassInitialized = true;
+                LoadBassAssembly();
+            }
+            if (bassAssembly != null)
+            {
+                bassType = bassAssembly.GetType("Un4seen.Bass.Bass");
+
+                MethodInfo bassInitMethod = bassType.GetMethod("BASS_Init");
+                bool initSuccess = (bool)bassInitMethod.Invoke(null, new object[] { -1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero });
+
+                if (!initSuccess)
+                {
+                    return;
+                }
+
+                MethodInfo bassStreamCreateURLMethod = bassType.GetMethod("BASS_StreamCreateURL");
+                _streamHandle = (int)bassStreamCreateURLMethod.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null, IntPtr.Zero });
+
+                if (_streamHandle != 0)
+                {
+                    MethodInfo bassChannelPlayMethod = bassType.GetMethod("BASS_ChannelPlay");
+                    bassChannelPlayMethod.Invoke(null, new object[] { _streamHandle, true });
+
+                    Type[] parameterTypes = new Type[] { typeof(int), typeof(BASSAttribute), typeof(float) }; // Adjust the parameter types as necessary
+                    MethodInfo bassChannelSetAttributeMethod = bassType.GetMethod("BASS_ChannelSetAttribute", parameterTypes);
+                    bassChannelSetAttributeMethod.Invoke(null, new object[] { _streamHandle, BASSAttribute.BASS_ATTRIB_VOL, 0.1f });
+
+                    _metaDataSync = new SYNCPROC(MetaDataSync);
+                    int syncHandle = Bass.BASS_ChannelSetSync(
+                        _streamHandle,
+                        BASSSync.BASS_SYNC_META,
+                        0,
+                        _metaDataSync,
+                        IntPtr.Zero
+                    );
+
+                    if (syncHandle == 0)
+                    {
+                        MessageBox.Show("Failed to set sync for metadata changes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
+                }
+                else
+                {
+                    MessageBox.Show($"Radio could not be loaded.\r\nRadio URL: {radioURL}", "Error loading radio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("BASS library is not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

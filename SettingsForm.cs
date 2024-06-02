@@ -22,6 +22,7 @@ namespace ContinuousAudioOverlay
             InitializeComponent();
             InitializeRadioList();
             initComplete = true;
+            this.FormClosing += new FormClosingEventHandler(SettingsForm_FormClosing);
         }
 
         [DllImport("user32.dll")]
@@ -243,6 +244,49 @@ namespace ContinuousAudioOverlay
         {
             e.Graphics.Clear(this.BackColor);
             ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
+        }
+
+        private void testAddRadioButton_Click(object sender, EventArgs e)
+        {
+            ReleaseBassResources();
+            if (testAddRadioButton.Text == "Test")
+            {
+                testAddRadioButton.Text = "Stop";
+                testEditRadioButton.Text = "Test";              
+                bassService.PlayRadio(addRadioURLTB.Text);
+            }
+            else
+            {
+                testAddRadioButton.Text = "Test";
+            }
+        }
+
+        private void testEditRadioButton_Click(object sender, EventArgs e)
+        {
+            ReleaseBassResources();
+            if (testEditRadioButton.Text == "Test")
+            {
+                testEditRadioButton.Text = "Stop";
+                testAddRadioButton.Text = "Test";
+                bassService.PlayRadio(editRadioURLTB.Text);
+            }
+            else
+            {
+                testEditRadioButton.Text = "Test";
+            }
+        }
+
+        private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ReleaseBassResources();
+        }
+
+        private void ReleaseBassResources()
+        {
+            if (bassService.BassInitialized())
+            {
+                bassService.ReleaseBassResources();
+            }
         }
     }
 }

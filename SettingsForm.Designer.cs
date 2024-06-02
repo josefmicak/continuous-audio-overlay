@@ -43,6 +43,8 @@
             editRadioURL = new Label();
             closePictureBox = new PictureBox();
             minimizePictureBox = new PictureBox();
+            testAddRadioButton = new Button();
+            testEditRadioButton = new Button();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
             SuspendLayout();
@@ -242,12 +244,44 @@
             minimizePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
             minimizePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
+            // testAddRadioButton
+            // 
+            testAddRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            testAddRadioButton.FlatAppearance.BorderSize = 0;
+            testAddRadioButton.FlatStyle = FlatStyle.Flat;
+            testAddRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            testAddRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            testAddRadioButton.Location = new Point(132, 80);
+            testAddRadioButton.Name = "testAddRadioButton";
+            testAddRadioButton.Size = new Size(110, 20);
+            testAddRadioButton.TabIndex = 25;
+            testAddRadioButton.Text = "Test";
+            testAddRadioButton.UseVisualStyleBackColor = false;
+            testAddRadioButton.Click += testAddRadioButton_Click;
+            // 
+            // testEditRadioButton
+            // 
+            testEditRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            testEditRadioButton.FlatAppearance.BorderSize = 0;
+            testEditRadioButton.FlatStyle = FlatStyle.Flat;
+            testEditRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            testEditRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            testEditRadioButton.Location = new Point(132, 282);
+            testEditRadioButton.Name = "testEditRadioButton";
+            testEditRadioButton.Size = new Size(110, 20);
+            testEditRadioButton.TabIndex = 26;
+            testEditRadioButton.Text = "Test";
+            testEditRadioButton.UseVisualStyleBackColor = false;
+            testEditRadioButton.Click += testEditRadioButton_Click;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(255, 394);
+            Controls.Add(testEditRadioButton);
+            Controls.Add(testAddRadioButton);
             Controls.Add(minimizePictureBox);
             Controls.Add(closePictureBox);
             Controls.Add(editRadioURL);
@@ -294,5 +328,7 @@
         private Label editRadioURL;
         private PictureBox closePictureBox;
         private PictureBox minimizePictureBox;
+        private Button testAddRadioButton;
+        private Button testEditRadioButton;
     }
 }
