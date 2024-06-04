@@ -258,6 +258,8 @@
             testAddRadioButton.Text = "Test";
             testAddRadioButton.UseVisualStyleBackColor = false;
             testAddRadioButton.Click += testAddRadioButton_Click;
+            testAddRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            testAddRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
             // testEditRadioButton
             // 
@@ -273,6 +275,8 @@
             testEditRadioButton.Text = "Test";
             testEditRadioButton.UseVisualStyleBackColor = false;
             testEditRadioButton.Click += testEditRadioButton_Click;
+            testEditRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            testEditRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
             // SettingsForm
             // 

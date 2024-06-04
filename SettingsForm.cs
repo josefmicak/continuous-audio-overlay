@@ -45,7 +45,7 @@ namespace ContinuousAudioOverlay
         private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
             int currentIndex = radioDropDownList.SelectedIndex;
-            if (!initComplete || currentIndex == -1)
+            if (currentIndex == -1)
             {
                 return;
             }
