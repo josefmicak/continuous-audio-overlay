@@ -197,7 +197,10 @@ namespace ContinuousAudioOverlay
             {
                 bassService.IndexChanged(radioDropDownList.SelectedIndex);
                 radioPlaying = true;
-                previousRadioIndex = resumeRadioIndex;
+                if(radioDropDownList.SelectedIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
+                {
+                    previousRadioIndex = resumeRadioIndex;
+                } 
                 resumeRadioIndex = radioDropDownList.SelectedIndex;
                 thumbnailPictureBox.Image = null;
                 UpdateSourceLabel("Radio");
