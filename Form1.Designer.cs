@@ -48,6 +48,7 @@
             sourceLabel = new Label();
             foldPictureBox = new PictureBox();
             settingsPictureBox = new PictureBox();
+            previousOutputDevicePictureBox = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
@@ -60,6 +61,7 @@
             ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)foldPictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)settingsPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)previousOutputDevicePictureBox).BeginInit();
             SuspendLayout();
             // 
             // pauseRadioButton
@@ -220,7 +222,7 @@
             outputDeviceDropDown.FormattingEnabled = true;
             outputDeviceDropDown.Location = new Point(14, 371);
             outputDeviceDropDown.Name = "outputDeviceDropDown";
-            outputDeviceDropDown.Size = new Size(233, 21);
+            outputDeviceDropDown.Size = new Size(207, 21);
             outputDeviceDropDown.TabIndex = 12;
             outputDeviceDropDown.DrawItem += outputDeviceDropDown_DrawItem;
             outputDeviceDropDown.SelectedIndexChanged += outputDeviceDropDown_SelectedIndexChanged;
@@ -329,12 +331,27 @@
             settingsPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
             settingsPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
+            // previousOutputDevicePictureBox
+            // 
+            previousOutputDevicePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            previousOutputDevicePictureBox.Image = (Image)resources.GetObject("previousOutputDevicePictureBox.Image");
+            previousOutputDevicePictureBox.Location = new Point(227, 371);
+            previousOutputDevicePictureBox.Name = "previousOutputDevicePictureBox";
+            previousOutputDevicePictureBox.Size = new Size(20, 20);
+            previousOutputDevicePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            previousOutputDevicePictureBox.TabIndex = 20;
+            previousOutputDevicePictureBox.TabStop = false;
+            previousOutputDevicePictureBox.Click += previousOutputDevicePictureBox_Click;
+            previousOutputDevicePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            previousOutputDevicePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(260, 409);
+            Controls.Add(previousOutputDevicePictureBox);
             Controls.Add(settingsPictureBox);
             Controls.Add(foldPictureBox);
             Controls.Add(sourceLabel);
@@ -378,6 +395,7 @@
             ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)foldPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)settingsPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)previousOutputDevicePictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -402,5 +420,6 @@
         private Label sourceLabel;
         private PictureBox foldPictureBox;
         private PictureBox settingsPictureBox;
+        private PictureBox previousOutputDevicePictureBox;
     }
 }

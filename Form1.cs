@@ -21,6 +21,7 @@ namespace ContinuousAudioOverlay
         bool radioPlaying = false;
         int resumeRadioIndex = -1;
         int previousRadioIndex = -1;
+        (int, int) outputDeviceIndexes = (-1, -1);
         bool loaded = false;
         bool folded = false;
         BassService bassService;
@@ -197,10 +198,10 @@ namespace ContinuousAudioOverlay
             {
                 bassService.IndexChanged(radioDropDownList.SelectedIndex);
                 radioPlaying = true;
-                if(radioDropDownList.SelectedIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
+                if (radioDropDownList.SelectedIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
                 {
                     previousRadioIndex = resumeRadioIndex;
-                } 
+                }
                 resumeRadioIndex = radioDropDownList.SelectedIndex;
                 thumbnailPictureBox.Image = null;
                 UpdateSourceLabel("Radio");
@@ -378,6 +379,16 @@ namespace ContinuousAudioOverlay
 
         private void outputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if(outputDeviceIndexes.Item2 == -1)
+            {
+                outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
+            }
+            else
+            {
+                outputDeviceIndexes.Item1 = outputDeviceIndexes.Item2;
+                outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
+            }
+            
             foreach (CoreAudioDevice d in devices)
             {
                 if (d.FullName == outputDeviceDropDown.Text)
@@ -729,9 +740,9 @@ namespace ContinuousAudioOverlay
             // Check if form2 is already open
             if (settingsForm == null || settingsForm.IsDisposed)
             {
-                settingsForm = new SettingsForm();  
+                settingsForm = new SettingsForm();
                 settingsForm.FormClosed += SettingsForm_FormClosed;
-                settingsForm.Show();         
+                settingsForm.Show();
             }
             else
             {
@@ -743,6 +754,15 @@ namespace ContinuousAudioOverlay
         {
             settingsForm = null;
             InitializeRadioList();
+        }
+
+        private void previousOutputDevicePictureBox_Click(object sender, EventArgs e)
+        {
+            int previousOutputDeviceIndex = outputDeviceIndexes.Item1;
+            if(previousOutputDeviceIndex != -1 && previousOutputDeviceIndex < outputDeviceDropDown.Items.Count)
+            {
+                outputDeviceDropDown.SelectedIndex = previousOutputDeviceIndex;
+            } 
         }
     }
 }
