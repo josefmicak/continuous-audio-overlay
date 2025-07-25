@@ -10,7 +10,6 @@ namespace ContinuousAudioOverlay
     public class BassService
     {
         private Assembly bassAssembly;
-        private dynamic bassInstance;
         private dynamic previousTagInfo;
         static int _streamHandle;
         Type bassType;
@@ -39,13 +38,6 @@ namespace ContinuousAudioOverlay
                     bassAssembly = Assembly.LoadFrom(dllPath);
                     if (bassAssembly != null)
                     {
-                        var bassType = bassAssembly.GetType("Un4seen.Bass.Bass");
-                        if(bassType != null)
-                        {
-                            bassInstance = Activator.CreateInstance(bassType);
-                        }
-
-                        dllPath = Path.Combine(solutionDirectory.FullName, "Libraries", "bass.dll");
                         bassTagsType = bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.TAG_INFO");
                         if (bassTagsType != null)
                         {
