@@ -350,9 +350,13 @@ namespace ContinuousAudioOverlay
             {
                 brush = new SolidBrush(controlBackgroundColor);
             }
-            e.DrawBackground();
-            e.Graphics.DrawString(outputDeviceDropDown.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
-            e.DrawFocusRectangle();
+           
+            if (outputDeviceDropDown.Items.Count > 0)
+            {
+                e.DrawBackground();
+                e.Graphics.DrawString(outputDeviceDropDown.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+                e.DrawFocusRectangle();
+            } 
         }
 
         private void outputDeviceDropDown_DropDownClosed(object sender, EventArgs e)
