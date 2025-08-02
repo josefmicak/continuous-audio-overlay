@@ -8,6 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PlatformTarget>x86</PlatformTarget>
     <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+    <Configurations>Debug;Release;x64</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

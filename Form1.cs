@@ -1,10 +1,12 @@
-using Windows.Media.Control;
-using AudioSwitcher.AudioApi.CoreAudio;
-using System.Runtime.InteropServices;
-using Windows.Storage.Streams;
-using System.Globalization;
+﻿using AudioSwitcher.AudioApi.CoreAudio;
 using AudioSwitcher.AudioApi.Observables;
+using ContinuousAudioOverlay.Helpers;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using Windows.Media.Control;
+using Windows.Storage.Streams;
 
 namespace ContinuousAudioOverlay
 {
@@ -458,8 +460,8 @@ namespace ContinuousAudioOverlay
             {
                 if (session.SourceAppUserModelId != null)
                 {
-                    processName = Path.GetFileNameWithoutExtension(session.SourceAppUserModelId);
-                    processName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(processName);
+                    processName = ProcessNameHelper.GetReadableProcessName(session.SourceAppUserModelId);
+                    processName = ProcessNameHelper.FormatProcessName(processName);
                 }
             }
             UpdateSourceLabel(processName);
