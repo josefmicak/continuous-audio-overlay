@@ -408,8 +408,12 @@ namespace ContinuousAudioOverlay
 
         private async Task<GlobalSystemMediaTransportControlsSessionMediaProperties> GetMediaInfoAsync()
         {
+            if (mediaManager == null)
+            {
+                await InitializeMediaManager();
+            }
             GlobalSystemMediaTransportControlsSession session =
-                mediaManager.GetCurrentSession();
+                mediaManager!.GetCurrentSession();
             //session.MediaPropertiesChanged += MediaPropertiesChanged;
             //session.PlaybackInfoChanged += PlaybackInfoChanged;
             //session.TimelinePropertiesChanged += TimelinePropertiesChanged;
@@ -655,8 +659,7 @@ namespace ContinuousAudioOverlay
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            mediaManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
-            mediaManager.CurrentSessionChanged += SessionsChanged;
+            await InitializeMediaManager();
 
             GlobalSystemMediaTransportControlsSession session = mediaManager.GetCurrentSession();
             if (session != null)
@@ -667,6 +670,12 @@ namespace ContinuousAudioOverlay
             }
 
             loaded = true;
+        }
+
+        private async Task InitializeMediaManager()
+        {
+            mediaManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+            mediaManager.CurrentSessionChanged += SessionsChanged;
         }
 
         private void SessionsChanged(GlobalSystemMediaTransportControlsSessionManager sender, object args)
