@@ -352,13 +352,13 @@ namespace ContinuousAudioOverlay
             {
                 brush = new SolidBrush(controlBackgroundColor);
             }
-           
+
             if (outputDeviceDropDown.Items.Count > 0)
             {
                 e.DrawBackground();
                 e.Graphics.DrawString(outputDeviceDropDown.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
                 e.DrawFocusRectangle();
-            } 
+            }
         }
 
         private void outputDeviceDropDown_DropDownClosed(object sender, EventArgs e)
@@ -385,7 +385,7 @@ namespace ContinuousAudioOverlay
 
         private void outputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(outputDeviceIndexes.Item2 == -1)
+            if (outputDeviceIndexes.Item2 == -1)
             {
                 outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
             }
@@ -394,7 +394,7 @@ namespace ContinuousAudioOverlay
                 outputDeviceIndexes.Item1 = outputDeviceIndexes.Item2;
                 outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
             }
-            
+
             foreach (CoreAudioDevice d in devices)
             {
                 if (d.FullName == outputDeviceDropDown.Text)
@@ -704,12 +704,17 @@ namespace ContinuousAudioOverlay
             }
             else
             {
-                if (!folded)
+                sourceLabel.Text = source;
+                if (!folded && this.WindowState != FormWindowState.Minimized)
                 {
-                    sourceLabel.Text = source;
-                    sourceLabel.Location = new Point((this.ClientSize.Width - sourceLabel.Width) / 2, sourceLabel.Location.Y);
+                    UpdateSourceLabelLocation();
                 }
             }
+        }
+
+        private void UpdateSourceLabelLocation()
+        {
+            sourceLabel.Location = new Point((this.ClientSize.Width - sourceLabel.Width) / 2, sourceLabel.Location.Y);
         }
 
         private void foldPictureBox_Click(object sender, EventArgs e)
@@ -774,10 +779,18 @@ namespace ContinuousAudioOverlay
         private void previousOutputDevicePictureBox_Click(object sender, EventArgs e)
         {
             int previousOutputDeviceIndex = outputDeviceIndexes.Item1;
-            if(previousOutputDeviceIndex != -1 && previousOutputDeviceIndex < outputDeviceDropDown.Items.Count)
+            if (previousOutputDeviceIndex != -1 && previousOutputDeviceIndex < outputDeviceDropDown.Items.Count)
             {
                 outputDeviceDropDown.SelectedIndex = previousOutputDeviceIndex;
-            } 
+            }
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState != FormWindowState.Minimized)
+            {
+                UpdateSourceLabelLocation();
+            }
         }
     }
 }

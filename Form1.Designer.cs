@@ -383,6 +383,7 @@
             TopMost = true;
             Load += Form1_Load;
             Paint += Form1_Paint;
+            Resize += Form1_Resize;
             ((System.ComponentModel.ISupportInitialize)minimizePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)closePictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)prevPictureBox).EndInit();
