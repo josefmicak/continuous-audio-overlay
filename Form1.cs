@@ -191,20 +191,25 @@ namespace ContinuousAudioOverlay
 
         private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ChangeRadioIndex(radioDropDownList.SelectedIndex);
+        }
+
+        private void ChangeRadioIndex(int radioIndex)
+        {
             if (bassService.BassInitialized())
             {
                 ReleaseBassResources();
             }
 
-            if (radioDropDownList.SelectedIndex != radioDropDownList.Items.Count - 1)
+            if (radioIndex != radioDropDownList.Items.Count - 1)
             {
-                bassService.IndexChanged(radioDropDownList.SelectedIndex);
+                bassService.IndexChanged(radioIndex);
                 radioPlaying = true;
-                if (radioDropDownList.SelectedIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
+                if (radioIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
                 {
                     previousRadioIndex = resumeRadioIndex;
                 }
-                resumeRadioIndex = radioDropDownList.SelectedIndex;
+                resumeRadioIndex = radioIndex;
                 thumbnailPictureBox.Image = null;
                 UpdateSourceLabel("Radio");
             }
@@ -403,6 +408,11 @@ namespace ContinuousAudioOverlay
                     defaultPlaybackDevice = d;
                     volumeSlider.Value = (int)d.Volume;
                 }
+            }
+
+            if (radioPlaying)
+            {
+                ChangeRadioIndex(radioDropDownList.SelectedIndex);
             }
         }
 
