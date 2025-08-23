@@ -57,10 +57,18 @@ namespace ContinuousAudioOverlay
 
         protected override void WndProc(ref Message message)
         {
+            const int WM_NCLBUTTONDBLCLK = 0x00A3;
+
+            if (message.Msg == WM_NCLBUTTONDBLCLK)
+            {
+                // Ignore double click, don't move the form to top left after double click
+                return;
+            }
+
             base.WndProc(ref message);
 
             if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
-                message.Result = (IntPtr)HTCAPTION;
+                message.Result = (IntPtr)HTCAPTION;//Must be after base.WndProc call   
         }
 
         public enum AppCommands
