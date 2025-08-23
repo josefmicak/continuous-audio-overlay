@@ -133,3 +133,6 @@ $RECYCLE.BIN/
 _NCrunch*
 
 .vs/
+
+# Custom for Continuous Audio Overlay
+/Resources/RadioList.xml

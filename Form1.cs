@@ -1,9 +1,6 @@
 ﻿using AudioSwitcher.AudioApi.CoreAudio;
 using AudioSwitcher.AudioApi.Observables;
 using ContinuousAudioOverlay.Helpers;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using Windows.Media.Control;
 using Windows.Storage.Streams;

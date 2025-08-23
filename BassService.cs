@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
@@ -56,7 +55,13 @@ namespace ContinuousAudioOverlay
 
         public List<Radio> GetRadioList()
         {
-            string xmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadioList.xml");
+            string xmlFilePath = Path.GetFullPath(Path.Combine(
+                AppContext.BaseDirectory,
+                "..", "..", "..",
+                "Resources",
+                "RadioList.xml"
+            ));
+
             XDocument doc;
 
             if (!File.Exists(xmlFilePath))
@@ -96,7 +101,12 @@ namespace ContinuousAudioOverlay
 
         public void SaveRadioList(List<Radio> radioList)
         {
-            string xmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "RadioList.xml");
+            string xmlFilePath = Path.GetFullPath(Path.Combine(
+                AppContext.BaseDirectory,
+                "..", "..", "..",
+                "Resources",
+                "RadioList.xml"
+            ));
 
             XElement root = new XElement("Radios");
 

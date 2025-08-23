@@ -1,5 +1,5 @@
 # Continuous Audio Overlay
-A useful tool that enables the user to easily control audio volume, sources, and output devices. It is a Windows Forms application that has been developed using .NET 6.0.
+A useful tool that enables the user to easily control audio volume, sources, and output devices. It is a Windows Forms application that has been developed using .NET 8.0.
 It is especially useful to those that use remote desktop regularly, as it can become tiresome to always have to minimize all the remote desktop windows to adjust audio settings of the host machine.
 
 ## Features
@@ -16,7 +16,7 @@ It is especially useful to those that use remote desktop regularly, as it can be
 The application is still under development, and it's possible that more features will be added in the future.
 
 ## Adding internet radio streams
-The user is able to add new internet radio streams to the application. New streams can be added by modifying RadioList.xml file (location: bin\Debug\net6.0-windows10.0.22621.0\RadioList.xml). By default, this file contains two exemplary internet radio streams. In the future it's going to be possible to manage the radio list using GUI. 
+The user is able to add new internet radio streams to the application. New streams can be added either by manually modifying the RadioList.xml file (location: Resources\RadioList.xml), or by adding the streams using the GUI available in the application settings. By default, this file contains two exemplary internet radio streams.
 
 Preview of the application:
 
