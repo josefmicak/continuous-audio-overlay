@@ -157,6 +157,11 @@ namespace ContinuousAudioOverlay
 
         public void ReleaseBassResources()
         {
+            if (!bassInitialized)
+            {
+                return;
+            }
+
             if (bassAssembly != null && bassType != null)
             {
                 MethodInfo bassChannelStopMethod = bassType.GetMethod("BASS_ChannelStop");
