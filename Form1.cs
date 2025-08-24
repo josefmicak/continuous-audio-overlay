@@ -40,8 +40,6 @@ namespace ContinuousAudioOverlay
             InitializeCoreAudioController();
             InitializeRadioList();
             volumeSlider.Value = (int)defaultPlaybackDevice.Volume;
-            this.TopMost = true;
-            SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
             UpdateSourceLabel("<no source>");
             bassService.OnMetaDataChanged += UpdateRadioTitle;
         }
@@ -762,13 +760,58 @@ namespace ContinuousAudioOverlay
             UpdateTitleTextBox(artist, title);
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            BringToFrontReliably();
+        }
+
+        public void BringToFrontReliably()
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                ShowWindow(this.Handle, SW_RESTORE);
+            }
+            else
+            {
+                ShowWindow(this.Handle, SW_SHOW); 
+            }
+
+            this.TopMost = false; 
+            this.TopMost = true;
+
+            SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_SHOWWINDOW);
+
+            Activate();                       
+            SetForegroundWindow(this.Handle); 
+        }
+
+        //Probably not needed, kept for future tests:
+        //protected override void OnActivated(EventArgs e)
+        //{
+        //    base.OnActivated(e);
+        //    SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0,
+        //        SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_SHOWWINDOW);
+        //}
+
         [DllImport("user32.dll")]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        static extern bool SetWindowPos(
+         IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")] static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-        const UInt32 SWP_NOSIZE = 0x0001;
-        const UInt32 SWP_NOMOVE = 0x0002;
-        const UInt32 SWP_SHOWWINDOW = 0x0040;
+
+        const uint SWP_NOSIZE = 0x0001;
+        const uint SWP_NOMOVE = 0x0002;
+        const uint SWP_NOOWNERZORDER = 0x0200;
+        const uint SWP_SHOWWINDOW = 0x0040;
+
+        const int SW_RESTORE = 9;
+        const int SW_SHOW = 5;
 
         private void settingsPictureBox_Click(object sender, EventArgs e)
         {
