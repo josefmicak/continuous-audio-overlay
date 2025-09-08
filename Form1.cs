@@ -165,7 +165,7 @@ namespace ContinuousAudioOverlay
         {
             foreach (CoreAudioDevice d in devices)
             {
-                if (d.Name == "Speakers" || d.Name == "Headphones")
+                if (d.IsPlaybackDevice)
                 {
                     outputDeviceDropDown.Items.Add(d.FullName);
                 }
@@ -786,14 +786,6 @@ namespace ContinuousAudioOverlay
             Activate();                       
             SetForegroundWindow(this.Handle); 
         }
-
-        //Probably not needed, kept for future tests:
-        //protected override void OnActivated(EventArgs e)
-        //{
-        //    base.OnActivated(e);
-        //    SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0,
-        //        SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_SHOWWINDOW);
-        //}
 
         [DllImport("user32.dll")]
         static extern bool SetWindowPos(
