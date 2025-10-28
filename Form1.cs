@@ -409,7 +409,16 @@ namespace ContinuousAudioOverlay
                 {
                     d.SetAsDefault();
                     defaultPlaybackDevice = d;
-                    volumeSlider.Value = (int)d.Volume;
+                    int vol = (int)d.Volume;
+                    if (vol < volumeSlider.Minimum)
+                    {
+                        vol = volumeSlider.Minimum;
+                    }
+                    else if (vol > volumeSlider.Maximum)
+                    {
+                        vol = volumeSlider.Maximum;
+                    }
+                    volumeSlider.Value = vol;
                 }
             }
 
