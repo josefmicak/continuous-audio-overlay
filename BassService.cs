@@ -18,16 +18,20 @@ namespace ContinuousAudioOverlay
         private SYNCPROC _metaDataSync;
         public delegate void MetaDataChangedHandler(string title, string artist);
         public event MetaDataChangedHandler OnMetaDataChanged;
+        private CancellationTokenSource? _playRadioCts;
+        private bool _radioPlaying = false;
 
         public BassService()
         {
 
         }
 
-        private void LoadBassAssembly()
+        private Task LoadBassAssembly(CancellationToken ct = default)
         {
-            try
+            return Task.Run(() =>
             {
+                ct.ThrowIfCancellationRequested();
+
                 string currentAssemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 DirectoryInfo solutionDirectory = Directory.GetParent(currentAssemblyDirectory)?.Parent?.Parent;
 
@@ -44,13 +48,7 @@ namespace ContinuousAudioOverlay
                         }
                     }
                 }
-
-            }
-            catch (Exception ex)
-            {
-                bassAssembly = null;
-                MessageBox.Show($"Failed to load BASS.NET library: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }, ct);
         }
 
         public List<Radio> GetRadioList()
@@ -124,10 +122,10 @@ namespace ContinuousAudioOverlay
             doc.Save(xmlFilePath);
         }
 
-        public void IndexChanged(int index)
+        public async Task IndexChanged(int index)
         {
             string radioURL = radioList[index].RadioURL;
-            PlayRadio(radioURL);
+            await PlayRadio(radioURL);
         }
 
         private void MetaDataSync(int handle, int channel, int data, IntPtr user)
@@ -157,6 +155,8 @@ namespace ContinuousAudioOverlay
 
         public void ReleaseBassResources()
         {
+            _radioPlaying = false;
+
             if (!bassInitialized)
             {
                 return;
@@ -164,6 +164,8 @@ namespace ContinuousAudioOverlay
 
             if (bassAssembly != null && bassType != null)
             {
+                _playRadioCts?.Cancel();
+
                 MethodInfo bassChannelStopMethod = bassType.GetMethod("BASS_ChannelStop");
                 if (bassChannelStopMethod != null)
                 {
@@ -249,62 +251,98 @@ namespace ContinuousAudioOverlay
             return bassInitialized;
         }
 
-        public void PlayRadio(string radioURL)
+        public async Task PlayRadio(string radioURL)
         {
-            if (!bassInitialized)
-            {
-                bassInitialized = true;
-                LoadBassAssembly();
-            }
-            if (bassAssembly != null)
-            {
-                bassType = bassAssembly.GetType("Un4seen.Bass.Bass");
+            _playRadioCts?.Cancel();
+            _playRadioCts = new CancellationTokenSource();
+            var ct = _playRadioCts.Token;
 
-                MethodInfo bassInitMethod = bassType.GetMethod("BASS_Init");
-                bool initSuccess = (bool)bassInitMethod.Invoke(null, new object[] { -1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero });
-
-                if (!initSuccess)
+            try
+            {
+                if (!bassInitialized)
                 {
+                    bassInitialized = true;
+                    await LoadBassAssembly(ct);
+                }
+
+                if (bassAssembly == null)
+                {
+                    MessageBox.Show("BASS library is not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                MethodInfo bassStreamCreateURLMethod = bassType.GetMethod("BASS_StreamCreateURL");
-                _streamHandle = (int)bassStreamCreateURLMethod.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null, IntPtr.Zero });
-
-                if (_streamHandle != 0)
+                bool started = await Task.Run(() =>
                 {
-                    MethodInfo bassChannelPlayMethod = bassType.GetMethod("BASS_ChannelPlay");
-                    bassChannelPlayMethod.Invoke(null, new object[] { _streamHandle, true });
+                    ct.ThrowIfCancellationRequested();
 
-                    Type[] parameterTypes = new Type[] { typeof(int), typeof(BASSAttribute), typeof(float) }; // Adjust the parameter types as necessary
-                    MethodInfo bassChannelSetAttributeMethod = bassType.GetMethod("BASS_ChannelSetAttribute", parameterTypes);
-                    bassChannelSetAttributeMethod.Invoke(null, new object[] { _streamHandle, BASSAttribute.BASS_ATTRIB_VOL, 0.1f });
+                    bassType = bassAssembly.GetType("Un4seen.Bass.Bass");
 
-                    _metaDataSync = new SYNCPROC(MetaDataSync);
-                    int syncHandle = Bass.BASS_ChannelSetSync(
-                        _streamHandle,
-                        BASSSync.BASS_SYNC_META,
-                        0,
-                        _metaDataSync,
-                        IntPtr.Zero
-                    );
+                    MethodInfo bassInitMethod = bassType.GetMethod("BASS_Init");
+                    bool initSuccess = (bool)bassInitMethod.Invoke(null, new object[] { -1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero });
 
-                    if (syncHandle == 0)
+                    if (!initSuccess)
                     {
-                        MessageBox.Show("Failed to set sync for metadata changes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
                     }
 
-                    MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
-                }
-                else
+                    MethodInfo bassStreamCreateURLMethod = bassType.GetMethod("BASS_StreamCreateURL");
+                    _streamHandle = (int)bassStreamCreateURLMethod.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null, IntPtr.Zero });
+
+                    ct.ThrowIfCancellationRequested();
+
+                    if (_streamHandle != 0)
+                    {
+                        MethodInfo bassChannelPlayMethod = bassType.GetMethod("BASS_ChannelPlay");
+                        bassChannelPlayMethod.Invoke(null, new object[] { _streamHandle, true });
+
+                        Type[] parameterTypes = new Type[] { typeof(int), typeof(BASSAttribute), typeof(float) }; // Adjust the parameter types as necessary
+                        MethodInfo bassChannelSetAttributeMethod = bassType.GetMethod("BASS_ChannelSetAttribute", parameterTypes);
+                        bassChannelSetAttributeMethod.Invoke(null, new object[] { _streamHandle, BASSAttribute.BASS_ATTRIB_VOL, 0.1f });
+
+                        _metaDataSync = new SYNCPROC(MetaDataSync);
+                        int syncHandle = Bass.BASS_ChannelSetSync(
+                            _streamHandle,
+                            BASSSync.BASS_SYNC_META,
+                            0,
+                            _metaDataSync,
+                            IntPtr.Zero
+                        );
+
+                        if (syncHandle == 0 && !ct.IsCancellationRequested)
+                        {
+                            throw new InvalidOperationException("Failed to set sync for metadata changes.");
+                        }
+
+                        MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
+                    }
+                    ct.ThrowIfCancellationRequested();
+                    _radioPlaying = true;
+                    return true;
+                }, ct);
+
+                if (!started)
                 {
                     MessageBox.Show($"Radio could not be loaded.\r\nRadio URL: {radioURL}", "Error loading radio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("BASS library is not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!ct.IsCancellationRequested)//No reason to show the error message in case the user canceled the operation
+                {
+                    MessageBox.Show($"Failed to start radio: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+        }
+
+        public bool GetRadioPlaying()
+        {
+            return _radioPlaying;
+        }
+
+        public void SetRadioPlaying(bool value)
+        {
+            _radioPlaying = value;
         }
     }
 }

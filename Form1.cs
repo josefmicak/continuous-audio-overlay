@@ -17,7 +17,6 @@ namespace ContinuousAudioOverlay
         bool radioDropdownEnter = false;
         GlobalSystemMediaTransportControlsSessionManager mediaManager;
         bool muted = false;
-        bool radioPlaying = false;
         int resumeRadioIndex = -1;
         int previousRadioIndex = -1;
         (int, int) outputDeviceIndexes = (-1, -1);
@@ -192,12 +191,12 @@ namespace ContinuousAudioOverlay
                 });
         }
 
-        private void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+        private async void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ChangeRadioIndex(radioDropDownList.SelectedIndex);
+            await ChangeRadioIndex(radioDropDownList.SelectedIndex);
         }
 
-        private void ChangeRadioIndex(int radioIndex)
+        private async Task ChangeRadioIndex(int radioIndex)
         {
             if (bassService.BassInitialized())
             {
@@ -206,15 +205,17 @@ namespace ContinuousAudioOverlay
 
             if (radioIndex != radioDropDownList.Items.Count - 1)
             {
-                bassService.IndexChanged(radioIndex);
-                radioPlaying = true;
-                if (radioIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
+                await bassService.IndexChanged(radioIndex);
+                if (bassService.GetRadioPlaying())
                 {
-                    previousRadioIndex = resumeRadioIndex;
+                    if (radioIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
+                    {
+                        previousRadioIndex = resumeRadioIndex;
+                    }
+                    resumeRadioIndex = radioIndex;
+                    thumbnailPictureBox.Image = null;
+                    UpdateSourceLabel("Radio");
                 }
-                resumeRadioIndex = radioIndex;
-                thumbnailPictureBox.Image = null;
-                UpdateSourceLabel("Radio");
             }
 
             if (loaded)
@@ -233,7 +234,6 @@ namespace ContinuousAudioOverlay
         public void ReleaseBassResources()
         {
             bassService.ReleaseBassResources();
-            radioPlaying = false;
         }
 
         private void pauseRadioButton_Click(object sender, EventArgs e)
@@ -243,7 +243,6 @@ namespace ContinuousAudioOverlay
 
         private void StopRadio()
         {
-            radioPlaying = false;
             MediaControlsUpdateTitleTextBox();
             ReleaseBassResources();
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
@@ -291,7 +290,7 @@ namespace ContinuousAudioOverlay
         {
             Send(AppCommands.MediaPrevious);
 
-            if (radioPlaying)
+            if (bassService.GetRadioPlaying())
             {
                 StopRadio();
             }
@@ -301,7 +300,7 @@ namespace ContinuousAudioOverlay
         {
             Send(AppCommands.MediaPlayPause);
 
-            if (radioPlaying)
+            if (bassService.GetRadioPlaying())
             {
                 StopRadio();
             }
@@ -311,7 +310,7 @@ namespace ContinuousAudioOverlay
         {
             Send(AppCommands.MediaNext);
 
-            if (radioPlaying)
+            if (bassService.GetRadioPlaying())
             {
                 StopRadio();
             }
@@ -422,7 +421,7 @@ namespace ContinuousAudioOverlay
                 }
             }
 
-            if (radioPlaying)
+            if (bassService.GetRadioPlaying())
             {
                 ChangeRadioIndex(radioDropDownList.SelectedIndex);
             }
@@ -466,7 +465,7 @@ namespace ContinuousAudioOverlay
 
         private async void MediaControlsUpdateTitleTextBox()
         {
-            if (radioPlaying)
+            if (bassService.GetRadioPlaying())
             {
                 //We don't want to update media properties in case radio is currently playing
                 return;
@@ -651,7 +650,7 @@ namespace ContinuousAudioOverlay
         {
             if (resumeRadioIndex != -1)
             {
-                if (radioPlaying && previousRadioIndex != -1)
+                if (bassService.GetRadioPlaying() && previousRadioIndex != -1)
                 {
                     radioDropDownList.SelectedIndex = previousRadioIndex;
                 }
