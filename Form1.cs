@@ -243,7 +243,7 @@ namespace ContinuousAudioOverlay
 
         private void StopRadio()
         {
-            MediaControlsUpdateTitleTextBox();
+            MediaControlsUpdateTitleTextBox(true);
             ReleaseBassResources();
             radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
         }
@@ -463,9 +463,9 @@ namespace ContinuousAudioOverlay
             MediaControlsUpdateTitleTextBox();
         }
 
-        private async void MediaControlsUpdateTitleTextBox()
+        private async void MediaControlsUpdateTitleTextBox(bool alwaysUpdate = false)
         {
-            if (bassService.GetRadioPlaying())
+            if (!alwaysUpdate && bassService.GetRadioPlaying())
             {
                 //We don't want to update media properties in case radio is currently playing
                 return;
