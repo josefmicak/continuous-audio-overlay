@@ -20,7 +20,9 @@ namespace ContinuousAudioOverlay
             bassService = new BassService();
 
             InitializeComponent();
-            InitializeRadioList();
+
+            Shown += async (_, __) => await InitializeUi();
+
             initComplete = true;
             this.FormClosing += new FormClosingEventHandler(SettingsForm_FormClosing);
         }
@@ -34,9 +36,14 @@ namespace ContinuousAudioOverlay
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
 
-        public void InitializeRadioList()
+        private async Task InitializeUi()
         {
-            radioList = bassService.GetRadioList();
+            await InitializeRadioList();
+        }
+
+        public async Task InitializeRadioList()
+        {
+            radioList = await bassService.GetRadioList();
             radioDropDownList.Items.Clear();
             radioDropDownList.Items.AddRange(radioList.Select(radio => radio.RadioName).ToArray());
             radioDropDownList.SelectedIndex = -1;
@@ -252,7 +259,7 @@ namespace ContinuousAudioOverlay
             if (testAddRadioButton.Text == "Test")
             {
                 testAddRadioButton.Text = "Stop";
-                testEditRadioButton.Text = "Test";              
+                testEditRadioButton.Text = "Test";
                 bassService.PlayRadio(addRadioURLTB.Text);
             }
             else

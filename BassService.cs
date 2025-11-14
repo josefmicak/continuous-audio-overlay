@@ -51,7 +51,7 @@ namespace ContinuousAudioOverlay
             }, ct);
         }
 
-        public List<Radio> GetRadioList()
+        public async Task<List<Radio>> GetRadioList()
         {
             string xmlFilePath = Path.GetFullPath(Path.Combine(
                 AppContext.BaseDirectory,
@@ -76,12 +76,16 @@ namespace ContinuousAudioOverlay
                         )
                     )
                 );
-                doc.Save(xmlFilePath);
+                using (var writer = new StreamWriter(xmlFilePath, false))
+                {
+                    await doc.SaveAsync(writer, SaveOptions.None, CancellationToken.None);
+                }
             }
 
             if (File.Exists(xmlFilePath))
             {
-                doc = XDocument.Load(xmlFilePath);
+                string xmlContent = await File.ReadAllTextAsync(xmlFilePath);
+                doc = XDocument.Parse(xmlContent);
 
                 var radios = doc.Descendants("Radio")
                                 .Select(radio => new Radio
@@ -226,7 +230,7 @@ namespace ContinuousAudioOverlay
                         string title = WebUtility.HtmlDecode(tagInfo.title);
                         string artist = WebUtility.HtmlDecode(tagInfo.artist);
                         bool tagInfoPropertiesChanged = TagInfoPropertiesChanged(tagInfo, previousTagInfo);
-                        if(tagInfoPropertiesChanged)
+                        if (tagInfoPropertiesChanged)
                         {
                             previousTagInfo = tagInfo;
                         }
