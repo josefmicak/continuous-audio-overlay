@@ -25,6 +25,8 @@ namespace ContinuousAudioOverlay
         bool folded = false;
         BassService bassService;
         SettingsForm settingsForm;
+        private bool isOutputDeviceChangingFromSystem = false;
+        private bool isOutputDeviceChangingFromApplication = false;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
@@ -189,13 +191,35 @@ namespace ContinuousAudioOverlay
 
         private void InitializeCoreAudioController()
         {
+            //Metoda slouzi k tomu, aby byly zaznamenany zmeny vystupnich zvukovych zarizeni provedene mimo aplikaci
             GetCoreAudioController().AudioDeviceChanged.Subscribe(x =>
             {
-                outputDeviceDropDown.Invoke(new Action(() =>
+                if (!outputDeviceDropDown.IsHandleCreated || isOutputDeviceChangingFromApplication)
+                {
+                    //Pokud zmenu provedl uzivatel v aplikaci, neni potreba, aby zde byly provadeny jakekoli zmeny
+                    return;
+                }
+
+                outputDeviceDropDown.BeginInvoke(new Action(() =>
                 {
                     int index = outputDeviceDropDown.Items.IndexOf(x.Device.FullName);
-                    if (index != -1)
+
+                    if (index == -1 || outputDeviceDropDown.SelectedIndex == index)
+                    {
+                        return;
+                    }
+
+                    isOutputDeviceChangingFromSystem = true;
+
+                    try
+                    {
                         outputDeviceDropDown.SelectedIndex = index;
+                    }
+                    finally
+                    {
+                        isOutputDeviceChangingFromSystem = false;
+                    }
+                        
                 }));
             });
         }
@@ -401,37 +425,58 @@ namespace ContinuousAudioOverlay
 
         private async void outputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (outputDeviceIndexes.Item2 == -1)
+            if (isOutputDeviceChangingFromSystem)
             {
-                outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
-            }
-            else
-            {
-                outputDeviceIndexes.Item1 = outputDeviceIndexes.Item2;
-                outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
+                if (bassService.GetRadioPlaying())
+                {
+                    //Je potreba zavolat i pokud dojde ke zmene mimo aplikaci - jinak bude radio dale hrat pres puvodni zarizeni
+                    await ChangeRadioIndex(radioDropDownList.SelectedIndex);
+                }
+
+                //Pokud byla zmena provedena mimo aplikaci tak ve funkci nepokracujeme, jinak muze dojit k zacykleni
+                return;
             }
 
-            foreach (CoreAudioDevice d in await GetPlaybackDevices())
+            isOutputDeviceChangingFromApplication = true;
+
+            try
             {
-                if (d.FullName == outputDeviceDropDown.Text)
+                if (outputDeviceIndexes.Item2 == -1)
                 {
-                    d.SetAsDefault();
-                    int vol = (int)d.Volume;
-                    if (vol < volumeSlider.Minimum)
+                    outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
+                }
+                else
+                {
+                    outputDeviceIndexes.Item1 = outputDeviceIndexes.Item2;
+                    outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
+                }
+
+                foreach (CoreAudioDevice d in await GetPlaybackDevices())
+                {
+                    if (d.FullName == outputDeviceDropDown.Text)
                     {
-                        vol = volumeSlider.Minimum;
+                        d.SetAsDefault();
+                        int vol = (int)d.Volume;
+                        if (vol < volumeSlider.Minimum)
+                        {
+                            vol = volumeSlider.Minimum;
+                        }
+                        else if (vol > volumeSlider.Maximum)
+                        {
+                            vol = volumeSlider.Maximum;
+                        }
+                        volumeSlider.Value = vol;
                     }
-                    else if (vol > volumeSlider.Maximum)
-                    {
-                        vol = volumeSlider.Maximum;
-                    }
-                    volumeSlider.Value = vol;
+                }
+
+                if (bassService.GetRadioPlaying())
+                {
+                    await ChangeRadioIndex(radioDropDownList.SelectedIndex);
                 }
             }
-
-            if (bassService.GetRadioPlaying())
+            finally
             {
-                await ChangeRadioIndex(radioDropDownList.SelectedIndex);
+                isOutputDeviceChangingFromApplication = false;
             }
         }
 
