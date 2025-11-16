@@ -61,7 +61,7 @@ namespace ContinuousAudioOverlay
             editRadioURLTB.Text = radioList[currentIndex].RadioURL;
         }
 
-        private void addRadioButton_Click(object sender, EventArgs e)
+        private async void addRadioButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(addRadioNameTB.Text))
             {
@@ -84,7 +84,7 @@ namespace ContinuousAudioOverlay
                 radio.RadioName = addRadioNameTB.Text;
                 radio.RadioURL = addRadioURLTB.Text;
                 radioList.Add(radio);
-                updateRadioList();
+                await updateRadioList();
                 MessageBox.Show($"Radio \"{radioName}\" added successfully.",
                     "Radio added",
                     MessageBoxButtons.OK,
@@ -92,7 +92,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void editRadioButton_Click(object sender, EventArgs e)
+        private async void editRadioButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(editRadioNameTB.Text))
             {
@@ -114,7 +114,7 @@ namespace ContinuousAudioOverlay
                 int currentIndex = radioDropDownList.SelectedIndex;
                 radioList[currentIndex].RadioName = editRadioNameTB.Text;
                 radioList[currentIndex].RadioURL = editRadioURLTB.Text;
-                updateRadioList();
+                await updateRadioList();
                 MessageBox.Show($"Radio \"{radioName}\" edited successfully.",
                     "Radio edited",
                     MessageBoxButtons.OK,
@@ -122,7 +122,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void removeRadioButton_Click(object sender, EventArgs e)
+        private async void removeRadioButton_Click(object sender, EventArgs e)
         {
             string radioName = editRadioNameTB.Text;
             int currentIndex = radioDropDownList.SelectedIndex;
@@ -142,7 +142,7 @@ namespace ContinuousAudioOverlay
             if (result == DialogResult.Yes)
             {
                 radioList.RemoveAt(currentIndex);
-                updateRadioList();
+                await updateRadioList();
                 MessageBox.Show($"Radio \"{radioName}\" removed successfully.",
                     "Radio removed",
                     MessageBoxButtons.OK,
@@ -151,10 +151,10 @@ namespace ContinuousAudioOverlay
 
         }
 
-        private void updateRadioList()
+        private async Task updateRadioList()
         {
             bassService.SaveRadioList(radioList);
-            InitializeRadioList();
+            await InitializeRadioList();
             addRadioNameTB.Text = string.Empty;
             addRadioURLTB.Text = string.Empty;
             editRadioNameTB.Text = string.Empty;
@@ -174,7 +174,10 @@ namespace ContinuousAudioOverlay
                 brush = new SolidBrush(controlBackgroundColor);
             }
             e.DrawBackground();
-            e.Graphics.DrawString(radioDropDownList.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+            if (radioDropDownList.Items.Count > 0)
+            {
+                e.Graphics.DrawString(radioDropDownList.Items[index]?.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+            }
             e.DrawFocusRectangle();
         }
 
@@ -253,14 +256,14 @@ namespace ContinuousAudioOverlay
             ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
         }
 
-        private void testAddRadioButton_Click(object sender, EventArgs e)
+        private async void testAddRadioButton_Click(object sender, EventArgs e)
         {
             ReleaseBassResources();
             if (testAddRadioButton.Text == "Test")
             {
                 testAddRadioButton.Text = "Stop";
                 testEditRadioButton.Text = "Test";
-                bassService.PlayRadio(addRadioURLTB.Text);
+                await bassService.PlayRadio(addRadioURLTB.Text);
             }
             else
             {
@@ -268,14 +271,14 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void testEditRadioButton_Click(object sender, EventArgs e)
+        private async void testEditRadioButton_Click(object sender, EventArgs e)
         {
             ReleaseBassResources();
             if (testEditRadioButton.Text == "Test")
             {
                 testEditRadioButton.Text = "Stop";
                 testAddRadioButton.Text = "Test";
-                bassService.PlayRadio(editRadioURLTB.Text);
+                await bassService.PlayRadio(editRadioURLTB.Text);
             }
             else
             {

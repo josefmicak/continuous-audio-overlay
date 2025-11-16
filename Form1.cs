@@ -837,10 +837,10 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
+        private async void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             settingsForm = null;
-            InitializeRadioList();
+            await InitializeRadioList();
         }
 
         private void previousOutputDevicePictureBox_Click(object sender, EventArgs e)
