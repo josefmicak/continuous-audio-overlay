@@ -53,12 +53,7 @@ namespace ContinuousAudioOverlay
 
         public async Task<List<Radio>> GetRadioList()
         {
-            string xmlFilePath = Path.GetFullPath(Path.Combine(
-                AppContext.BaseDirectory,
-                "..", "..", "..",
-                "Resources",
-                "RadioList.xml"
-            ));
+            string xmlFilePath = GetXmlFilePath();
 
             XDocument doc;
 
@@ -103,12 +98,7 @@ namespace ContinuousAudioOverlay
 
         public void SaveRadioList(List<Radio> radioList)
         {
-            string xmlFilePath = Path.GetFullPath(Path.Combine(
-                AppContext.BaseDirectory,
-                "..", "..", "..",
-                "Resources",
-                "RadioList.xml"
-            ));
+            string xmlFilePath = GetXmlFilePath();
 
             XElement root = new XElement("Radios");
 
@@ -348,5 +338,17 @@ namespace ContinuousAudioOverlay
         {
             _radioPlaying = value;
         }
+
+        string GetXmlFilePath()
+        {
+            string appDataFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ContinuousAudioOverlay");
+
+            Directory.CreateDirectory(appDataFolder);
+
+            return Path.Combine(appDataFolder, "RadioList.xml");
+        }
+
     }
 }
