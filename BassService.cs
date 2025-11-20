@@ -32,22 +32,23 @@ namespace ContinuousAudioOverlay
             {
                 ct.ThrowIfCancellationRequested();
 
-                string currentAssemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                DirectoryInfo solutionDirectory = Directory.GetParent(currentAssemblyDirectory)?.Parent?.Parent;
+                if (bassAssembly != null)
+                    return;
 
-                if (solutionDirectory != null)
-                {
-                    string dllPath = Path.Combine(solutionDirectory.FullName, "Libraries", "Bass.Net.dll");
-                    bassAssembly = Assembly.LoadFrom(dllPath);
-                    if (bassAssembly != null)
-                    {
-                        bassTagsType = bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.TAG_INFO");
-                        if (bassTagsType != null)
-                        {
-                            previousTagInfo = Activator.CreateInstance(bassTagsType);
-                        }
-                    }
-                }
+                string baseDir = AppContext.BaseDirectory;
+
+                string bassNetPath = Path.Combine(baseDir, "Libraries", "Bass.Net.dll");
+
+                if (!File.Exists(bassNetPath))
+                    throw new FileNotFoundException("Bass.Net.dll not found.", bassNetPath);
+
+                bassAssembly = Assembly.LoadFrom(bassNetPath);
+
+                bassTagsType = bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.TAG_INFO")
+                              ?? throw new TypeLoadException(
+                                    "Could not find 'Un4seen.Bass.AddOn.Tags.TAG_INFO' in Bass.Net.dll.");
+
+                previousTagInfo = Activator.CreateInstance(bassTagsType);
             }, ct);
         }
 

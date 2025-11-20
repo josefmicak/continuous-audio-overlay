@@ -12,8 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Libraries\Bass.Net.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="bass.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\Bass.Net.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Icon.ico" />
   </ItemGroup>
