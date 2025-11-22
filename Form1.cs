@@ -16,7 +16,7 @@ namespace ContinuousAudioOverlay
         Color hoverColor = Color.Yellow;
         bool outputDeviceDropdownEnter = false;
         bool radioDropdownEnter = false;
-        GlobalSystemMediaTransportControlsSessionManager mediaManager;
+        GlobalSystemMediaTransportControlsSessionManager? mediaManager;
         bool muted = false;
         int resumeRadioIndex = -1;
         int previousRadioIndex = -1;
@@ -24,7 +24,7 @@ namespace ContinuousAudioOverlay
         bool loaded = false;
         bool folded = false;
         BassService bassService;
-        SettingsForm settingsForm;
+        SettingsForm? settingsForm;
         private bool isOutputDeviceChangingFromSystem = false;
         private bool isOutputDeviceChangingFromApplication = false;
 
@@ -143,7 +143,7 @@ namespace ContinuousAudioOverlay
         public static void Send(AppCommands cmd)
         {
             if (frm == null) Initialize();
-            frm.Invoke(new MethodInvoker(() => SendMessage(frm.Handle, WM_APPCOMMAND, frm.Handle, (IntPtr)((int)cmd << 16))));
+            frm?.Invoke(new MethodInvoker(() => SendMessage(frm.Handle, WM_APPCOMMAND, frm.Handle, (IntPtr)((int)cmd << 16))));
         }
 
         private static void Initialize()
@@ -162,7 +162,7 @@ namespace ContinuousAudioOverlay
         }
 
         private static ManualResetEvent mre = new ManualResetEvent(false);
-        private static Form frm;
+        private static Form? frm;
 
         private const int WM_APPCOMMAND = 0x319;
         [DllImport("user32.dll")]
@@ -253,7 +253,7 @@ namespace ContinuousAudioOverlay
 
             if (loaded)
             {
-                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfo();
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo? currentMediaPlaybackInfo = GetPlaybackInfo();
                 if (currentMediaPlaybackInfo != null)
                 {
                     if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
@@ -396,7 +396,7 @@ namespace ContinuousAudioOverlay
             if (outputDeviceDropDown.Items.Count > 0)
             {
                 e.DrawBackground();
-                e.Graphics.DrawString(outputDeviceDropDown.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(outputDeviceDropDown.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
                 e.DrawFocusRectangle();
             }
         }
@@ -480,7 +480,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private async Task<GlobalSystemMediaTransportControlsSessionMediaProperties> GetMediaInfoAsync()
+        private async Task<GlobalSystemMediaTransportControlsSessionMediaProperties?> GetMediaInfoAsync()
         {
             if (mediaManager == null)
             {
@@ -524,14 +524,17 @@ namespace ContinuousAudioOverlay
                 return;
             }
             //Update media title and thumbnail
-            GlobalSystemMediaTransportControlsSessionMediaProperties currentMediaProperties =
+            GlobalSystemMediaTransportControlsSessionMediaProperties? currentMediaProperties =
                 await GetMediaInfoAsync();
 
-            UpdateTitleTextBox(currentMediaProperties);
+            if (currentMediaProperties != null)
+            {
+                UpdateTitleTextBox(currentMediaProperties);
+            }
 
             //Update source label
-            GlobalSystemMediaTransportControlsSession session =
-                mediaManager.GetCurrentSession();
+            GlobalSystemMediaTransportControlsSession? session =
+                mediaManager?.GetCurrentSession();
 
             string processName = "<no source>";
             if (session != null)
@@ -545,10 +548,10 @@ namespace ContinuousAudioOverlay
             UpdateSourceLabel(processName);
         }
 
-        private GlobalSystemMediaTransportControlsSessionPlaybackInfo GetPlaybackInfo()
+        private GlobalSystemMediaTransportControlsSessionPlaybackInfo? GetPlaybackInfo()
         {
-            GlobalSystemMediaTransportControlsSession session =
-                mediaManager.GetCurrentSession();
+            GlobalSystemMediaTransportControlsSession? session =
+                mediaManager?.GetCurrentSession();
             if (session != null)
             {
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo playbackInfo = session.GetPlaybackInfo();
@@ -675,7 +678,7 @@ namespace ContinuousAudioOverlay
             e.DrawBackground();
             if (radioDropDownList.Items.Count > 0)
             {
-                e.Graphics.DrawString(radioDropDownList.Items[index]?.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(radioDropDownList.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
             }
             e.DrawFocusRectangle();
         }
@@ -715,7 +718,7 @@ namespace ContinuousAudioOverlay
                     radioDropDownList.SelectedIndex = resumeRadioIndex;
                 }
 
-                GlobalSystemMediaTransportControlsSessionPlaybackInfo currentMediaPlaybackInfo = GetPlaybackInfo();
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo? currentMediaPlaybackInfo = GetPlaybackInfo();
                 if (currentMediaPlaybackInfo != null)
                 {
                     if (currentMediaPlaybackInfo.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing)
@@ -738,7 +741,7 @@ namespace ContinuousAudioOverlay
         {
             await InitializeMediaManager();
 
-            GlobalSystemMediaTransportControlsSession session = mediaManager.GetCurrentSession();
+            GlobalSystemMediaTransportControlsSession? session = mediaManager?.GetCurrentSession();
             if (session != null)
             {
                 session.MediaPropertiesChanged -= MediaPropertiesChanged;
@@ -882,7 +885,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private async void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
+        private async void SettingsForm_FormClosed(object? sender, FormClosedEventArgs e)
         {
             settingsForm = null;
             await InitializeRadioList();

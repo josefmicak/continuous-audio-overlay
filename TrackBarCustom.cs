@@ -84,10 +84,18 @@ namespace ContinuousAudioOverlay
         {
             if (m.Msg == WM_REFLECT + WM_NOFITY)
             {
-                var pnmhdr = (NMHDR)m.GetLParam(typeof(NMHDR));
+                var lParamObj = m.GetLParam(typeof(NMHDR));
+                if (lParamObj is not NMHDR pnmhdr)
+                {
+                    return; // or handle the error / ignore the message
+                }
                 if (pnmhdr.code == NM_CUSTOMDRAW)
                 {
-                    var pnmlv = (NMCUSTOMDRAW)m.GetLParam(typeof(NMCUSTOMDRAW));
+                    var lParamObjCd = m.GetLParam(typeof(NMCUSTOMDRAW));
+                    if (lParamObjCd is not NMCUSTOMDRAW pnmlv)
+                    {
+                        return;
+                    }
                     switch (pnmlv.dwDrawStage)
                     {
                         case (int)CDDS.CDDS_PREPAINT:

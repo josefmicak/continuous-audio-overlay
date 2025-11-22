@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContinuousAudioOverlay.Helpers
 {
@@ -51,7 +46,7 @@ namespace ContinuousAudioOverlay.Helpers
                     Marshal.FreeCoTaskMem(pointerValue);
                 }
             }
-            public string GetValue()
+            public string? GetValue()
             {
                 if (vt == 31 && pointerValue != IntPtr.Zero)
                     return Marshal.PtrToStringUni(pointerValue);
@@ -81,7 +76,7 @@ namespace ContinuousAudioOverlay.Helpers
                             int hr2 = propStore.GetValue(ref key, pv);
                             if (hr2 == 0)
                             {
-                                string appUserModelId = pv.GetValue();
+                                string? appUserModelId = pv.GetValue();
                                 if (string.Equals(appUserModelId, sourceAppUserModelId, StringComparison.OrdinalIgnoreCase))
                                 {
                                     string fileDesc = string.Empty;

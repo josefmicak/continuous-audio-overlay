@@ -1,14 +1,12 @@
 ﻿using System.Data;
 using System.Runtime.InteropServices;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace ContinuousAudioOverlay
 {
     public partial class SettingsForm : Form
     {
         BassService bassService;
-        bool initComplete = false;
-        List<Radio> radioList;
+        List<Radio>? radioList;
         Color controlBackgroundColor = Color.FromArgb(255, 191, 0);
         Color hoverColor = Color.Yellow;
         bool radioDropDownListEnter = false;
@@ -23,7 +21,6 @@ namespace ContinuousAudioOverlay
 
             Shown += async (_, __) => await InitializeUi();
 
-            initComplete = true;
             this.FormClosing += new FormClosingEventHandler(SettingsForm_FormClosing);
         }
 
@@ -57,8 +54,11 @@ namespace ContinuousAudioOverlay
                 return;
             }
 
-            editRadioNameTB.Text = radioList[currentIndex].RadioName;
-            editRadioURLTB.Text = radioList[currentIndex].RadioURL;
+            if (radioList?.ElementAtOrDefault(currentIndex) is Radio radio)
+            {
+                editRadioNameTB.Text = radio.RadioName;
+                editRadioURLTB.Text = radio.RadioURL;
+            }
         }
 
         private async void addRadioButton_Click(object sender, EventArgs e)
@@ -80,10 +80,8 @@ namespace ContinuousAudioOverlay
             else
             {
                 string radioName = addRadioNameTB.Text;
-                Radio radio = new Radio();
-                radio.RadioName = addRadioNameTB.Text;
-                radio.RadioURL = addRadioURLTB.Text;
-                radioList.Add(radio);
+                Radio radio = new Radio(radioName, addRadioURLTB.Text);
+                radioList?.Add(radio);
                 await updateRadioList();
                 MessageBox.Show($"Radio \"{radioName}\" added successfully.",
                     "Radio added",
@@ -112,8 +110,11 @@ namespace ContinuousAudioOverlay
             {
                 string radioName = editRadioNameTB.Text;
                 int currentIndex = radioDropDownList.SelectedIndex;
-                radioList[currentIndex].RadioName = editRadioNameTB.Text;
-                radioList[currentIndex].RadioURL = editRadioURLTB.Text;
+                if (radioList?.ElementAtOrDefault(currentIndex) is Radio radio)
+                {
+                    radio.RadioName = editRadioNameTB.Text;
+                    radio.RadioURL = editRadioURLTB.Text;
+                }
                 await updateRadioList();
                 MessageBox.Show($"Radio \"{radioName}\" edited successfully.",
                     "Radio edited",
@@ -141,7 +142,7 @@ namespace ContinuousAudioOverlay
 
             if (result == DialogResult.Yes)
             {
-                radioList.RemoveAt(currentIndex);
+                radioList?.RemoveAt(currentIndex);
                 await updateRadioList();
                 MessageBox.Show($"Radio \"{radioName}\" removed successfully.",
                     "Radio removed",
@@ -153,7 +154,10 @@ namespace ContinuousAudioOverlay
 
         private async Task updateRadioList()
         {
-            bassService.SaveRadioList(radioList);
+            if (radioList != null)
+            {
+                bassService.SaveRadioList(radioList);
+            }
             await InitializeRadioList();
             addRadioNameTB.Text = string.Empty;
             addRadioURLTB.Text = string.Empty;
@@ -176,7 +180,7 @@ namespace ContinuousAudioOverlay
             e.DrawBackground();
             if (radioDropDownList.Items.Count > 0)
             {
-                e.Graphics.DrawString(radioDropDownList.Items[index]?.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(radioDropDownList.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
             }
             e.DrawFocusRectangle();
         }
@@ -286,7 +290,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void SettingsForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             ReleaseBassResources();
         }
