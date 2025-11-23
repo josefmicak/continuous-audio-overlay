@@ -2,7 +2,6 @@
 using AudioSwitcher.AudioApi.Observables;
 using ContinuousAudioOverlay.Helpers;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Windows.Media.Control;
 using Windows.Storage.Streams;
 
@@ -10,23 +9,23 @@ namespace ContinuousAudioOverlay
 {
     public partial class Form1 : Form
     {
-        List<CoreAudioDevice>? playbackDevices = null;
-        CoreAudioController? coreAudioController = null;
-        Color controlBackgroundColor = Color.FromArgb(255, 191, 0);
-        Color hoverColor = Color.Yellow;
-        bool outputDeviceDropdownEnter = false;
-        bool radioDropdownEnter = false;
-        GlobalSystemMediaTransportControlsSessionManager? mediaManager;
-        bool muted = false;
-        int resumeRadioIndex = -1;
-        int previousRadioIndex = -1;
-        (int, int) outputDeviceIndexes = (-1, -1);
-        bool loaded = false;
-        bool folded = false;
-        BassService bassService;
-        SettingsForm? settingsForm;
-        private bool isOutputDeviceChangingFromSystem = false;
-        private bool isOutputDeviceChangingFromApplication = false;
+        private List<CoreAudioDevice>? _playbackDevices = null;
+        private CoreAudioController? _coreAudioController = null;
+        private Color _controlBackgroundColor = Color.FromArgb(255, 191, 0);
+        private Color _hoverColor = Color.Yellow;
+        private bool _outputDeviceDropdownEnter = false;
+        private bool _radioDropdownEnter = false;
+        private GlobalSystemMediaTransportControlsSessionManager? _mediaManager;
+        private bool _muted = false;
+        private int _resumeRadioIndex = -1;
+        private int _previousRadioIndex = -1;
+        private (int, int) _outputDeviceIndexes = (-1, -1);
+        private bool _loaded = false;
+        private bool _folded = false;
+        private BassService _bassService;
+        private SettingsForm? _settingsForm;
+        private bool _isOutputDeviceChangingFromSystem = false;
+        private bool _isOutputDeviceChangingFromApplication = false;
 
         private const int WM_NCHITTEST = 0x84;
         private const int HTCLIENT = 0x1;
@@ -35,16 +34,16 @@ namespace ContinuousAudioOverlay
 
         public Form1()
         {
-            bassService = new BassService();
+            _bassService = new BassService();
 
             InitializeComponent();
             InitializeCoreAudioController();
 
             Shown += async (_, __) => await InitializeCustomFormComponents();
 
-            volumeSlider.Value = (int)GetDefaultPlaybackDevice().Volume;
+            VolumeSlider.Value = (int)GetDefaultPlaybackDevice().Volume;
             UpdateSourceLabel("<no source>");
-            bassService.OnMetaDataChanged += UpdateRadioTitle;
+            _bassService.OnMetaDataChanged += UpdateRadioTitle;
         }
 
         private async Task InitializeCustomFormComponents()
@@ -54,16 +53,16 @@ namespace ContinuousAudioOverlay
 
             await Task.WhenAll(outputTask, radioListTask);
 
-            loaded = true;
+            _loaded = true;
         }
 
         public async Task InitializeRadioList()
         {
-            List<Radio> radioList = await bassService.GetRadioList();
-            radioDropDownList.Items.Clear();
-            radioDropDownList.Items.AddRange(radioList.Select(radio => radio.RadioName).ToArray());
-            radioDropDownList.Items.Add("<no radio>");
-            radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
+            List<Radio> radioList = await _bassService.GetRadioList();
+            RadioDropDownList.Items.Clear();
+            RadioDropDownList.Items.AddRange(radioList.Select(radio => radio.RadioName).ToArray());
+            RadioDropDownList.Items.Add("<no radio>");
+            RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
         }
 
         protected override void WndProc(ref Message message)
@@ -180,11 +179,11 @@ namespace ContinuousAudioOverlay
             {
                 if (d.IsPlaybackDevice)
                 {
-                    outputDeviceDropDown.Items.Add(d.FullName);
+                    OutputDeviceDropDown.Items.Add(d.FullName);
                 }
                 if (d.IsDefaultDevice)
                 {
-                    outputDeviceDropDown.SelectedIndex = outputDeviceDropDown.Items.Count - 1;
+                    OutputDeviceDropDown.SelectedIndex = OutputDeviceDropDown.Items.Count - 1;
                 }
             }
         }
@@ -194,64 +193,64 @@ namespace ContinuousAudioOverlay
             //Metoda slouzi k tomu, aby byly zaznamenany zmeny vystupnich zvukovych zarizeni provedene mimo aplikaci
             GetCoreAudioController().AudioDeviceChanged.Subscribe(x =>
             {
-                if (!outputDeviceDropDown.IsHandleCreated || isOutputDeviceChangingFromApplication)
+                if (!OutputDeviceDropDown.IsHandleCreated || _isOutputDeviceChangingFromApplication)
                 {
                     //Pokud zmenu provedl uzivatel v aplikaci, neni potreba, aby zde byly provadeny jakekoli zmeny
                     return;
                 }
 
-                outputDeviceDropDown.BeginInvoke(new Action(() =>
+                OutputDeviceDropDown.BeginInvoke(new Action(() =>
                 {
-                    int index = outputDeviceDropDown.Items.IndexOf(x.Device.FullName);
+                    int index = OutputDeviceDropDown.Items.IndexOf(x.Device.FullName);
 
-                    if (index == -1 || outputDeviceDropDown.SelectedIndex == index)
+                    if (index == -1 || OutputDeviceDropDown.SelectedIndex == index)
                     {
                         return;
                     }
 
-                    isOutputDeviceChangingFromSystem = true;
+                    _isOutputDeviceChangingFromSystem = true;
 
                     try
                     {
-                        outputDeviceDropDown.SelectedIndex = index;
+                        OutputDeviceDropDown.SelectedIndex = index;
                     }
                     finally
                     {
-                        isOutputDeviceChangingFromSystem = false;
+                        _isOutputDeviceChangingFromSystem = false;
                     }
                         
                 }));
             });
         }
 
-        private async void radioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+        private async void RadioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await ChangeRadioIndex(radioDropDownList.SelectedIndex);
+            await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
         }
 
         private async Task ChangeRadioIndex(int radioIndex)
         {
-            if (bassService.BassInitialized())
+            if (_bassService.BassInitialized())
             {
                 ReleaseBassResources();
             }
 
-            if (radioIndex != radioDropDownList.Items.Count - 1)
+            if (radioIndex != RadioDropDownList.Items.Count - 1)
             {
-                await bassService.IndexChanged(radioIndex);
-                if (bassService.GetRadioPlaying())
+                await _bassService.IndexChanged(radioIndex);
+                if (_bassService.GetRadioPlaying())
                 {
-                    if (radioIndex != resumeRadioIndex)//Remember previous station in case radio is stopped
+                    if (radioIndex != _resumeRadioIndex)//Remember previous station in case radio is stopped
                     {
-                        previousRadioIndex = resumeRadioIndex;
+                        _previousRadioIndex = _resumeRadioIndex;
                     }
-                    resumeRadioIndex = radioIndex;
-                    thumbnailPictureBox.Image = null;
+                    _resumeRadioIndex = radioIndex;
+                    ThumbnailPictureBox.Image = null;
                     UpdateSourceLabel("Radio");
                 }
             }
 
-            if (loaded)
+            if (_loaded)
             {
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo? currentMediaPlaybackInfo = GetPlaybackInfo();
                 if (currentMediaPlaybackInfo != null)
@@ -266,10 +265,10 @@ namespace ContinuousAudioOverlay
 
         public void ReleaseBassResources()
         {
-            bassService.ReleaseBassResources();
+            _bassService.ReleaseBassResources();
         }
 
-        private void pauseRadioButton_Click(object sender, EventArgs e)
+        private void PauseRadioButton_Click(object sender, EventArgs e)
         {
             StopRadio();
         }
@@ -278,15 +277,15 @@ namespace ContinuousAudioOverlay
         {
             MediaControlsUpdateTitleTextBox(true);
             ReleaseBassResources();
-            radioDropDownList.SelectedIndex = radioDropDownList.Items.Count - 1;
+            RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
         }
 
-        private void minimizePictureBox_Click(object sender, EventArgs e)
+        private void MinimizePictureBox_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
         }
 
-        private void closePictureBox_Click(object sender, EventArgs e)
+        private void ClosePictureBox_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
         }
@@ -296,12 +295,12 @@ namespace ContinuousAudioOverlay
             try
             {
                 var pictureBox = (PictureBox)sender;
-                pictureBox.BackColor = hoverColor;
+                pictureBox.BackColor = _hoverColor;
             }
             catch
             {
                 var pictureBox = (Button)sender;
-                pictureBox.BackColor = hoverColor;
+                pictureBox.BackColor = _hoverColor;
             }
         }
 
@@ -310,184 +309,184 @@ namespace ContinuousAudioOverlay
             try
             {
                 var pictureBox = (PictureBox)sender;
-                pictureBox.BackColor = controlBackgroundColor;
+                pictureBox.BackColor = _controlBackgroundColor;
             }
             catch
             {
                 var pictureBox = (Button)sender;
-                pictureBox.BackColor = controlBackgroundColor;
+                pictureBox.BackColor = _controlBackgroundColor;
             }
         }
 
-        private void prevPictureBox_Click(object sender, EventArgs e)
+        private void PrevPictureBox_Click(object sender, EventArgs e)
         {
             Send(AppCommands.MediaPrevious);
 
-            if (bassService.GetRadioPlaying())
+            if (_bassService.GetRadioPlaying())
             {
                 StopRadio();
             }
         }
 
-        private void pausePlayPictureBox_Click(object sender, EventArgs e)
+        private void PausePlayPictureBox_Click(object sender, EventArgs e)
         {
             Send(AppCommands.MediaPlayPause);
 
-            if (bassService.GetRadioPlaying())
+            if (_bassService.GetRadioPlaying())
             {
                 StopRadio();
             }
         }
 
-        private void nextPictureBox_Click(object sender, EventArgs e)
+        private void NextPictureBox_Click(object sender, EventArgs e)
         {
             Send(AppCommands.MediaNext);
 
-            if (bassService.GetRadioPlaying())
+            if (_bassService.GetRadioPlaying())
             {
                 StopRadio();
             }
         }
 
-        private void volumeSlider_ValueChanged(object sender, EventArgs e)
+        private void VolumeSlider_ValueChanged(object sender, EventArgs e)
         {
-            GetDefaultPlaybackDevice().Volume = volumeSlider.Value;
-            volumeLabel.Text = volumeSlider.Value.ToString();
-            volumeLabel.Left = reduceVolumePictureBox.Right + ((increaseVolumePictureBox.Left - reduceVolumePictureBox.Right - volumeLabel.Width) / 2);
+            GetDefaultPlaybackDevice().Volume = VolumeSlider.Value;
+            VolumeLabel.Text = VolumeSlider.Value.ToString();
+            VolumeLabel.Left = ReduceVolumePictureBox.Right + ((IncreaseVolumePictureBox.Left - ReduceVolumePictureBox.Right - VolumeLabel.Width) / 2);
         }
 
-        private void mutePictureBox_Click(object sender, EventArgs e)
+        private void MutePictureBox_Click(object sender, EventArgs e)
         {
             Send(AppCommands.VolumeMute);
-            muted = !muted;
-            if (muted)
+            _muted = !_muted;
+            if (_muted)
             {
-                mutePictureBox.Image = Properties.Resources.Mute;
+                MutePictureBox.Image = Properties.Resources.Mute;
             }
             else
             {
-                mutePictureBox.Image = Properties.Resources.Unmute;
+                MutePictureBox.Image = Properties.Resources.Unmute;
             }
         }
 
-        private void reduceVolumePictureBox_Click(object sender, EventArgs e)
+        private void ReduceVolumePictureBox_Click(object sender, EventArgs e)
         {
-            volumeSlider.Value -= 5;
+            VolumeSlider.Value -= 5;
         }
 
-        private void increaseVolumePictureBox_Click(object sender, EventArgs e)
+        private void IncreaseVolumePictureBox_Click(object sender, EventArgs e)
         {
-            volumeSlider.Value += 5;
+            VolumeSlider.Value += 5;
         }
 
-        private void outputDeviceDropDown_DrawItem(object sender, DrawItemEventArgs e)
+        private void OutputDeviceDropDown_DrawItem(object sender, DrawItemEventArgs e)
         {
             int index = e.Index >= 0 ? e.Index : 0;
             SolidBrush brush;
-            if (outputDeviceDropdownEnter || outputDeviceDropDown.DroppedDown)
+            if (_outputDeviceDropdownEnter || OutputDeviceDropDown.DroppedDown)
             {
-                brush = new SolidBrush(hoverColor);
+                brush = new SolidBrush(_hoverColor);
             }
             else
             {
-                brush = new SolidBrush(controlBackgroundColor);
+                brush = new SolidBrush(_controlBackgroundColor);
             }
 
-            if (outputDeviceDropDown.Items.Count > 0)
+            if (OutputDeviceDropDown.Items.Count > 0)
             {
                 e.DrawBackground();
-                e.Graphics.DrawString(outputDeviceDropDown.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(OutputDeviceDropDown.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
                 e.DrawFocusRectangle();
             }
         }
 
-        private void outputDeviceDropDown_DropDownClosed(object sender, EventArgs e)
+        private void OutputDeviceDropDown_DropDownClosed(object sender, EventArgs e)
         {
-            volumeLabel.Focus();
+            VolumeLabel.Focus();
             var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = controlBackgroundColor;
-            outputDeviceDropdownEnter = false;
+            pictureBox.BorderColor = _controlBackgroundColor;
+            _outputDeviceDropdownEnter = false;
         }
 
-        private void outputDeviceDropDown_MouseEnter(object sender, EventArgs e)
+        private void OutputDeviceDropDown_MouseEnter(object sender, EventArgs e)
         {
-            outputDeviceDropdownEnter = true;
+            _outputDeviceDropdownEnter = true;
             var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = hoverColor;
+            pictureBox.BorderColor = _hoverColor;
         }
 
-        private void outputDeviceDropDown_MouseLeave(object sender, EventArgs e)
+        private void OutputDeviceDropDown_MouseLeave(object sender, EventArgs e)
         {
-            outputDeviceDropdownEnter = false;
+            _outputDeviceDropdownEnter = false;
             var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = controlBackgroundColor;
+            pictureBox.BorderColor = _controlBackgroundColor;
         }
 
-        private async void outputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        private async void OutputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (isOutputDeviceChangingFromSystem)
+            if (_isOutputDeviceChangingFromSystem)
             {
-                if (bassService.GetRadioPlaying())
+                if (_bassService.GetRadioPlaying())
                 {
                     //Je potreba zavolat i pokud dojde ke zmene mimo aplikaci - jinak bude radio dale hrat pres puvodni zarizeni
-                    await ChangeRadioIndex(radioDropDownList.SelectedIndex);
+                    await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
                 }
 
                 //Pokud byla zmena provedena mimo aplikaci tak ve funkci nepokracujeme, jinak muze dojit k zacykleni
                 return;
             }
 
-            isOutputDeviceChangingFromApplication = true;
+            _isOutputDeviceChangingFromApplication = true;
 
             try
             {
-                if (outputDeviceIndexes.Item2 == -1)
+                if (_outputDeviceIndexes.Item2 == -1)
                 {
-                    outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
+                    _outputDeviceIndexes.Item2 = OutputDeviceDropDown.SelectedIndex;
                 }
                 else
                 {
-                    outputDeviceIndexes.Item1 = outputDeviceIndexes.Item2;
-                    outputDeviceIndexes.Item2 = outputDeviceDropDown.SelectedIndex;
+                    _outputDeviceIndexes.Item1 = _outputDeviceIndexes.Item2;
+                    _outputDeviceIndexes.Item2 = OutputDeviceDropDown.SelectedIndex;
                 }
 
                 foreach (CoreAudioDevice d in await GetPlaybackDevices())
                 {
-                    if (d.FullName == outputDeviceDropDown.Text)
+                    if (d.FullName == OutputDeviceDropDown.Text)
                     {
                         d.SetAsDefault();
                         int vol = (int)d.Volume;
-                        if (vol < volumeSlider.Minimum)
+                        if (vol < VolumeSlider.Minimum)
                         {
-                            vol = volumeSlider.Minimum;
+                            vol = VolumeSlider.Minimum;
                         }
-                        else if (vol > volumeSlider.Maximum)
+                        else if (vol > VolumeSlider.Maximum)
                         {
-                            vol = volumeSlider.Maximum;
+                            vol = VolumeSlider.Maximum;
                         }
-                        volumeSlider.Value = vol;
+                        VolumeSlider.Value = vol;
                     }
                 }
 
-                if (bassService.GetRadioPlaying())
+                if (_bassService.GetRadioPlaying())
                 {
-                    await ChangeRadioIndex(radioDropDownList.SelectedIndex);
+                    await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
                 }
             }
             finally
             {
-                isOutputDeviceChangingFromApplication = false;
+                _isOutputDeviceChangingFromApplication = false;
             }
         }
 
         private async Task<GlobalSystemMediaTransportControlsSessionMediaProperties?> GetMediaInfoAsync()
         {
-            if (mediaManager == null)
+            if (_mediaManager == null)
             {
                 await InitializeMediaManager();
             }
             GlobalSystemMediaTransportControlsSession session =
-                mediaManager!.GetCurrentSession();
+                _mediaManager!.GetCurrentSession();
             //session.MediaPropertiesChanged += MediaPropertiesChanged;
             //session.PlaybackInfoChanged += PlaybackInfoChanged;
             //session.TimelinePropertiesChanged += TimelinePropertiesChanged;
@@ -518,7 +517,7 @@ namespace ContinuousAudioOverlay
 
         private async void MediaControlsUpdateTitleTextBox(bool alwaysUpdate = false)
         {
-            if (!alwaysUpdate && bassService.GetRadioPlaying())
+            if (!alwaysUpdate && _bassService.GetRadioPlaying())
             {
                 //We don't want to update media properties in case radio is currently playing
                 return;
@@ -534,7 +533,7 @@ namespace ContinuousAudioOverlay
 
             //Update source label
             GlobalSystemMediaTransportControlsSession? session =
-                mediaManager?.GetCurrentSession();
+                _mediaManager?.GetCurrentSession();
 
             string processName = "<no source>";
             if (session != null)
@@ -551,7 +550,7 @@ namespace ContinuousAudioOverlay
         private GlobalSystemMediaTransportControlsSessionPlaybackInfo? GetPlaybackInfo()
         {
             GlobalSystemMediaTransportControlsSession? session =
-                mediaManager?.GetCurrentSession();
+                _mediaManager?.GetCurrentSession();
             if (session != null)
             {
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo playbackInfo = session.GetPlaybackInfo();
@@ -575,7 +574,7 @@ namespace ContinuousAudioOverlay
                 if (title == string.Empty && artist == string.Empty)
                 {
                     //Call likely to be removed in the future - for now it's kept for testing purposes
-                    (title, artist, _) = bassService.GetTitleTags();
+                    (title, artist, _) = _bassService.GetTitleTags();
                 }
                 if (!string.IsNullOrEmpty(title) || !string.IsNullOrEmpty(artist))
                 {
@@ -605,13 +604,13 @@ namespace ContinuousAudioOverlay
                         await stream.AsStreamForRead().CopyToAsync(memoryStream);
                         memoryStream.Position = 0;
                         Image thumbnailImage = Image.FromStream(memoryStream);
-                        thumbnailPictureBox.Image = thumbnailImage;
+                        ThumbnailPictureBox.Image = thumbnailImage;
                         memoryStream.Dispose();
                     }
                 }
                 else
                 {
-                    thumbnailPictureBox.Image = null;
+                    ThumbnailPictureBox.Image = null;
                 }
 
                 title = mediaProperties.Title;
@@ -619,7 +618,7 @@ namespace ContinuousAudioOverlay
             }
             else
             {
-                thumbnailPictureBox.Image = null;
+                ThumbnailPictureBox.Image = null;
             }
 
             if (titleTextBox.InvokeRequired)
@@ -663,59 +662,59 @@ namespace ContinuousAudioOverlay
             return lineCount;
         }
 
-        private void radioDropDownList_DrawItem(object sender, DrawItemEventArgs e)
+        private void RadioDropDownList_DrawItem(object sender, DrawItemEventArgs e)
         {
             int index = e.Index >= 0 ? e.Index : 0;
             SolidBrush brush;
-            if (radioDropdownEnter || radioDropDownList.DroppedDown)
+            if (_radioDropdownEnter || RadioDropDownList.DroppedDown)
             {
-                brush = new SolidBrush(hoverColor);
+                brush = new SolidBrush(_hoverColor);
             }
             else
             {
-                brush = new SolidBrush(controlBackgroundColor);
+                brush = new SolidBrush(_controlBackgroundColor);
             }
             e.DrawBackground();
-            if (radioDropDownList.Items.Count > 0)
+            if (RadioDropDownList.Items.Count > 0)
             {
-                e.Graphics.DrawString(radioDropDownList.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(RadioDropDownList.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
             }
             e.DrawFocusRectangle();
         }
 
-        private void radioDropDownList_MouseEnter(object sender, EventArgs e)
+        private void RadioDropDownList_MouseEnter(object sender, EventArgs e)
         {
-            radioDropdownEnter = true;
+            _radioDropdownEnter = true;
             var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = hoverColor;
+            pictureBox.BorderColor = _hoverColor;
         }
 
-        private void radioDropDownList_MouseLeave(object sender, EventArgs e)
+        private void RadioDropDownList_MouseLeave(object sender, EventArgs e)
         {
-            radioDropdownEnter = false;
+            _radioDropdownEnter = false;
             var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = controlBackgroundColor;
+            pictureBox.BorderColor = _controlBackgroundColor;
         }
 
-        private void radioDropDownList_DropDownClosed(object sender, EventArgs e)
+        private void RadioDropDownList_DropDownClosed(object sender, EventArgs e)
         {
-            volumeLabel.Focus();
+            VolumeLabel.Focus();
             var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = controlBackgroundColor;
-            radioDropdownEnter = false;
+            pictureBox.BorderColor = _controlBackgroundColor;
+            _radioDropdownEnter = false;
         }
 
-        private void resumeRadioButton_Click(object sender, EventArgs e)
+        private void ResumeRadioButton_Click(object sender, EventArgs e)
         {
-            if (resumeRadioIndex != -1)
+            if (_resumeRadioIndex != -1)
             {
-                if (bassService.GetRadioPlaying() && previousRadioIndex != -1)
+                if (_bassService.GetRadioPlaying() && _previousRadioIndex != -1)
                 {
-                    radioDropDownList.SelectedIndex = previousRadioIndex;
+                    RadioDropDownList.SelectedIndex = _previousRadioIndex;
                 }
                 else
                 {
-                    radioDropDownList.SelectedIndex = resumeRadioIndex;
+                    RadioDropDownList.SelectedIndex = _resumeRadioIndex;
                 }
 
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo? currentMediaPlaybackInfo = GetPlaybackInfo();
@@ -741,7 +740,7 @@ namespace ContinuousAudioOverlay
         {
             await InitializeMediaManager();
 
-            GlobalSystemMediaTransportControlsSession? session = mediaManager?.GetCurrentSession();
+            GlobalSystemMediaTransportControlsSession? session = _mediaManager?.GetCurrentSession();
             if (session != null)
             {
                 session.MediaPropertiesChanged -= MediaPropertiesChanged;
@@ -752,8 +751,8 @@ namespace ContinuousAudioOverlay
 
         private async Task InitializeMediaManager()
         {
-            mediaManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
-            mediaManager.CurrentSessionChanged += SessionsChanged;
+            _mediaManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+            _mediaManager.CurrentSessionChanged += SessionsChanged;
         }
 
         private void SessionsChanged(GlobalSystemMediaTransportControlsSessionManager sender, object args)
@@ -768,7 +767,7 @@ namespace ContinuousAudioOverlay
             MediaControlsUpdateTitleTextBox();
         }
 
-        private void thumbnailPictureBox_Paint(object sender, PaintEventArgs e)
+        private void ThumbnailPictureBox_Paint(object sender, PaintEventArgs e)
         {
             PictureBox pictureBox = (PictureBox)sender;
             ControlPaint.DrawBorder(e.Graphics, pictureBox.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
@@ -776,14 +775,14 @@ namespace ContinuousAudioOverlay
 
         private void UpdateSourceLabel(string source)
         {
-            if (sourceLabel.InvokeRequired)
+            if (SourceLabel.InvokeRequired)
             {
-                sourceLabel.Invoke((Action)(() => UpdateSourceLabel(source)));
+                SourceLabel.Invoke((Action)(() => UpdateSourceLabel(source)));
             }
             else
             {
-                sourceLabel.Text = source;
-                if (!folded && this.WindowState != FormWindowState.Minimized)
+                SourceLabel.Text = source;
+                if (!_folded && this.WindowState != FormWindowState.Minimized)
                 {
                     UpdateSourceLabelLocation();
                 }
@@ -792,19 +791,19 @@ namespace ContinuousAudioOverlay
 
         private void UpdateSourceLabelLocation()
         {
-            sourceLabel.Location = new Point((this.ClientSize.Width - sourceLabel.Width) / 2, sourceLabel.Location.Y);
+            SourceLabel.Location = new Point((this.ClientSize.Width - SourceLabel.Width) / 2, SourceLabel.Location.Y);
         }
 
-        private void foldPictureBox_Click(object sender, EventArgs e)
+        private void FoldPictureBox_Click(object sender, EventArgs e)
         {
-            if (!folded)
+            if (!_folded)
             {
-                folded = true;
+                _folded = true;
                 this.Size = new Size(40, 30);
             }
             else
             {
-                folded = false;
+                _folded = false;
                 this.Size = new Size(260, 409);
                 MediaControlsUpdateTitleTextBox();
             }
@@ -870,39 +869,39 @@ namespace ContinuousAudioOverlay
         const int SW_RESTORE = 9;
         const int SW_SHOW = 5;
 
-        private void settingsPictureBox_Click(object sender, EventArgs e)
+        private void SettingsPictureBox_Click(object sender, EventArgs e)
         {
             // Check if form2 is already open
-            if (settingsForm == null || settingsForm.IsDisposed)
+            if (_settingsForm == null || _settingsForm.IsDisposed)
             {
-                settingsForm = new SettingsForm();
-                settingsForm.FormClosed += SettingsForm_FormClosed;
-                settingsForm.Show();
+                _settingsForm = new SettingsForm();
+                _settingsForm.FormClosed += SettingsForm_FormClosed;
+                _settingsForm.Show();
             }
             else
             {
-                settingsForm.BringToFront();
+                _settingsForm.BringToFront();
             }
         }
 
         private async void SettingsForm_FormClosed(object? sender, FormClosedEventArgs e)
         {
-            settingsForm = null;
+            _settingsForm = null;
             await InitializeRadioList();
         }
 
-        private void previousOutputDevicePictureBox_Click(object sender, EventArgs e)
+        private void PreviousOutputDevicePictureBox_Click(object sender, EventArgs e)
         {
-            int previousOutputDeviceIndex = outputDeviceIndexes.Item1;
-            if (previousOutputDeviceIndex != -1 && previousOutputDeviceIndex < outputDeviceDropDown.Items.Count)
+            int previousOutputDeviceIndex = _outputDeviceIndexes.Item1;
+            if (previousOutputDeviceIndex != -1 && previousOutputDeviceIndex < OutputDeviceDropDown.Items.Count)
             {
-                outputDeviceDropDown.SelectedIndex = previousOutputDeviceIndex;
+                OutputDeviceDropDown.SelectedIndex = previousOutputDeviceIndex;
             }
         }
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (!folded && this.WindowState != FormWindowState.Minimized)
+            if (!_folded && this.WindowState != FormWindowState.Minimized)
             {
                 UpdateSourceLabelLocation();
             }
@@ -910,17 +909,17 @@ namespace ContinuousAudioOverlay
 
         private async Task<List<CoreAudioDevice>> GetPlaybackDevices()
         {
-            if (playbackDevices != null)
+            if (_playbackDevices != null)
             {
-                return playbackDevices;
+                return _playbackDevices;
             }
 
-            playbackDevices = await Task.Run(() =>
+            _playbackDevices = await Task.Run(() =>
             {
                 return GetCoreAudioController().GetPlaybackDevices().ToList();
             });
 
-            return playbackDevices;
+            return _playbackDevices;
         }
 
         private CoreAudioDevice GetDefaultPlaybackDevice()
@@ -930,12 +929,12 @@ namespace ContinuousAudioOverlay
 
         private CoreAudioController GetCoreAudioController()
         {
-            if (coreAudioController == null)
+            if (_coreAudioController == null)
             {
-                coreAudioController = new CoreAudioController();
+                _coreAudioController = new CoreAudioController();
             }
 
-            return coreAudioController;
+            return _coreAudioController;
         }
     }
 }

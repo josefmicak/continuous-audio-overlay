@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="foldPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="FoldPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAABGdBTUEAALGPC/xhBQAACcJJREFUeF7t
         3etzE9cZx/FMX7cpvmC7vkgryVpdvJJMDJgkEENiZMuybOwOCWNi8E0Gchtzi4EyHjN4Qv+3vuk0M2mT
@@ -165,7 +165,7 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4H/nn1j9rITmGUkPAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="previousOutputDevicePictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="PreviousOutputDevicePictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAABGdBTUEAALGPC/xhBQAAFzFJREFUeF7t
         nXtwFPWWx93H3fvY+9B179beu4+7d2EJSSbz6u7pnumeZ2aSSWJIqHhhy926umqB+CjLsras2l3/s9aq

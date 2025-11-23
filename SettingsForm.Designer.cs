@@ -28,255 +28,255 @@
         /// </summary>
         private void InitializeComponent()
         {
-            radioDropDownList = new FlatComboBox();
-            editRadioButton = new Button();
-            editRadioURLTB = new TextBox();
-            editRadioNameTB = new TextBox();
-            removeRadioButton = new Button();
-            addRadioNameTB = new TextBox();
-            addRadioURLTB = new TextBox();
-            addRadioButton = new Button();
-            settingsLabel = new Label();
-            addRadioLabel = new Label();
-            addRadioURL = new Label();
-            editRadioName = new Label();
-            editRadioURL = new Label();
-            closePictureBox = new PictureBox();
-            minimizePictureBox = new PictureBox();
-            testAddRadioButton = new Button();
-            testEditRadioButton = new Button();
-            ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
+            RadioDropDownList = new FlatComboBox();
+            EditRadioButton = new Button();
+            EditRadioURLTB = new TextBox();
+            EditRadioNameTB = new TextBox();
+            RemoveRadioButton = new Button();
+            AddRadioNameTB = new TextBox();
+            AddRadioURLTB = new TextBox();
+            AddRadioButton = new Button();
+            SettingsLabel = new Label();
+            AddRadioLabel = new Label();
+            AddRadioURL = new Label();
+            EditRadioName = new Label();
+            EditRadioURL = new Label();
+            ClosePictureBox = new PictureBox();
+            MinimizePictureBox = new PictureBox();
+            TestAddRadioButton = new Button();
+            TestEditRadioButton = new Button();
+            ((System.ComponentModel.ISupportInitialize)ClosePictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)MinimizePictureBox).BeginInit();
             SuspendLayout();
             // 
-            // radioDropDownList
+            // RadioDropDownList
             // 
-            radioDropDownList.BackColor = Color.FromArgb(51, 51, 51);
-            radioDropDownList.BorderColor = Color.FromArgb(255, 191, 0);
-            radioDropDownList.ButtonColor = Color.FromArgb(51, 51, 51);
-            radioDropDownList.DrawMode = DrawMode.OwnerDrawFixed;
-            radioDropDownList.DropDownStyle = ComboBoxStyle.DropDownList;
-            radioDropDownList.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            radioDropDownList.FormattingEnabled = true;
-            radioDropDownList.Location = new Point(9, 191);
-            radioDropDownList.Name = "radioDropDownList";
-            radioDropDownList.Size = new Size(233, 21);
-            radioDropDownList.TabIndex = 12;
-            radioDropDownList.DrawItem += radioDropDownList_DrawItem;
-            radioDropDownList.SelectedIndexChanged += radioDropDownList_SelectedIndexChanged;
-            radioDropDownList.DropDownClosed += radioDropDownList_DropDownClosed;
-            radioDropDownList.MouseEnter += radioDropDownList_MouseEnter;
-            radioDropDownList.MouseLeave += radioDropDownList_MouseLeave;
-            radioDropDownList.MouseHover += radioDropDownList_MouseEnter;
+            RadioDropDownList.BackColor = Color.FromArgb(51, 51, 51);
+            RadioDropDownList.BorderColor = Color.FromArgb(255, 191, 0);
+            RadioDropDownList.ButtonColor = Color.FromArgb(51, 51, 51);
+            RadioDropDownList.DrawMode = DrawMode.OwnerDrawFixed;
+            RadioDropDownList.DropDownStyle = ComboBoxStyle.DropDownList;
+            RadioDropDownList.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            RadioDropDownList.FormattingEnabled = true;
+            RadioDropDownList.Location = new Point(9, 191);
+            RadioDropDownList.Name = "RadioDropDownList";
+            RadioDropDownList.Size = new Size(233, 21);
+            RadioDropDownList.TabIndex = 12;
+            RadioDropDownList.DrawItem += RadioDropDownList_DrawItem;
+            RadioDropDownList.SelectedIndexChanged += RadioDropDownList_SelectedIndexChanged;
+            RadioDropDownList.DropDownClosed += RadioDropDownList_DropDownClosed;
+            RadioDropDownList.MouseEnter += RadioDropDownList_MouseEnter;
+            RadioDropDownList.MouseLeave += RadioDropDownList_MouseLeave;
+            RadioDropDownList.MouseHover += RadioDropDownList_MouseEnter;
             // 
-            // editRadioButton
+            // EditRadioButton
             // 
-            editRadioButton.BackColor = Color.FromArgb(255, 191, 0);
-            editRadioButton.FlatAppearance.BorderSize = 0;
-            editRadioButton.FlatStyle = FlatStyle.Flat;
-            editRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            editRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            editRadioButton.Location = new Point(9, 356);
-            editRadioButton.Name = "editRadioButton";
-            editRadioButton.Size = new Size(110, 20);
-            editRadioButton.TabIndex = 1;
-            editRadioButton.Text = "Edit";
-            editRadioButton.UseVisualStyleBackColor = false;
-            editRadioButton.Click += editRadioButton_Click;
-            editRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
-            editRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            EditRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            EditRadioButton.FlatAppearance.BorderSize = 0;
+            EditRadioButton.FlatStyle = FlatStyle.Flat;
+            EditRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            EditRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            EditRadioButton.Location = new Point(9, 356);
+            EditRadioButton.Name = "EditRadioButton";
+            EditRadioButton.Size = new Size(110, 20);
+            EditRadioButton.TabIndex = 1;
+            EditRadioButton.Text = "Edit";
+            EditRadioButton.UseVisualStyleBackColor = false;
+            EditRadioButton.Click += EditRadioButton_Click;
+            EditRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            EditRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // editRadioURLTB
+            // EditRadioURLTB
             // 
-            editRadioURLTB.BackColor = Color.FromArgb(51, 51, 51);
-            editRadioURLTB.BorderStyle = BorderStyle.FixedSingle;
-            editRadioURLTB.ForeColor = Color.FromArgb(255, 191, 0);
-            editRadioURLTB.Location = new Point(9, 308);
-            editRadioURLTB.Name = "editRadioURLTB";
-            editRadioURLTB.Size = new Size(233, 23);
-            editRadioURLTB.TabIndex = 2;
+            EditRadioURLTB.BackColor = Color.FromArgb(51, 51, 51);
+            EditRadioURLTB.BorderStyle = BorderStyle.FixedSingle;
+            EditRadioURLTB.ForeColor = Color.FromArgb(255, 191, 0);
+            EditRadioURLTB.Location = new Point(9, 308);
+            EditRadioURLTB.Name = "EditRadioURLTB";
+            EditRadioURLTB.Size = new Size(233, 23);
+            EditRadioURLTB.TabIndex = 2;
             // 
-            // editRadioNameTB
+            // EditRadioNameTB
             // 
-            editRadioNameTB.BackColor = Color.FromArgb(51, 51, 51);
-            editRadioNameTB.BorderStyle = BorderStyle.FixedSingle;
-            editRadioNameTB.ForeColor = Color.FromArgb(255, 191, 0);
-            editRadioNameTB.Location = new Point(9, 249);
-            editRadioNameTB.Name = "editRadioNameTB";
-            editRadioNameTB.Size = new Size(233, 23);
-            editRadioNameTB.TabIndex = 3;
+            EditRadioNameTB.BackColor = Color.FromArgb(51, 51, 51);
+            EditRadioNameTB.BorderStyle = BorderStyle.FixedSingle;
+            EditRadioNameTB.ForeColor = Color.FromArgb(255, 191, 0);
+            EditRadioNameTB.Location = new Point(9, 249);
+            EditRadioNameTB.Name = "EditRadioNameTB";
+            EditRadioNameTB.Size = new Size(233, 23);
+            EditRadioNameTB.TabIndex = 3;
             // 
-            // removeRadioButton
+            // RemoveRadioButton
             // 
-            removeRadioButton.BackColor = Color.FromArgb(255, 191, 0);
-            removeRadioButton.FlatAppearance.BorderSize = 0;
-            removeRadioButton.FlatStyle = FlatStyle.Flat;
-            removeRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            removeRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            removeRadioButton.Location = new Point(132, 356);
-            removeRadioButton.Name = "removeRadioButton";
-            removeRadioButton.Size = new Size(110, 20);
-            removeRadioButton.TabIndex = 4;
-            removeRadioButton.Text = "Remove";
-            removeRadioButton.UseVisualStyleBackColor = false;
-            removeRadioButton.Click += removeRadioButton_Click;
-            removeRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
-            removeRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            RemoveRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            RemoveRadioButton.FlatAppearance.BorderSize = 0;
+            RemoveRadioButton.FlatStyle = FlatStyle.Flat;
+            RemoveRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            RemoveRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            RemoveRadioButton.Location = new Point(132, 356);
+            RemoveRadioButton.Name = "RemoveRadioButton";
+            RemoveRadioButton.Size = new Size(110, 20);
+            RemoveRadioButton.TabIndex = 4;
+            RemoveRadioButton.Text = "Remove";
+            RemoveRadioButton.UseVisualStyleBackColor = false;
+            RemoveRadioButton.Click += RemoveRadioButton_Click;
+            RemoveRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            RemoveRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // addRadioNameTB
+            // AddRadioNameTB
             // 
-            addRadioNameTB.BackColor = Color.FromArgb(51, 51, 51);
-            addRadioNameTB.BorderStyle = BorderStyle.FixedSingle;
-            addRadioNameTB.ForeColor = Color.FromArgb(255, 191, 0);
-            addRadioNameTB.Location = new Point(9, 51);
-            addRadioNameTB.Name = "addRadioNameTB";
-            addRadioNameTB.Size = new Size(233, 23);
-            addRadioNameTB.TabIndex = 5;
+            AddRadioNameTB.BackColor = Color.FromArgb(51, 51, 51);
+            AddRadioNameTB.BorderStyle = BorderStyle.FixedSingle;
+            AddRadioNameTB.ForeColor = Color.FromArgb(255, 191, 0);
+            AddRadioNameTB.Location = new Point(9, 51);
+            AddRadioNameTB.Name = "AddRadioNameTB";
+            AddRadioNameTB.Size = new Size(233, 23);
+            AddRadioNameTB.TabIndex = 5;
             // 
-            // addRadioURLTB
+            // AddRadioURLTB
             // 
-            addRadioURLTB.BackColor = Color.FromArgb(51, 51, 51);
-            addRadioURLTB.BorderStyle = BorderStyle.FixedSingle;
-            addRadioURLTB.ForeColor = Color.FromArgb(255, 191, 0);
-            addRadioURLTB.Location = new Point(9, 106);
-            addRadioURLTB.Name = "addRadioURLTB";
-            addRadioURLTB.Size = new Size(233, 23);
-            addRadioURLTB.TabIndex = 6;
+            AddRadioURLTB.BackColor = Color.FromArgb(51, 51, 51);
+            AddRadioURLTB.BorderStyle = BorderStyle.FixedSingle;
+            AddRadioURLTB.ForeColor = Color.FromArgb(255, 191, 0);
+            AddRadioURLTB.Location = new Point(9, 106);
+            AddRadioURLTB.Name = "AddRadioURLTB";
+            AddRadioURLTB.Size = new Size(233, 23);
+            AddRadioURLTB.TabIndex = 6;
             // 
-            // addRadioButton
+            // AddRadioButton
             // 
-            addRadioButton.BackColor = Color.FromArgb(255, 191, 0);
-            addRadioButton.FlatAppearance.BorderSize = 0;
-            addRadioButton.FlatStyle = FlatStyle.Flat;
-            addRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            addRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            addRadioButton.Location = new Point(72, 148);
-            addRadioButton.Name = "addRadioButton";
-            addRadioButton.Size = new Size(110, 20);
-            addRadioButton.TabIndex = 7;
-            addRadioButton.Text = "Add";
-            addRadioButton.UseVisualStyleBackColor = false;
-            addRadioButton.Click += addRadioButton_Click;
-            addRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
-            addRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            AddRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            AddRadioButton.FlatAppearance.BorderSize = 0;
+            AddRadioButton.FlatStyle = FlatStyle.Flat;
+            AddRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            AddRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            AddRadioButton.Location = new Point(72, 148);
+            AddRadioButton.Name = "AddRadioButton";
+            AddRadioButton.Size = new Size(110, 20);
+            AddRadioButton.TabIndex = 7;
+            AddRadioButton.Text = "Add";
+            AddRadioButton.UseVisualStyleBackColor = false;
+            AddRadioButton.Click += AddRadioButton_Click;
+            AddRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            AddRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // settingsLabel
+            // SettingsLabel
             // 
-            settingsLabel.AutoSize = true;
-            settingsLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            settingsLabel.ForeColor = Color.FromArgb(255, 191, 0);
-            settingsLabel.Location = new Point(100, 15);
-            settingsLabel.MaximumSize = new Size(100, 20);
-            settingsLabel.Name = "settingsLabel";
-            settingsLabel.Size = new Size(53, 13);
-            settingsLabel.TabIndex = 18;
-            settingsLabel.Text = "Settings";
+            SettingsLabel.AutoSize = true;
+            SettingsLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            SettingsLabel.ForeColor = Color.FromArgb(255, 191, 0);
+            SettingsLabel.Location = new Point(100, 15);
+            SettingsLabel.MaximumSize = new Size(100, 20);
+            SettingsLabel.Name = "SettingsLabel";
+            SettingsLabel.Size = new Size(53, 13);
+            SettingsLabel.TabIndex = 18;
+            SettingsLabel.Text = "Settings";
             // 
-            // addRadioLabel
+            // AddRadioLabel
             // 
-            addRadioLabel.AutoSize = true;
-            addRadioLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            addRadioLabel.ForeColor = Color.FromArgb(255, 191, 0);
-            addRadioLabel.Location = new Point(9, 35);
-            addRadioLabel.Name = "addRadioLabel";
-            addRadioLabel.Size = new Size(43, 13);
-            addRadioLabel.TabIndex = 19;
-            addRadioLabel.Text = "Name:";
+            AddRadioLabel.AutoSize = true;
+            AddRadioLabel.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            AddRadioLabel.ForeColor = Color.FromArgb(255, 191, 0);
+            AddRadioLabel.Location = new Point(9, 35);
+            AddRadioLabel.Name = "AddRadioLabel";
+            AddRadioLabel.Size = new Size(43, 13);
+            AddRadioLabel.TabIndex = 19;
+            AddRadioLabel.Text = "Name:";
             // 
-            // addRadioURL
+            // AddRadioURL
             // 
-            addRadioURL.AutoSize = true;
-            addRadioURL.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            addRadioURL.ForeColor = Color.FromArgb(255, 191, 0);
-            addRadioURL.Location = new Point(9, 90);
-            addRadioURL.Name = "addRadioURL";
-            addRadioURL.Size = new Size(36, 13);
-            addRadioURL.TabIndex = 20;
-            addRadioURL.Text = "URL:";
+            AddRadioURL.AutoSize = true;
+            AddRadioURL.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            AddRadioURL.ForeColor = Color.FromArgb(255, 191, 0);
+            AddRadioURL.Location = new Point(9, 90);
+            AddRadioURL.Name = "AddRadioURL";
+            AddRadioURL.Size = new Size(36, 13);
+            AddRadioURL.TabIndex = 20;
+            AddRadioURL.Text = "URL:";
             // 
-            // editRadioName
+            // EditRadioName
             // 
-            editRadioName.AutoSize = true;
-            editRadioName.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            editRadioName.ForeColor = Color.FromArgb(255, 191, 0);
-            editRadioName.Location = new Point(9, 233);
-            editRadioName.Name = "editRadioName";
-            editRadioName.Size = new Size(43, 13);
-            editRadioName.TabIndex = 21;
-            editRadioName.Text = "Name:";
+            EditRadioName.AutoSize = true;
+            EditRadioName.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            EditRadioName.ForeColor = Color.FromArgb(255, 191, 0);
+            EditRadioName.Location = new Point(9, 233);
+            EditRadioName.Name = "EditRadioName";
+            EditRadioName.Size = new Size(43, 13);
+            EditRadioName.TabIndex = 21;
+            EditRadioName.Text = "Name:";
             // 
-            // editRadioURL
+            // EditRadioURL
             // 
-            editRadioURL.AutoSize = true;
-            editRadioURL.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            editRadioURL.ForeColor = Color.FromArgb(255, 191, 0);
-            editRadioURL.Location = new Point(9, 292);
-            editRadioURL.Name = "editRadioURL";
-            editRadioURL.Size = new Size(36, 13);
-            editRadioURL.TabIndex = 22;
-            editRadioURL.Text = "URL:";
+            EditRadioURL.AutoSize = true;
+            EditRadioURL.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            EditRadioURL.ForeColor = Color.FromArgb(255, 191, 0);
+            EditRadioURL.Location = new Point(9, 292);
+            EditRadioURL.Name = "EditRadioURL";
+            EditRadioURL.Size = new Size(36, 13);
+            EditRadioURL.TabIndex = 22;
+            EditRadioURL.Text = "URL:";
             // 
-            // closePictureBox
+            // ClosePictureBox
             // 
-            closePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            closePictureBox.Image = Properties.Resources.Close;
-            closePictureBox.Location = new Point(222, 8);
-            closePictureBox.Name = "closePictureBox";
-            closePictureBox.Size = new Size(20, 20);
-            closePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            closePictureBox.TabIndex = 23;
-            closePictureBox.TabStop = false;
-            closePictureBox.Click += closePictureBox_Click;
-            closePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            closePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            ClosePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            ClosePictureBox.Image = Properties.Resources.Close;
+            ClosePictureBox.Location = new Point(222, 8);
+            ClosePictureBox.Name = "ClosePictureBox";
+            ClosePictureBox.Size = new Size(20, 20);
+            ClosePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            ClosePictureBox.TabIndex = 23;
+            ClosePictureBox.TabStop = false;
+            ClosePictureBox.Click += ClosePictureBox_Click;
+            ClosePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            ClosePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // minimizePictureBox
+            // MinimizePictureBox
             // 
-            minimizePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            minimizePictureBox.Image = Properties.Resources.Minimize;
-            minimizePictureBox.Location = new Point(196, 8);
-            minimizePictureBox.Name = "minimizePictureBox";
-            minimizePictureBox.Size = new Size(20, 20);
-            minimizePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            minimizePictureBox.TabIndex = 24;
-            minimizePictureBox.TabStop = false;
-            minimizePictureBox.Click += minimizePictureBox_Click;
-            minimizePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            minimizePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            MinimizePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            MinimizePictureBox.Image = Properties.Resources.Minimize;
+            MinimizePictureBox.Location = new Point(196, 8);
+            MinimizePictureBox.Name = "MinimizePictureBox";
+            MinimizePictureBox.Size = new Size(20, 20);
+            MinimizePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            MinimizePictureBox.TabIndex = 24;
+            MinimizePictureBox.TabStop = false;
+            MinimizePictureBox.Click += MinimizePictureBox_Click;
+            MinimizePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            MinimizePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // testAddRadioButton
+            // TestAddRadioButton
             // 
-            testAddRadioButton.BackColor = Color.FromArgb(255, 191, 0);
-            testAddRadioButton.FlatAppearance.BorderSize = 0;
-            testAddRadioButton.FlatStyle = FlatStyle.Flat;
-            testAddRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            testAddRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            testAddRadioButton.Location = new Point(132, 80);
-            testAddRadioButton.Name = "testAddRadioButton";
-            testAddRadioButton.Size = new Size(110, 20);
-            testAddRadioButton.TabIndex = 25;
-            testAddRadioButton.Text = "Test";
-            testAddRadioButton.UseVisualStyleBackColor = false;
-            testAddRadioButton.Click += testAddRadioButton_Click;
-            testAddRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
-            testAddRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            TestAddRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            TestAddRadioButton.FlatAppearance.BorderSize = 0;
+            TestAddRadioButton.FlatStyle = FlatStyle.Flat;
+            TestAddRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            TestAddRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            TestAddRadioButton.Location = new Point(132, 80);
+            TestAddRadioButton.Name = "TestAddRadioButton";
+            TestAddRadioButton.Size = new Size(110, 20);
+            TestAddRadioButton.TabIndex = 25;
+            TestAddRadioButton.Text = "Test";
+            TestAddRadioButton.UseVisualStyleBackColor = false;
+            TestAddRadioButton.Click += TestAddRadioButton_Click;
+            TestAddRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            TestAddRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // testEditRadioButton
+            // TestEditRadioButton
             // 
-            testEditRadioButton.BackColor = Color.FromArgb(255, 191, 0);
-            testEditRadioButton.FlatAppearance.BorderSize = 0;
-            testEditRadioButton.FlatStyle = FlatStyle.Flat;
-            testEditRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
-            testEditRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            testEditRadioButton.Location = new Point(132, 282);
-            testEditRadioButton.Name = "testEditRadioButton";
-            testEditRadioButton.Size = new Size(110, 20);
-            testEditRadioButton.TabIndex = 26;
-            testEditRadioButton.Text = "Test";
-            testEditRadioButton.UseVisualStyleBackColor = false;
-            testEditRadioButton.Click += testEditRadioButton_Click;
-            testEditRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
-            testEditRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            TestEditRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            TestEditRadioButton.FlatAppearance.BorderSize = 0;
+            TestEditRadioButton.FlatStyle = FlatStyle.Flat;
+            TestEditRadioButton.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
+            TestEditRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            TestEditRadioButton.Location = new Point(132, 282);
+            TestEditRadioButton.Name = "TestEditRadioButton";
+            TestEditRadioButton.Size = new Size(110, 20);
+            TestEditRadioButton.TabIndex = 26;
+            TestEditRadioButton.Text = "Test";
+            TestEditRadioButton.UseVisualStyleBackColor = false;
+            TestEditRadioButton.Click += TestEditRadioButton_Click;
+            TestEditRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            TestEditRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
             // SettingsForm
             // 
@@ -284,23 +284,23 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(255, 394);
-            Controls.Add(testEditRadioButton);
-            Controls.Add(testAddRadioButton);
-            Controls.Add(minimizePictureBox);
-            Controls.Add(closePictureBox);
-            Controls.Add(editRadioURL);
-            Controls.Add(editRadioName);
-            Controls.Add(addRadioURL);
-            Controls.Add(addRadioLabel);
-            Controls.Add(settingsLabel);
-            Controls.Add(addRadioButton);
-            Controls.Add(addRadioURLTB);
-            Controls.Add(addRadioNameTB);
-            Controls.Add(removeRadioButton);
-            Controls.Add(editRadioNameTB);
-            Controls.Add(editRadioURLTB);
-            Controls.Add(editRadioButton);
-            Controls.Add(radioDropDownList);
+            Controls.Add(TestEditRadioButton);
+            Controls.Add(TestAddRadioButton);
+            Controls.Add(MinimizePictureBox);
+            Controls.Add(ClosePictureBox);
+            Controls.Add(EditRadioURL);
+            Controls.Add(EditRadioName);
+            Controls.Add(AddRadioURL);
+            Controls.Add(AddRadioLabel);
+            Controls.Add(SettingsLabel);
+            Controls.Add(AddRadioButton);
+            Controls.Add(AddRadioURLTB);
+            Controls.Add(AddRadioNameTB);
+            Controls.Add(RemoveRadioButton);
+            Controls.Add(EditRadioNameTB);
+            Controls.Add(EditRadioURLTB);
+            Controls.Add(EditRadioButton);
+            Controls.Add(RadioDropDownList);
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             Name = "SettingsForm";
@@ -309,30 +309,30 @@
             TopMost = true;
             Paint += SettingsForm_Paint;
             MouseDown += SettingsForm_MouseDown;
-            ((System.ComponentModel.ISupportInitialize)closePictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)minimizePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ClosePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)MinimizePictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private FlatComboBox radioDropDownList;
-        private Button editRadioButton;
-        private TextBox editRadioURLTB;
-        private TextBox editRadioNameTB;
-        private Button removeRadioButton;
-        private TextBox addRadioNameTB;
-        private TextBox addRadioURLTB;
-        private Button addRadioButton;
-        private Label settingsLabel;
-        private Label addRadioLabel;
-        private Label addRadioURL;
-        private Label editRadioName;
-        private Label editRadioURL;
-        private PictureBox closePictureBox;
-        private PictureBox minimizePictureBox;
-        private Button testAddRadioButton;
-        private Button testEditRadioButton;
+        private FlatComboBox RadioDropDownList;
+        private Button EditRadioButton;
+        private TextBox EditRadioURLTB;
+        private TextBox EditRadioNameTB;
+        private Button RemoveRadioButton;
+        private TextBox AddRadioNameTB;
+        private TextBox AddRadioURLTB;
+        private Button AddRadioButton;
+        private Label SettingsLabel;
+        private Label AddRadioLabel;
+        private Label AddRadioURL;
+        private Label EditRadioName;
+        private Label EditRadioURL;
+        private PictureBox ClosePictureBox;
+        private PictureBox MinimizePictureBox;
+        private Button TestAddRadioButton;
+        private Button TestEditRadioButton;
     }
 }

@@ -8,13 +8,13 @@ namespace ContinuousAudioOverlay
 {
     public class BassService
     {
-        private Assembly? bassAssembly;
-        private dynamic? previousTagInfo;
-        static int _streamHandle;
-        Type? bassType;
-        Type? bassTagsType;
-        List<Radio> radioList = new List<Radio>();
-        private bool bassInitialized = false;
+        private Assembly? _bassAssembly;
+        private dynamic? _previousTagInfo;
+        private static int _streamHandle;
+        private Type? _bassType;
+        private Type? _bassTagsType;
+        private List<Radio> _radioList = new List<Radio>();
+        private bool _bassInitialized = false;
         private SYNCPROC? _metaDataSync;
         public delegate void MetaDataChangedHandler(string title, string artist);
         public event MetaDataChangedHandler? OnMetaDataChanged;
@@ -32,7 +32,7 @@ namespace ContinuousAudioOverlay
             {
                 ct.ThrowIfCancellationRequested();
 
-                if (bassAssembly != null)
+                if (_bassAssembly != null)
                     return;
 
                 string baseDir = AppContext.BaseDirectory;
@@ -42,13 +42,13 @@ namespace ContinuousAudioOverlay
                 if (!File.Exists(bassNetPath))
                     throw new FileNotFoundException("Bass.Net.dll not found.", bassNetPath);
 
-                bassAssembly = Assembly.LoadFrom(bassNetPath);
+                _bassAssembly = Assembly.LoadFrom(bassNetPath);
 
-                bassTagsType = bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.TAG_INFO")
+                _bassTagsType = _bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.TAG_INFO")
                               ?? throw new TypeLoadException(
                                     "Could not find 'Un4seen.Bass.AddOn.Tags.TAG_INFO' in Bass.Net.dll.");
 
-                previousTagInfo = Activator.CreateInstance(bassTagsType);
+                _previousTagInfo = Activator.CreateInstance(_bassTagsType);
             }, ct);
         }
 
@@ -89,11 +89,11 @@ namespace ContinuousAudioOverlay
                                     radio.Element("RadioURL")?.Value ?? string.Empty
                                 ))
                                 .ToList();
-                radioList.Clear();
-                radioList.AddRange(radios);
+                _radioList.Clear();
+                _radioList.AddRange(radios);
             }
 
-            return radioList;
+            return _radioList;
         }
 
         public void SaveRadioList(List<Radio> radioList)
@@ -118,7 +118,7 @@ namespace ContinuousAudioOverlay
 
         public async Task IndexChanged(int index)
         {
-            string radioURL = radioList[index].RadioURL;
+            string radioURL = _radioList[index].RadioURL;
             await PlayRadio(radioURL);
         }
 
@@ -154,16 +154,16 @@ namespace ContinuousAudioOverlay
         {
             _radioPlaying = false;
 
-            if (!bassInitialized)
+            if (!_bassInitialized)
             {
                 return;
             }
 
-            if (bassAssembly != null && bassType != null)
+            if (_bassAssembly != null && _bassType != null)
             {
                 _playRadioCts?.Cancel();
 
-                MethodInfo? bassChannelStopMethod = bassType.GetMethod("BASS_ChannelStop");
+                MethodInfo? bassChannelStopMethod = _bassType.GetMethod("BASS_ChannelStop");
                 if (bassChannelStopMethod != null)
                 {
                     bassChannelStopMethod.Invoke(null, new object[] { _streamHandle });
@@ -173,7 +173,7 @@ namespace ContinuousAudioOverlay
                     MessageBox.Show("BASS_ChannelStop method not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                MethodInfo? bassStreamFreeMethod = bassType.GetMethod("BASS_StreamFree");
+                MethodInfo? bassStreamFreeMethod = _bassType.GetMethod("BASS_StreamFree");
                 if (bassStreamFreeMethod != null)
                 {
                     bassStreamFreeMethod.Invoke(null, new object[] { _streamHandle });
@@ -183,7 +183,7 @@ namespace ContinuousAudioOverlay
                     MessageBox.Show("BASS_StreamFree method not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                MethodInfo? bassFreeMethod = bassType.GetMethod("BASS_Free");
+                MethodInfo? bassFreeMethod = _bassType.GetMethod("BASS_Free");
                 if (bassFreeMethod != null)
                 {
                     bassFreeMethod.Invoke(null, null);
@@ -207,12 +207,12 @@ namespace ContinuousAudioOverlay
         public (string, string, bool) GetTitleTags()
         {
             //Function is likely to be removed in the future - for now it's kept for testing purposes
-            if (bassAssembly != null && bassTagsType != null)
+            if (_bassAssembly != null && _bassTagsType != null)
             {
-                dynamic? tagInfo = Activator.CreateInstance(bassTagsType);
+                dynamic? tagInfo = Activator.CreateInstance(_bassTagsType);
 
-                Type? bassTagsTypeLocal = bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.BassTags");
-                MethodInfo? getFromUrlMethod = bassTagsTypeLocal?.GetMethod("BASS_TAG_GetFromURL", new[] { typeof(int), bassTagsType });
+                Type? bassTagsTypeLocal = _bassAssembly.GetType("Un4seen.Bass.AddOn.Tags.BassTags");
+                MethodInfo? getFromUrlMethod = bassTagsTypeLocal?.GetMethod("BASS_TAG_GetFromURL", new[] { typeof(int), _bassTagsType });
 
                 if (tagInfo != null && getFromUrlMethod != null)
                 {
@@ -222,10 +222,10 @@ namespace ContinuousAudioOverlay
                     {
                         string title = WebUtility.HtmlDecode(tagInfo?.title);
                         string artist = WebUtility.HtmlDecode(tagInfo?.artist);
-                        bool tagInfoPropertiesChanged = TagInfoPropertiesChanged(tagInfo, previousTagInfo);
+                        bool tagInfoPropertiesChanged = TagInfoPropertiesChanged(tagInfo, _previousTagInfo);
                         if (tagInfoPropertiesChanged)
                         {
-                            previousTagInfo = tagInfo;
+                            _previousTagInfo = tagInfo;
                         }
                         return (title, artist, tagInfoPropertiesChanged);
                     }
@@ -245,7 +245,7 @@ namespace ContinuousAudioOverlay
 
         public bool BassInitialized()
         {
-            return bassInitialized;
+            return _bassInitialized;
         }
 
         public async Task PlayRadio(string radioURL)
@@ -256,13 +256,13 @@ namespace ContinuousAudioOverlay
 
             try
             {
-                if (!bassInitialized)
+                if (!_bassInitialized)
                 {
-                    bassInitialized = true;
+                    _bassInitialized = true;
                     await LoadBassAssembly(ct);
                 }
 
-                if (bassAssembly == null)
+                if (_bassAssembly == null)
                 {
                     MessageBox.Show("BASS library is not loaded.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -272,9 +272,9 @@ namespace ContinuousAudioOverlay
                 {
                     ct.ThrowIfCancellationRequested();
 
-                    bassType = bassAssembly.GetType("Un4seen.Bass.Bass");
+                    _bassType = _bassAssembly.GetType("Un4seen.Bass.Bass");
 
-                    MethodInfo? bassInitMethod = bassType?.GetMethod("BASS_Init");
+                    MethodInfo? bassInitMethod = _bassType?.GetMethod("BASS_Init");
                     bool initSuccess = bassInitMethod?.Invoke(null, new object[] { -1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero }) as bool? ?? false;
 
                     if (!initSuccess)
@@ -282,18 +282,18 @@ namespace ContinuousAudioOverlay
                         return false;
                     }
 
-                    MethodInfo? bassStreamCreateURLMethod = bassType?.GetMethod("BASS_StreamCreateURL");
+                    MethodInfo? bassStreamCreateURLMethod = _bassType?.GetMethod("BASS_StreamCreateURL");
                     _streamHandle = (int?)bassStreamCreateURLMethod?.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null!, IntPtr.Zero }) ?? 0;
 
                     ct.ThrowIfCancellationRequested();
 
                     if (_streamHandle != 0)
                     {
-                        MethodInfo? bassChannelPlayMethod = bassType?.GetMethod("BASS_ChannelPlay");
+                        MethodInfo? bassChannelPlayMethod = _bassType?.GetMethod("BASS_ChannelPlay");
                         bassChannelPlayMethod?.Invoke(null, new object[] { _streamHandle, true });
 
                         Type[] parameterTypes = new Type[] { typeof(int), typeof(BASSAttribute), typeof(float) }; // Adjust the parameter types as necessary
-                        MethodInfo? bassChannelSetAttributeMethod = bassType?.GetMethod("BASS_ChannelSetAttribute", parameterTypes);
+                        MethodInfo? bassChannelSetAttributeMethod = _bassType?.GetMethod("BASS_ChannelSetAttribute", parameterTypes);
                         bassChannelSetAttributeMethod?.Invoke(null, new object[] { _streamHandle, BASSAttribute.BASS_ATTRIB_VOL, 0.1f });
 
                         _metaDataSync = new SYNCPROC(MetaDataSync);

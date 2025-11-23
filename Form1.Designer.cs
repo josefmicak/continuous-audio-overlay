@@ -29,207 +29,207 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            pauseRadioButton = new Button();
-            minimizePictureBox = new PictureBox();
-            closePictureBox = new PictureBox();
-            prevPictureBox = new PictureBox();
-            pausePlayPictureBox = new PictureBox();
-            nextPictureBox = new PictureBox();
-            volumeSlider = new TrackBarCustom();
-            mutePictureBox = new PictureBox();
-            reduceVolumePictureBox = new PictureBox();
-            volumeLabel = new Label();
-            increaseVolumePictureBox = new PictureBox();
-            outputDeviceDropDown = new FlatComboBox();
+            PauseRadioButton = new Button();
+            MinimizePictureBox = new PictureBox();
+            ClosePictureBox = new PictureBox();
+            PrevPictureBox = new PictureBox();
+            PausePlayPictureBox = new PictureBox();
+            NextPictureBox = new PictureBox();
+            VolumeSlider = new TrackBarCustom();
+            MutePictureBox = new PictureBox();
+            ReduceVolumePictureBox = new PictureBox();
+            VolumeLabel = new Label();
+            IncreaseVolumePictureBox = new PictureBox();
+            OutputDeviceDropDown = new FlatComboBox();
             titleTextBox = new TextBox();
-            radioDropDownList = new FlatComboBox();
-            resumeRadioButton = new Button();
-            thumbnailPictureBox = new PictureBox();
-            sourceLabel = new Label();
-            foldPictureBox = new PictureBox();
-            settingsPictureBox = new PictureBox();
-            previousOutputDevicePictureBox = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)minimizePictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)closePictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)prevPictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pausePlayPictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nextPictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)volumeSlider).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)mutePictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)foldPictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)settingsPictureBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)previousOutputDevicePictureBox).BeginInit();
+            RadioDropDownList = new FlatComboBox();
+            ResumeRadioButton = new Button();
+            ThumbnailPictureBox = new PictureBox();
+            SourceLabel = new Label();
+            FoldPictureBox = new PictureBox();
+            SettingsPictureBox = new PictureBox();
+            PreviousOutputDevicePictureBox = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)MinimizePictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ClosePictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)PrevPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)PausePlayPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NextPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)VolumeSlider).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)MutePictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ReduceVolumePictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)IncreaseVolumePictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)ThumbnailPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)FoldPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)SettingsPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)PreviousOutputDevicePictureBox).BeginInit();
             SuspendLayout();
             // 
-            // pauseRadioButton
+            // PauseRadioButton
             // 
-            pauseRadioButton.BackColor = Color.FromArgb(255, 191, 0);
-            pauseRadioButton.FlatAppearance.BorderSize = 0;
-            pauseRadioButton.FlatStyle = FlatStyle.Flat;
-            pauseRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            pauseRadioButton.Location = new Point(15, 45);
-            pauseRadioButton.Name = "pauseRadioButton";
-            pauseRadioButton.Size = new Size(110, 20);
-            pauseRadioButton.TabIndex = 1;
-            pauseRadioButton.Text = "Stop R";
-            pauseRadioButton.UseVisualStyleBackColor = false;
-            pauseRadioButton.Click += pauseRadioButton_Click;
-            pauseRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
-            pauseRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            PauseRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            PauseRadioButton.FlatAppearance.BorderSize = 0;
+            PauseRadioButton.FlatStyle = FlatStyle.Flat;
+            PauseRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            PauseRadioButton.Location = new Point(15, 45);
+            PauseRadioButton.Name = "PauseRadioButton";
+            PauseRadioButton.Size = new Size(110, 20);
+            PauseRadioButton.TabIndex = 1;
+            PauseRadioButton.Text = "Stop R";
+            PauseRadioButton.UseVisualStyleBackColor = false;
+            PauseRadioButton.Click += PauseRadioButton_Click;
+            PauseRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            PauseRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // minimizePictureBox
+            // MinimizePictureBox
             // 
-            minimizePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            minimizePictureBox.Image = Properties.Resources.Minimize;
-            minimizePictureBox.Location = new Point(202, 8);
-            minimizePictureBox.Name = "minimizePictureBox";
-            minimizePictureBox.Size = new Size(20, 20);
-            minimizePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            minimizePictureBox.TabIndex = 2;
-            minimizePictureBox.TabStop = false;
-            minimizePictureBox.Click += minimizePictureBox_Click;
-            minimizePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            minimizePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            MinimizePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            MinimizePictureBox.Image = Properties.Resources.Minimize;
+            MinimizePictureBox.Location = new Point(202, 8);
+            MinimizePictureBox.Name = "MinimizePictureBox";
+            MinimizePictureBox.Size = new Size(20, 20);
+            MinimizePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            MinimizePictureBox.TabIndex = 2;
+            MinimizePictureBox.TabStop = false;
+            MinimizePictureBox.Click += MinimizePictureBox_Click;
+            MinimizePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            MinimizePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // closePictureBox
+            // ClosePictureBox
             // 
-            closePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            closePictureBox.Image = Properties.Resources.Close;
-            closePictureBox.Location = new Point(228, 8);
-            closePictureBox.Name = "closePictureBox";
-            closePictureBox.Size = new Size(20, 20);
-            closePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            closePictureBox.TabIndex = 3;
-            closePictureBox.TabStop = false;
-            closePictureBox.Click += closePictureBox_Click;
-            closePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            closePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            ClosePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            ClosePictureBox.Image = Properties.Resources.Close;
+            ClosePictureBox.Location = new Point(228, 8);
+            ClosePictureBox.Name = "ClosePictureBox";
+            ClosePictureBox.Size = new Size(20, 20);
+            ClosePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            ClosePictureBox.TabIndex = 3;
+            ClosePictureBox.TabStop = false;
+            ClosePictureBox.Click += ClosePictureBox_Click;
+            ClosePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            ClosePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // prevPictureBox
+            // PrevPictureBox
             // 
-            prevPictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            prevPictureBox.Image = Properties.Resources.PrevButton;
-            prevPictureBox.Location = new Point(14, 225);
-            prevPictureBox.Name = "prevPictureBox";
-            prevPictureBox.Size = new Size(72, 69);
-            prevPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            prevPictureBox.TabIndex = 4;
-            prevPictureBox.TabStop = false;
-            prevPictureBox.Click += prevPictureBox_Click;
-            prevPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            prevPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            PrevPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            PrevPictureBox.Image = Properties.Resources.PrevButton;
+            PrevPictureBox.Location = new Point(14, 225);
+            PrevPictureBox.Name = "PrevPictureBox";
+            PrevPictureBox.Size = new Size(72, 69);
+            PrevPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            PrevPictureBox.TabIndex = 4;
+            PrevPictureBox.TabStop = false;
+            PrevPictureBox.Click += PrevPictureBox_Click;
+            PrevPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            PrevPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // pausePlayPictureBox
+            // PausePlayPictureBox
             // 
-            pausePlayPictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            pausePlayPictureBox.Image = Properties.Resources.PausePlayButton;
-            pausePlayPictureBox.Location = new Point(95, 225);
-            pausePlayPictureBox.Name = "pausePlayPictureBox";
-            pausePlayPictureBox.Size = new Size(72, 69);
-            pausePlayPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            pausePlayPictureBox.TabIndex = 5;
-            pausePlayPictureBox.TabStop = false;
-            pausePlayPictureBox.Click += pausePlayPictureBox_Click;
-            pausePlayPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            pausePlayPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            PausePlayPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            PausePlayPictureBox.Image = Properties.Resources.PausePlayButton;
+            PausePlayPictureBox.Location = new Point(95, 225);
+            PausePlayPictureBox.Name = "PausePlayPictureBox";
+            PausePlayPictureBox.Size = new Size(72, 69);
+            PausePlayPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            PausePlayPictureBox.TabIndex = 5;
+            PausePlayPictureBox.TabStop = false;
+            PausePlayPictureBox.Click += PausePlayPictureBox_Click;
+            PausePlayPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            PausePlayPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // nextPictureBox
+            // NextPictureBox
             // 
-            nextPictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            nextPictureBox.Image = Properties.Resources.NextButton;
-            nextPictureBox.Location = new Point(176, 225);
-            nextPictureBox.Name = "nextPictureBox";
-            nextPictureBox.Size = new Size(72, 69);
-            nextPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            nextPictureBox.TabIndex = 6;
-            nextPictureBox.TabStop = false;
-            nextPictureBox.Click += nextPictureBox_Click;
-            nextPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            nextPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            NextPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            NextPictureBox.Image = Properties.Resources.NextButton;
+            NextPictureBox.Location = new Point(176, 225);
+            NextPictureBox.Name = "NextPictureBox";
+            NextPictureBox.Size = new Size(72, 69);
+            NextPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            NextPictureBox.TabIndex = 6;
+            NextPictureBox.TabStop = false;
+            NextPictureBox.Click += NextPictureBox_Click;
+            NextPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            NextPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // volumeSlider
+            // VolumeSlider
             // 
-            volumeSlider.Location = new Point(12, 300);
-            volumeSlider.Maximum = 100;
-            volumeSlider.Name = "volumeSlider";
-            volumeSlider.Size = new Size(236, 45);
-            volumeSlider.TabIndex = 7;
-            volumeSlider.TickStyle = TickStyle.None;
-            volumeSlider.ValueChanged += volumeSlider_ValueChanged;
+            VolumeSlider.Location = new Point(12, 300);
+            VolumeSlider.Maximum = 100;
+            VolumeSlider.Name = "VolumeSlider";
+            VolumeSlider.Size = new Size(236, 45);
+            VolumeSlider.TabIndex = 7;
+            VolumeSlider.TickStyle = TickStyle.None;
+            VolumeSlider.ValueChanged += VolumeSlider_ValueChanged;
             // 
-            // mutePictureBox
+            // MutePictureBox
             // 
-            mutePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            mutePictureBox.Image = Properties.Resources.Unmute;
-            mutePictureBox.Location = new Point(14, 333);
-            mutePictureBox.Name = "mutePictureBox";
-            mutePictureBox.Size = new Size(22, 20);
-            mutePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            mutePictureBox.TabIndex = 8;
-            mutePictureBox.TabStop = false;
-            mutePictureBox.Click += mutePictureBox_Click;
-            mutePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            mutePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            MutePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            MutePictureBox.Image = Properties.Resources.Unmute;
+            MutePictureBox.Location = new Point(14, 333);
+            MutePictureBox.Name = "MutePictureBox";
+            MutePictureBox.Size = new Size(22, 20);
+            MutePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            MutePictureBox.TabIndex = 8;
+            MutePictureBox.TabStop = false;
+            MutePictureBox.Click += MutePictureBox_Click;
+            MutePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            MutePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // reduceVolumePictureBox
+            // ReduceVolumePictureBox
             // 
-            reduceVolumePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            reduceVolumePictureBox.Image = Properties.Resources.ReduceVolume;
-            reduceVolumePictureBox.Location = new Point(95, 333);
-            reduceVolumePictureBox.Name = "reduceVolumePictureBox";
-            reduceVolumePictureBox.Size = new Size(22, 20);
-            reduceVolumePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            reduceVolumePictureBox.TabIndex = 9;
-            reduceVolumePictureBox.TabStop = false;
-            reduceVolumePictureBox.Click += reduceVolumePictureBox_Click;
-            reduceVolumePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            reduceVolumePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            ReduceVolumePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            ReduceVolumePictureBox.Image = Properties.Resources.ReduceVolume;
+            ReduceVolumePictureBox.Location = new Point(95, 333);
+            ReduceVolumePictureBox.Name = "ReduceVolumePictureBox";
+            ReduceVolumePictureBox.Size = new Size(22, 20);
+            ReduceVolumePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            ReduceVolumePictureBox.TabIndex = 9;
+            ReduceVolumePictureBox.TabStop = false;
+            ReduceVolumePictureBox.Click += ReduceVolumePictureBox_Click;
+            ReduceVolumePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            ReduceVolumePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // volumeLabel
+            // VolumeLabel
             // 
-            volumeLabel.AutoSize = true;
-            volumeLabel.ForeColor = Color.FromArgb(255, 191, 0);
-            volumeLabel.Location = new Point(123, 338);
-            volumeLabel.Name = "volumeLabel";
-            volumeLabel.Size = new Size(21, 13);
-            volumeLabel.TabIndex = 10;
-            volumeLabel.Text = "00";
+            VolumeLabel.AutoSize = true;
+            VolumeLabel.ForeColor = Color.FromArgb(255, 191, 0);
+            VolumeLabel.Location = new Point(123, 338);
+            VolumeLabel.Name = "VolumeLabel";
+            VolumeLabel.Size = new Size(21, 13);
+            VolumeLabel.TabIndex = 10;
+            VolumeLabel.Text = "00";
             // 
-            // increaseVolumePictureBox
+            // IncreaseVolumePictureBox
             // 
-            increaseVolumePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            increaseVolumePictureBox.Image = Properties.Resources.IncreaseVolume;
-            increaseVolumePictureBox.Location = new Point(150, 333);
-            increaseVolumePictureBox.Name = "increaseVolumePictureBox";
-            increaseVolumePictureBox.Size = new Size(22, 20);
-            increaseVolumePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            increaseVolumePictureBox.TabIndex = 11;
-            increaseVolumePictureBox.TabStop = false;
-            increaseVolumePictureBox.Click += increaseVolumePictureBox_Click;
-            increaseVolumePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            increaseVolumePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            IncreaseVolumePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            IncreaseVolumePictureBox.Image = Properties.Resources.IncreaseVolume;
+            IncreaseVolumePictureBox.Location = new Point(150, 333);
+            IncreaseVolumePictureBox.Name = "IncreaseVolumePictureBox";
+            IncreaseVolumePictureBox.Size = new Size(22, 20);
+            IncreaseVolumePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            IncreaseVolumePictureBox.TabIndex = 11;
+            IncreaseVolumePictureBox.TabStop = false;
+            IncreaseVolumePictureBox.Click += IncreaseVolumePictureBox_Click;
+            IncreaseVolumePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            IncreaseVolumePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // outputDeviceDropDown
+            // OutputDeviceDropDown
             // 
-            outputDeviceDropDown.BackColor = Color.FromArgb(51, 51, 51);
-            outputDeviceDropDown.BorderColor = Color.FromArgb(255, 191, 0);
-            outputDeviceDropDown.ButtonColor = Color.FromArgb(51, 51, 51);
-            outputDeviceDropDown.DrawMode = DrawMode.OwnerDrawFixed;
-            outputDeviceDropDown.DropDownStyle = ComboBoxStyle.DropDownList;
-            outputDeviceDropDown.FormattingEnabled = true;
-            outputDeviceDropDown.Location = new Point(14, 371);
-            outputDeviceDropDown.Name = "outputDeviceDropDown";
-            outputDeviceDropDown.Size = new Size(207, 21);
-            outputDeviceDropDown.TabIndex = 12;
-            outputDeviceDropDown.DrawItem += outputDeviceDropDown_DrawItem;
-            outputDeviceDropDown.SelectedIndexChanged += outputDeviceDropDown_SelectedIndexChanged;
-            outputDeviceDropDown.DropDownClosed += outputDeviceDropDown_DropDownClosed;
-            outputDeviceDropDown.MouseEnter += outputDeviceDropDown_MouseEnter;
-            outputDeviceDropDown.MouseLeave += outputDeviceDropDown_MouseLeave;
-            outputDeviceDropDown.MouseHover += outputDeviceDropDown_MouseEnter;
+            OutputDeviceDropDown.BackColor = Color.FromArgb(51, 51, 51);
+            OutputDeviceDropDown.BorderColor = Color.FromArgb(255, 191, 0);
+            OutputDeviceDropDown.ButtonColor = Color.FromArgb(51, 51, 51);
+            OutputDeviceDropDown.DrawMode = DrawMode.OwnerDrawFixed;
+            OutputDeviceDropDown.DropDownStyle = ComboBoxStyle.DropDownList;
+            OutputDeviceDropDown.FormattingEnabled = true;
+            OutputDeviceDropDown.Location = new Point(14, 371);
+            OutputDeviceDropDown.Name = "OutputDeviceDropDown";
+            OutputDeviceDropDown.Size = new Size(207, 21);
+            OutputDeviceDropDown.TabIndex = 12;
+            OutputDeviceDropDown.DrawItem += OutputDeviceDropDown_DrawItem;
+            OutputDeviceDropDown.SelectedIndexChanged += OutputDeviceDropDown_SelectedIndexChanged;
+            OutputDeviceDropDown.DropDownClosed += OutputDeviceDropDown_DropDownClosed;
+            OutputDeviceDropDown.MouseEnter += OutputDeviceDropDown_MouseEnter;
+            OutputDeviceDropDown.MouseLeave += OutputDeviceDropDown_MouseLeave;
+            OutputDeviceDropDown.MouseHover += OutputDeviceDropDown_MouseEnter;
             // 
             // titleTextBox
             // 
@@ -245,105 +245,105 @@
             titleTextBox.TextAlign = HorizontalAlignment.Center;
             titleTextBox.MouseDown += MoveFormOnElementMouseDown;
             // 
-            // radioDropDownList
+            // RadioDropDownList
             // 
-            radioDropDownList.BackColor = Color.FromArgb(51, 51, 51);
-            radioDropDownList.BorderColor = Color.FromArgb(255, 191, 0);
-            radioDropDownList.ButtonColor = Color.FromArgb(51, 51, 51);
-            radioDropDownList.DrawMode = DrawMode.OwnerDrawFixed;
-            radioDropDownList.DropDownStyle = ComboBoxStyle.DropDownList;
-            radioDropDownList.FormattingEnabled = true;
-            radioDropDownList.Location = new Point(15, 71);
-            radioDropDownList.Name = "radioDropDownList";
-            radioDropDownList.Size = new Size(233, 21);
-            radioDropDownList.TabIndex = 14;
-            radioDropDownList.DrawItem += radioDropDownList_DrawItem;
-            radioDropDownList.SelectedIndexChanged += radioDropDownList_SelectedIndexChanged;
-            radioDropDownList.DropDownClosed += radioDropDownList_DropDownClosed;
-            radioDropDownList.MouseEnter += radioDropDownList_MouseEnter;
-            radioDropDownList.MouseLeave += radioDropDownList_MouseLeave;
-            radioDropDownList.MouseHover += radioDropDownList_MouseEnter;
+            RadioDropDownList.BackColor = Color.FromArgb(51, 51, 51);
+            RadioDropDownList.BorderColor = Color.FromArgb(255, 191, 0);
+            RadioDropDownList.ButtonColor = Color.FromArgb(51, 51, 51);
+            RadioDropDownList.DrawMode = DrawMode.OwnerDrawFixed;
+            RadioDropDownList.DropDownStyle = ComboBoxStyle.DropDownList;
+            RadioDropDownList.FormattingEnabled = true;
+            RadioDropDownList.Location = new Point(15, 71);
+            RadioDropDownList.Name = "RadioDropDownList";
+            RadioDropDownList.Size = new Size(233, 21);
+            RadioDropDownList.TabIndex = 14;
+            RadioDropDownList.DrawItem += RadioDropDownList_DrawItem;
+            RadioDropDownList.SelectedIndexChanged += RadioDropDownList_SelectedIndexChanged;
+            RadioDropDownList.DropDownClosed += RadioDropDownList_DropDownClosed;
+            RadioDropDownList.MouseEnter += RadioDropDownList_MouseEnter;
+            RadioDropDownList.MouseLeave += RadioDropDownList_MouseLeave;
+            RadioDropDownList.MouseHover += RadioDropDownList_MouseEnter;
             // 
-            // resumeRadioButton
+            // ResumeRadioButton
             // 
-            resumeRadioButton.BackColor = Color.FromArgb(255, 191, 0);
-            resumeRadioButton.FlatAppearance.BorderSize = 0;
-            resumeRadioButton.FlatStyle = FlatStyle.Flat;
-            resumeRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
-            resumeRadioButton.Location = new Point(137, 45);
-            resumeRadioButton.Name = "resumeRadioButton";
-            resumeRadioButton.Size = new Size(110, 20);
-            resumeRadioButton.TabIndex = 15;
-            resumeRadioButton.Text = "Prev/Resume R";
-            resumeRadioButton.UseVisualStyleBackColor = false;
-            resumeRadioButton.Click += resumeRadioButton_Click;
-            resumeRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
-            resumeRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
+            ResumeRadioButton.BackColor = Color.FromArgb(255, 191, 0);
+            ResumeRadioButton.FlatAppearance.BorderSize = 0;
+            ResumeRadioButton.FlatStyle = FlatStyle.Flat;
+            ResumeRadioButton.ForeColor = Color.FromArgb(51, 51, 51);
+            ResumeRadioButton.Location = new Point(137, 45);
+            ResumeRadioButton.Name = "ResumeRadioButton";
+            ResumeRadioButton.Size = new Size(110, 20);
+            ResumeRadioButton.TabIndex = 15;
+            ResumeRadioButton.Text = "Prev/Resume R";
+            ResumeRadioButton.UseVisualStyleBackColor = false;
+            ResumeRadioButton.Click += ResumeRadioButton_Click;
+            ResumeRadioButton.MouseEnter += ChangeBackgroundColorMouseEnter;
+            ResumeRadioButton.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // thumbnailPictureBox
+            // ThumbnailPictureBox
             // 
-            thumbnailPictureBox.Location = new Point(80, 102);
-            thumbnailPictureBox.Name = "thumbnailPictureBox";
-            thumbnailPictureBox.Size = new Size(100, 55);
-            thumbnailPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            thumbnailPictureBox.TabIndex = 16;
-            thumbnailPictureBox.TabStop = false;
-            thumbnailPictureBox.Paint += thumbnailPictureBox_Paint;
-            thumbnailPictureBox.MouseDown += MoveFormOnElementMouseDown;
+            ThumbnailPictureBox.Location = new Point(80, 102);
+            ThumbnailPictureBox.Name = "ThumbnailPictureBox";
+            ThumbnailPictureBox.Size = new Size(100, 55);
+            ThumbnailPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            ThumbnailPictureBox.TabIndex = 16;
+            ThumbnailPictureBox.TabStop = false;
+            ThumbnailPictureBox.Paint += ThumbnailPictureBox_Paint;
+            ThumbnailPictureBox.MouseDown += MoveFormOnElementMouseDown;
             // 
-            // sourceLabel
+            // SourceLabel
             // 
-            sourceLabel.AutoSize = true;
-            sourceLabel.ForeColor = Color.FromArgb(255, 191, 0);
-            sourceLabel.Location = new Point(103, 15);
-            sourceLabel.MaximumSize = new Size(100, 20);
-            sourceLabel.Name = "sourceLabel";
-            sourceLabel.Size = new Size(78, 13);
-            sourceLabel.TabIndex = 17;
-            sourceLabel.Text = "SourceLabel";
-            sourceLabel.MouseDown += MoveFormOnElementMouseDown;
+            SourceLabel.AutoSize = true;
+            SourceLabel.ForeColor = Color.FromArgb(255, 191, 0);
+            SourceLabel.Location = new Point(103, 15);
+            SourceLabel.MaximumSize = new Size(100, 20);
+            SourceLabel.Name = "SourceLabel";
+            SourceLabel.Size = new Size(78, 13);
+            SourceLabel.TabIndex = 17;
+            SourceLabel.Text = "SourceLabel";
+            SourceLabel.MouseDown += MoveFormOnElementMouseDown;
             // 
-            // foldPictureBox
+            // FoldPictureBox
             // 
-            foldPictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            foldPictureBox.Image = (Image)resources.GetObject("foldPictureBox.Image");
-            foldPictureBox.Location = new Point(16, 8);
-            foldPictureBox.Name = "foldPictureBox";
-            foldPictureBox.Size = new Size(20, 20);
-            foldPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            foldPictureBox.TabIndex = 18;
-            foldPictureBox.TabStop = false;
-            foldPictureBox.Click += foldPictureBox_Click;
-            foldPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            foldPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            FoldPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            FoldPictureBox.Image = (Image)resources.GetObject("FoldPictureBox.Image");
+            FoldPictureBox.Location = new Point(16, 8);
+            FoldPictureBox.Name = "FoldPictureBox";
+            FoldPictureBox.Size = new Size(20, 20);
+            FoldPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            FoldPictureBox.TabIndex = 18;
+            FoldPictureBox.TabStop = false;
+            FoldPictureBox.Click += FoldPictureBox_Click;
+            FoldPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            FoldPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // settingsPictureBox
+            // SettingsPictureBox
             // 
-            settingsPictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            settingsPictureBox.Image = Properties.Resources.Settings;
-            settingsPictureBox.Location = new Point(42, 8);
-            settingsPictureBox.Name = "settingsPictureBox";
-            settingsPictureBox.Size = new Size(20, 20);
-            settingsPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            settingsPictureBox.TabIndex = 19;
-            settingsPictureBox.TabStop = false;
-            settingsPictureBox.Click += settingsPictureBox_Click;
-            settingsPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            settingsPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            SettingsPictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            SettingsPictureBox.Image = Properties.Resources.Settings;
+            SettingsPictureBox.Location = new Point(42, 8);
+            SettingsPictureBox.Name = "SettingsPictureBox";
+            SettingsPictureBox.Size = new Size(20, 20);
+            SettingsPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            SettingsPictureBox.TabIndex = 19;
+            SettingsPictureBox.TabStop = false;
+            SettingsPictureBox.Click += SettingsPictureBox_Click;
+            SettingsPictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            SettingsPictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
-            // previousOutputDevicePictureBox
+            // PreviousOutputDevicePictureBox
             // 
-            previousOutputDevicePictureBox.BackColor = Color.FromArgb(255, 191, 0);
-            previousOutputDevicePictureBox.Image = (Image)resources.GetObject("previousOutputDevicePictureBox.Image");
-            previousOutputDevicePictureBox.Location = new Point(227, 371);
-            previousOutputDevicePictureBox.Name = "previousOutputDevicePictureBox";
-            previousOutputDevicePictureBox.Size = new Size(20, 20);
-            previousOutputDevicePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            previousOutputDevicePictureBox.TabIndex = 20;
-            previousOutputDevicePictureBox.TabStop = false;
-            previousOutputDevicePictureBox.Click += previousOutputDevicePictureBox_Click;
-            previousOutputDevicePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
-            previousOutputDevicePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
+            PreviousOutputDevicePictureBox.BackColor = Color.FromArgb(255, 191, 0);
+            PreviousOutputDevicePictureBox.Image = (Image)resources.GetObject("PreviousOutputDevicePictureBox.Image");
+            PreviousOutputDevicePictureBox.Location = new Point(227, 371);
+            PreviousOutputDevicePictureBox.Name = "PreviousOutputDevicePictureBox";
+            PreviousOutputDevicePictureBox.Size = new Size(20, 20);
+            PreviousOutputDevicePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            PreviousOutputDevicePictureBox.TabIndex = 20;
+            PreviousOutputDevicePictureBox.TabStop = false;
+            PreviousOutputDevicePictureBox.Click += PreviousOutputDevicePictureBox_Click;
+            PreviousOutputDevicePictureBox.MouseEnter += ChangeBackgroundColorMouseEnter;
+            PreviousOutputDevicePictureBox.MouseLeave += ChangeBackgroundColorMouseLeave;
             // 
             // Form1
             // 
@@ -351,27 +351,27 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
             ClientSize = new Size(260, 409);
-            Controls.Add(previousOutputDevicePictureBox);
-            Controls.Add(settingsPictureBox);
-            Controls.Add(foldPictureBox);
-            Controls.Add(sourceLabel);
-            Controls.Add(thumbnailPictureBox);
-            Controls.Add(resumeRadioButton);
-            Controls.Add(radioDropDownList);
+            Controls.Add(PreviousOutputDevicePictureBox);
+            Controls.Add(SettingsPictureBox);
+            Controls.Add(FoldPictureBox);
+            Controls.Add(SourceLabel);
+            Controls.Add(ThumbnailPictureBox);
+            Controls.Add(ResumeRadioButton);
+            Controls.Add(RadioDropDownList);
             Controls.Add(titleTextBox);
-            Controls.Add(outputDeviceDropDown);
-            Controls.Add(increaseVolumePictureBox);
-            Controls.Add(volumeLabel);
-            Controls.Add(reduceVolumePictureBox);
-            Controls.Add(mutePictureBox);
-            Controls.Add(volumeSlider);
-            Controls.Add(nextPictureBox);
-            Controls.Add(pausePlayPictureBox);
-            Controls.Add(prevPictureBox);
-            Controls.Add(closePictureBox);
-            Controls.Add(minimizePictureBox);
-            Controls.Add(pauseRadioButton);
-            Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            Controls.Add(OutputDeviceDropDown);
+            Controls.Add(IncreaseVolumePictureBox);
+            Controls.Add(VolumeLabel);
+            Controls.Add(ReduceVolumePictureBox);
+            Controls.Add(MutePictureBox);
+            Controls.Add(VolumeSlider);
+            Controls.Add(NextPictureBox);
+            Controls.Add(PausePlayPictureBox);
+            Controls.Add(PrevPictureBox);
+            Controls.Add(ClosePictureBox);
+            Controls.Add(MinimizePictureBox);
+            Controls.Add(PauseRadioButton);
+            Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -384,43 +384,43 @@
             Load += Form1_Load;
             Paint += Form1_Paint;
             Resize += Form1_Resize;
-            ((System.ComponentModel.ISupportInitialize)minimizePictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)closePictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)prevPictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pausePlayPictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nextPictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)volumeSlider).EndInit();
-            ((System.ComponentModel.ISupportInitialize)mutePictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)reduceVolumePictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)increaseVolumePictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)thumbnailPictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)foldPictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)settingsPictureBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)previousOutputDevicePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)MinimizePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ClosePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)PrevPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)PausePlayPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NextPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)VolumeSlider).EndInit();
+            ((System.ComponentModel.ISupportInitialize)MutePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ReduceVolumePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)IncreaseVolumePictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)ThumbnailPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)FoldPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)SettingsPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)PreviousOutputDevicePictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-        private Button pauseRadioButton;
-        private PictureBox minimizePictureBox;
-        private PictureBox closePictureBox;
-        private PictureBox prevPictureBox;
-        private PictureBox pausePlayPictureBox;
-        private PictureBox nextPictureBox;
-        private TrackBarCustom volumeSlider;
-        private PictureBox mutePictureBox;
-        private PictureBox reduceVolumePictureBox;
-        private Label volumeLabel;
-        private PictureBox increaseVolumePictureBox;
-        private FlatComboBox outputDeviceDropDown;
+        private Button PauseRadioButton;
+        private PictureBox MinimizePictureBox;
+        private PictureBox ClosePictureBox;
+        private PictureBox PrevPictureBox;
+        private PictureBox PausePlayPictureBox;
+        private PictureBox NextPictureBox;
+        private TrackBarCustom VolumeSlider;
+        private PictureBox MutePictureBox;
+        private PictureBox ReduceVolumePictureBox;
+        private Label VolumeLabel;
+        private PictureBox IncreaseVolumePictureBox;
+        private FlatComboBox OutputDeviceDropDown;
         private TextBox titleTextBox;
-        private FlatComboBox radioDropDownList;
-        private Button resumeRadioButton;
-        private PictureBox thumbnailPictureBox;
-        private Label sourceLabel;
-        private PictureBox foldPictureBox;
-        private PictureBox settingsPictureBox;
-        private PictureBox previousOutputDevicePictureBox;
+        private FlatComboBox RadioDropDownList;
+        private Button ResumeRadioButton;
+        private PictureBox ThumbnailPictureBox;
+        private Label SourceLabel;
+        private PictureBox FoldPictureBox;
+        private PictureBox SettingsPictureBox;
+        private PictureBox PreviousOutputDevicePictureBox;
     }
 }
