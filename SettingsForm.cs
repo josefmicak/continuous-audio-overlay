@@ -5,6 +5,9 @@ namespace ContinuousAudioOverlay
 {
     public partial class SettingsForm : Form
     {
+
+        #region Fields
+
         private BassService _bassService;
         private List<Radio>? _radioList;
         private Color _controlBackgroundColor = Color.FromArgb(255, 191, 0);
@@ -12,6 +15,10 @@ namespace ContinuousAudioOverlay
         private bool _radioDropDownListEnter = false;
         private const int HTCAPTION = 0x2;
         private const int WM_NCLBUTTONDOWN = 0xA1;
+
+        #endregion
+
+        #region Constructor
 
         public SettingsForm()
         {
@@ -24,6 +31,10 @@ namespace ContinuousAudioOverlay
             this.FormClosing += new FormClosingEventHandler(SettingsForm_FormClosing);
         }
 
+        #endregion
+
+        #region Win32 Interop
+
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
 
@@ -33,17 +44,94 @@ namespace ContinuousAudioOverlay
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
 
+        #endregion
+
+        #region Private methods
+
         private async Task InitializeUi()
         {
             await InitializeRadioList();
         }
 
-        public async Task InitializeRadioList()
+        private async Task InitializeRadioList()
         {
             _radioList = await _bassService.GetRadioList();
             RadioDropDownList.Items.Clear();
             RadioDropDownList.Items.AddRange(_radioList.Select(radio => radio.RadioName).ToArray());
             RadioDropDownList.SelectedIndex = -1;
+        }
+
+        private async Task UpdateRadioList()
+        {
+            if (_radioList != null)
+            {
+                _bassService.SaveRadioList(_radioList);
+            }
+            await InitializeRadioList();
+            AddRadioNameTB.Text = string.Empty;
+            AddRadioURLTB.Text = string.Empty;
+            EditRadioNameTB.Text = string.Empty;
+            EditRadioURLTB.Text = string.Empty;
+        }
+
+        private void ChangeBackgroundColorMouseEnter(object sender, EventArgs e)
+        {
+            try
+            {
+                var pictureBox = (PictureBox)sender;
+                pictureBox.BackColor = _hoverColor;
+            }
+            catch
+            {
+                var pictureBox = (Button)sender;
+                pictureBox.BackColor = _hoverColor;
+            }
+        }
+
+        private void ChangeBackgroundColorMouseLeave(object sender, EventArgs e)
+        {
+            try
+            {
+                var pictureBox = (PictureBox)sender;
+                pictureBox.BackColor = _controlBackgroundColor;
+            }
+            catch
+            {
+                var pictureBox = (Button)sender;
+                pictureBox.BackColor = _controlBackgroundColor;
+            }
+        }
+
+        private void ReleaseBassResources()
+        {
+            if (_bassService.BassInitialized())
+            {
+                _bassService.ReleaseBassResources();
+            }
+        }
+
+        #endregion
+
+        #region Event handlers
+
+        private void SettingsForm_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            ReleaseBassResources();
+        }
+
+        private void SettingsForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+            }
+        }
+
+        private void SettingsForm_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(this.BackColor);
+            ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
         }
 
         private void RadioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
@@ -149,20 +237,6 @@ namespace ContinuousAudioOverlay
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
-
-        }
-
-        private async Task UpdateRadioList()
-        {
-            if (_radioList != null)
-            {
-                _bassService.SaveRadioList(_radioList);
-            }
-            await InitializeRadioList();
-            AddRadioNameTB.Text = string.Empty;
-            AddRadioURLTB.Text = string.Empty;
-            EditRadioNameTB.Text = string.Empty;
-            EditRadioURLTB.Text = string.Empty;
         }
 
         private void RadioDropDownList_DrawItem(object sender, DrawItemEventArgs e)
@@ -207,15 +281,6 @@ namespace ContinuousAudioOverlay
             pictureBox.BorderColor = _controlBackgroundColor;
         }
 
-        private void SettingsForm_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
-            }
-        }
-
         private void MinimizePictureBox_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
@@ -224,40 +289,6 @@ namespace ContinuousAudioOverlay
         private void ClosePictureBox_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void ChangeBackgroundColorMouseEnter(object sender, EventArgs e)
-        {
-            try
-            {
-                var pictureBox = (PictureBox)sender;
-                pictureBox.BackColor = _hoverColor;
-            }
-            catch
-            {
-                var pictureBox = (Button)sender;
-                pictureBox.BackColor = _hoverColor;
-            }
-        }
-
-        private void ChangeBackgroundColorMouseLeave(object sender, EventArgs e)
-        {
-            try
-            {
-                var pictureBox = (PictureBox)sender;
-                pictureBox.BackColor = _controlBackgroundColor;
-            }
-            catch
-            {
-                var pictureBox = (Button)sender;
-                pictureBox.BackColor = _controlBackgroundColor;
-            }
-        }
-
-        private void SettingsForm_Paint(object sender, PaintEventArgs e)
-        {
-            e.Graphics.Clear(this.BackColor);
-            ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
         }
 
         private async void TestAddRadioButton_Click(object sender, EventArgs e)
@@ -290,17 +321,6 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void SettingsForm_FormClosing(object? sender, FormClosingEventArgs e)
-        {
-            ReleaseBassResources();
-        }
-
-        private void ReleaseBassResources()
-        {
-            if (_bassService.BassInitialized())
-            {
-                _bassService.ReleaseBassResources();
-            }
-        }
+        #endregion
     }
 }

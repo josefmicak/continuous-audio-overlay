@@ -7,8 +7,69 @@ using Windows.Storage.Streams;
 
 namespace ContinuousAudioOverlay
 {
+    public enum AppCommands
+    {
+        BrowserBack = 1,
+        BrowserForward = 2,
+        BrowserRefresh = 3,
+        BrowserStop = 4,
+        BrowserSearch = 5,
+        BrowserFavorite = 6,
+        BrowserHome = 7,
+        VolumeMute = 8,
+        VolumeDown = 9,
+        VolumeUp = 10,
+        MediaNext = 11,
+        MediaPrevious = 12,
+        MediaStop = 13,
+        MediaPlayPause = 14,
+        LaunchMail = 15,
+        LaunchMediaSelect = 16,
+        LaunchApp1 = 17,
+        LaunchApp2 = 18,
+        BassDown = 19,
+        BassBoost = 20,
+        BassUp = 21,
+        TrebleUp = 22,
+        TrebleDown = 23,
+        MicrophoneMute = 24,
+        MicrophoneVolumeUp = 25,
+        MicrophoneVolumeDown = 26,
+        Help = 27,
+        Find = 28,
+        New = 29,
+        Open = 30,
+        Close = 31,
+        Save = 32,
+        Print = 33,
+        Undo = 34,
+        Redo = 35,
+        Copy = 36,
+        Cut = 37,
+        Paste = 38,
+        ReplyToMail = 39,
+        ForwardMail = 40,
+        SendMail = 41,
+        SpellCheck = 42,
+        Dictate = 43,
+        MicrophoneOnOff = 44,
+        CorrectionList = 45,
+        MediaPlay = 46,
+        MediaPause = 47,
+        MediaRecord = 48,
+        MediaFastForward = 49,
+        MediaRewind = 50,
+        MediaChannelUp = 51,
+        MediaChannelDown = 52,
+        Delete = 53,
+        Flip3D = 54
+    }
+
     public partial class Form1 : Form
     {
+
+        #region Fields
+
         private List<CoreAudioDevice>? _playbackDevices = null;
         private CoreAudioController? _coreAudioController = null;
         private Color _controlBackgroundColor = Color.FromArgb(255, 191, 0);
@@ -26,11 +87,16 @@ namespace ContinuousAudioOverlay
         private SettingsForm? _settingsForm;
         private bool _isOutputDeviceChangingFromSystem = false;
         private bool _isOutputDeviceChangingFromApplication = false;
+        private static ManualResetEvent mre = new ManualResetEvent(false);
+        private static Form? frm;
+        
+        #endregion
 
-        private const int WM_NCHITTEST = 0x84;
-        private const int HTCLIENT = 0x1;
-        private const int HTCAPTION = 0x2;
-        private const int WM_NCLBUTTONDOWN = 0xA1;
+        #region Properties
+
+        #endregion
+
+        #region Constructor
 
         public Form1()
         {
@@ -46,6 +112,45 @@ namespace ContinuousAudioOverlay
             _bassService.OnMetaDataChanged += UpdateRadioTitle;
         }
 
+        #endregion
+
+        #region Win32 Interop
+
+        private const int WM_NCHITTEST = 0x84;
+        private const int HTCLIENT = 0x1;
+        private const int HTCAPTION = 0x2;
+        private const int WM_NCLBUTTONDOWN = 0xA1;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOOWNERZORDER = 0x0200;
+        private const uint SWP_SHOWWINDOW = 0x0040;
+        private const int SW_RESTORE = 9;
+        private const int SW_SHOW = 5;
+        private const int WM_NCLBUTTONDBLCLK = 0x00A3;
+        private const int WM_APPCOMMAND = 0x319;
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll")]
+        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")] static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+
+        #endregion
+
+        #region Private methods
+
         private async Task InitializeCustomFormComponents()
         {
             var outputTask = InitializeOutputDevices();
@@ -56,7 +161,7 @@ namespace ContinuousAudioOverlay
             _loaded = true;
         }
 
-        public async Task InitializeRadioList()
+        private async Task InitializeRadioList()
         {
             List<Radio> radioList = await _bassService.GetRadioList();
             RadioDropDownList.Items.Clear();
@@ -65,81 +170,7 @@ namespace ContinuousAudioOverlay
             RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
         }
 
-        protected override void WndProc(ref Message message)
-        {
-            const int WM_NCLBUTTONDBLCLK = 0x00A3;
-
-            if (message.Msg == WM_NCLBUTTONDBLCLK)
-            {
-                // Ignore double click, don't move the form to top left after double click
-                return;
-            }
-
-            base.WndProc(ref message);
-
-            if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
-                message.Result = (IntPtr)HTCAPTION;//Must be after base.WndProc call   
-        }
-
-        public enum AppCommands
-        {
-            BrowserBack = 1,
-            BrowserForward = 2,
-            BrowserRefresh = 3,
-            BrowserStop = 4,
-            BrowserSearch = 5,
-            BrowserFavorite = 6,
-            BrowserHome = 7,
-            VolumeMute = 8,
-            VolumeDown = 9,
-            VolumeUp = 10,
-            MediaNext = 11,
-            MediaPrevious = 12,
-            MediaStop = 13,
-            MediaPlayPause = 14,
-            LaunchMail = 15,
-            LaunchMediaSelect = 16,
-            LaunchApp1 = 17,
-            LaunchApp2 = 18,
-            BassDown = 19,
-            BassBoost = 20,
-            BassUp = 21,
-            TrebleUp = 22,
-            TrebleDown = 23,
-            MicrophoneMute = 24,
-            MicrophoneVolumeUp = 25,
-            MicrophoneVolumeDown = 26,
-            Help = 27,
-            Find = 28,
-            New = 29,
-            Open = 30,
-            Close = 31,
-            Save = 32,
-            Print = 33,
-            Undo = 34,
-            Redo = 35,
-            Copy = 36,
-            Cut = 37,
-            Paste = 38,
-            ReplyToMail = 39,
-            ForwardMail = 40,
-            SendMail = 41,
-            SpellCheck = 42,
-            Dictate = 43,
-            MicrophoneOnOff = 44,
-            CorrectionList = 45,
-            MediaPlay = 46,
-            MediaPause = 47,
-            MediaRecord = 48,
-            MediaFastForward = 49,
-            MediaRewind = 50,
-            MediaChannelUp = 51,
-            MediaChannelDown = 52,
-            Delete = 53,
-            Flip3D = 54
-        }
-
-        public static void Send(AppCommands cmd)
+        private static void Send(AppCommands cmd)
         {
             if (frm == null) Initialize();
             frm?.Invoke(new MethodInvoker(() => SendMessage(frm.Handle, WM_APPCOMMAND, frm.Handle, (IntPtr)((int)cmd << 16))));
@@ -160,20 +191,7 @@ namespace ContinuousAudioOverlay
             mre.WaitOne();
         }
 
-        private static ManualResetEvent mre = new ManualResetEvent(false);
-        private static Form? frm;
-
-        private const int WM_APPCOMMAND = 0x319;
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-        [DllImport("user32.dll")]
-        private static extern bool ReleaseCapture();
-
-        public async Task InitializeOutputDevices()
+        private async Task InitializeOutputDevices()
         {
             foreach (CoreAudioDevice d in await GetPlaybackDevices())
             {
@@ -218,14 +236,9 @@ namespace ContinuousAudioOverlay
                     {
                         _isOutputDeviceChangingFromSystem = false;
                     }
-                        
+
                 }));
             });
-        }
-
-        private async void RadioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
         }
 
         private async Task ChangeRadioIndex(int radioIndex)
@@ -263,14 +276,9 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        public void ReleaseBassResources()
+        private void ReleaseBassResources()
         {
             _bassService.ReleaseBassResources();
-        }
-
-        private void PauseRadioButton_Click(object sender, EventArgs e)
-        {
-            StopRadio();
         }
 
         private void StopRadio()
@@ -278,16 +286,6 @@ namespace ContinuousAudioOverlay
             MediaControlsUpdateTitleTextBox(true);
             ReleaseBassResources();
             RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
-        }
-
-        private void MinimizePictureBox_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void ClosePictureBox_Click(object sender, EventArgs e)
-        {
-            Environment.Exit(0);
         }
 
         private void ChangeBackgroundColorMouseEnter(object sender, EventArgs e)
@@ -315,167 +313,6 @@ namespace ContinuousAudioOverlay
             {
                 var pictureBox = (Button)sender;
                 pictureBox.BackColor = _controlBackgroundColor;
-            }
-        }
-
-        private void PrevPictureBox_Click(object sender, EventArgs e)
-        {
-            Send(AppCommands.MediaPrevious);
-
-            if (_bassService.GetRadioPlaying())
-            {
-                StopRadio();
-            }
-        }
-
-        private void PausePlayPictureBox_Click(object sender, EventArgs e)
-        {
-            Send(AppCommands.MediaPlayPause);
-
-            if (_bassService.GetRadioPlaying())
-            {
-                StopRadio();
-            }
-        }
-
-        private void NextPictureBox_Click(object sender, EventArgs e)
-        {
-            Send(AppCommands.MediaNext);
-
-            if (_bassService.GetRadioPlaying())
-            {
-                StopRadio();
-            }
-        }
-
-        private void VolumeSlider_ValueChanged(object sender, EventArgs e)
-        {
-            GetDefaultPlaybackDevice().Volume = VolumeSlider.Value;
-            VolumeLabel.Text = VolumeSlider.Value.ToString();
-            VolumeLabel.Left = ReduceVolumePictureBox.Right + ((IncreaseVolumePictureBox.Left - ReduceVolumePictureBox.Right - VolumeLabel.Width) / 2);
-        }
-
-        private void MutePictureBox_Click(object sender, EventArgs e)
-        {
-            Send(AppCommands.VolumeMute);
-            _muted = !_muted;
-            if (_muted)
-            {
-                MutePictureBox.Image = Properties.Resources.Mute;
-            }
-            else
-            {
-                MutePictureBox.Image = Properties.Resources.Unmute;
-            }
-        }
-
-        private void ReduceVolumePictureBox_Click(object sender, EventArgs e)
-        {
-            VolumeSlider.Value -= 5;
-        }
-
-        private void IncreaseVolumePictureBox_Click(object sender, EventArgs e)
-        {
-            VolumeSlider.Value += 5;
-        }
-
-        private void OutputDeviceDropDown_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            int index = e.Index >= 0 ? e.Index : 0;
-            SolidBrush brush;
-            if (_outputDeviceDropdownEnter || OutputDeviceDropDown.DroppedDown)
-            {
-                brush = new SolidBrush(_hoverColor);
-            }
-            else
-            {
-                brush = new SolidBrush(_controlBackgroundColor);
-            }
-
-            if (OutputDeviceDropDown.Items.Count > 0)
-            {
-                e.DrawBackground();
-                e.Graphics.DrawString(OutputDeviceDropDown.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
-                e.DrawFocusRectangle();
-            }
-        }
-
-        private void OutputDeviceDropDown_DropDownClosed(object sender, EventArgs e)
-        {
-            VolumeLabel.Focus();
-            var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = _controlBackgroundColor;
-            _outputDeviceDropdownEnter = false;
-        }
-
-        private void OutputDeviceDropDown_MouseEnter(object sender, EventArgs e)
-        {
-            _outputDeviceDropdownEnter = true;
-            var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = _hoverColor;
-        }
-
-        private void OutputDeviceDropDown_MouseLeave(object sender, EventArgs e)
-        {
-            _outputDeviceDropdownEnter = false;
-            var pictureBox = (FlatComboBox)sender;
-            pictureBox.BorderColor = _controlBackgroundColor;
-        }
-
-        private async void OutputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_isOutputDeviceChangingFromSystem)
-            {
-                if (_bassService.GetRadioPlaying())
-                {
-                    //Je potreba zavolat i pokud dojde ke zmene mimo aplikaci - jinak bude radio dale hrat pres puvodni zarizeni
-                    await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
-                }
-
-                //Pokud byla zmena provedena mimo aplikaci tak ve funkci nepokracujeme, jinak muze dojit k zacykleni
-                return;
-            }
-
-            _isOutputDeviceChangingFromApplication = true;
-
-            try
-            {
-                if (_outputDeviceIndexes.Item2 == -1)
-                {
-                    _outputDeviceIndexes.Item2 = OutputDeviceDropDown.SelectedIndex;
-                }
-                else
-                {
-                    _outputDeviceIndexes.Item1 = _outputDeviceIndexes.Item2;
-                    _outputDeviceIndexes.Item2 = OutputDeviceDropDown.SelectedIndex;
-                }
-
-                foreach (CoreAudioDevice d in await GetPlaybackDevices())
-                {
-                    if (d.FullName == OutputDeviceDropDown.Text)
-                    {
-                        d.SetAsDefault();
-                        int vol = (int)d.Volume;
-                        if (vol < VolumeSlider.Minimum)
-                        {
-                            vol = VolumeSlider.Minimum;
-                        }
-                        else if (vol > VolumeSlider.Maximum)
-                        {
-                            vol = VolumeSlider.Maximum;
-                        }
-                        VolumeSlider.Value = vol;
-                    }
-                }
-
-                if (_bassService.GetRadioPlaying())
-                {
-                    await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
-                }
-            }
-            finally
-            {
-                _isOutputDeviceChangingFromApplication = false;
             }
         }
 
@@ -662,6 +499,323 @@ namespace ContinuousAudioOverlay
             return lineCount;
         }
 
+        private async Task InitializeMediaManager()
+        {
+            _mediaManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+            _mediaManager.CurrentSessionChanged += SessionsChanged;
+        }
+
+        private void SessionsChanged(GlobalSystemMediaTransportControlsSessionManager sender, object args)
+        {
+            GlobalSystemMediaTransportControlsSession session = sender.GetCurrentSession();
+            if (session != null)
+            {
+                session.MediaPropertiesChanged -= MediaPropertiesChanged;
+                session.MediaPropertiesChanged += MediaPropertiesChanged;
+            }
+
+            MediaControlsUpdateTitleTextBox();
+        }
+
+        private void UpdateSourceLabel(string source)
+        {
+            if (SourceLabel.InvokeRequired)
+            {
+                SourceLabel.Invoke((Action)(() => UpdateSourceLabel(source)));
+            }
+            else
+            {
+                SourceLabel.Text = source;
+                if (!_folded && this.WindowState != FormWindowState.Minimized)
+                {
+                    UpdateSourceLabelLocation();
+                }
+            }
+        }
+
+        private void UpdateSourceLabelLocation()
+        {
+            SourceLabel.Location = new Point((this.ClientSize.Width - SourceLabel.Width) / 2, SourceLabel.Location.Y);
+        }
+
+        private async Task<List<CoreAudioDevice>> GetPlaybackDevices()
+        {
+            if (_playbackDevices != null)
+            {
+                return _playbackDevices;
+            }
+
+            _playbackDevices = await Task.Run(() =>
+            {
+                return GetCoreAudioController().GetPlaybackDevices().ToList();
+            });
+
+            return _playbackDevices;
+        }
+
+        private CoreAudioDevice GetDefaultPlaybackDevice()
+        {
+            return GetCoreAudioController().DefaultPlaybackDevice;
+        }
+
+        private CoreAudioController GetCoreAudioController()
+        {
+            if (_coreAudioController == null)
+            {
+                _coreAudioController = new CoreAudioController();
+            }
+
+            return _coreAudioController;
+        }
+
+        private void MoveFormOnElementMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+            }
+        }
+
+        private void UpdateRadioTitle(string artist, string title)
+        {
+            UpdateTitleTextBox(artist, title);
+        }
+
+        private void BringToFrontReliably()
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                ShowWindow(this.Handle, SW_RESTORE);
+            }
+            else
+            {
+                ShowWindow(this.Handle, SW_SHOW);
+            }
+
+            this.TopMost = false;
+            this.TopMost = true;
+
+            SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_SHOWWINDOW);
+
+            Activate();
+            SetForegroundWindow(this.Handle);
+        }
+
+
+        #endregion
+
+        #region Event handlers
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(this.BackColor);
+            ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
+        }
+
+        private async void Form1_Load(object sender, EventArgs e)
+        {
+            await InitializeMediaManager();
+
+            GlobalSystemMediaTransportControlsSession? session = _mediaManager?.GetCurrentSession();
+            if (session != null)
+            {
+                session.MediaPropertiesChanged -= MediaPropertiesChanged;
+                session.MediaPropertiesChanged += MediaPropertiesChanged;
+                MediaControlsUpdateTitleTextBox();
+            }
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (!_folded && this.WindowState != FormWindowState.Minimized)
+            {
+                UpdateSourceLabelLocation();
+            }
+        }
+
+        private async void RadioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
+        }
+
+        private void PauseRadioButton_Click(object sender, EventArgs e)
+        {
+            StopRadio();
+        }
+
+        private void MinimizePictureBox_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void ClosePictureBox_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void PrevPictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.MediaPrevious);
+
+            if (_bassService.GetRadioPlaying())
+            {
+                StopRadio();
+            }
+        }
+
+        private void PausePlayPictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.MediaPlayPause);
+
+            if (_bassService.GetRadioPlaying())
+            {
+                StopRadio();
+            }
+        }
+
+        private void NextPictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.MediaNext);
+
+            if (_bassService.GetRadioPlaying())
+            {
+                StopRadio();
+            }
+        }
+
+        private void VolumeSlider_ValueChanged(object sender, EventArgs e)
+        {
+            GetDefaultPlaybackDevice().Volume = VolumeSlider.Value;
+            VolumeLabel.Text = VolumeSlider.Value.ToString();
+            VolumeLabel.Left = ReduceVolumePictureBox.Right + ((IncreaseVolumePictureBox.Left - ReduceVolumePictureBox.Right - VolumeLabel.Width) / 2);
+        }
+
+        private void MutePictureBox_Click(object sender, EventArgs e)
+        {
+            Send(AppCommands.VolumeMute);
+            _muted = !_muted;
+            if (_muted)
+            {
+                MutePictureBox.Image = Properties.Resources.Mute;
+            }
+            else
+            {
+                MutePictureBox.Image = Properties.Resources.Unmute;
+            }
+        }
+
+        private void ReduceVolumePictureBox_Click(object sender, EventArgs e)
+        {
+            VolumeSlider.Value -= 5;
+        }
+
+        private void IncreaseVolumePictureBox_Click(object sender, EventArgs e)
+        {
+            VolumeSlider.Value += 5;
+        }
+
+        private void OutputDeviceDropDown_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            int index = e.Index >= 0 ? e.Index : 0;
+            SolidBrush brush;
+            if (_outputDeviceDropdownEnter || OutputDeviceDropDown.DroppedDown)
+            {
+                brush = new SolidBrush(_hoverColor);
+            }
+            else
+            {
+                brush = new SolidBrush(_controlBackgroundColor);
+            }
+
+            if (OutputDeviceDropDown.Items.Count > 0)
+            {
+                e.DrawBackground();
+                e.Graphics.DrawString(OutputDeviceDropDown.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
+                e.DrawFocusRectangle();
+            }
+        }
+
+        private void OutputDeviceDropDown_DropDownClosed(object sender, EventArgs e)
+        {
+            VolumeLabel.Focus();
+            var pictureBox = (FlatComboBox)sender;
+            pictureBox.BorderColor = _controlBackgroundColor;
+            _outputDeviceDropdownEnter = false;
+        }
+
+        private void OutputDeviceDropDown_MouseEnter(object sender, EventArgs e)
+        {
+            _outputDeviceDropdownEnter = true;
+            var pictureBox = (FlatComboBox)sender;
+            pictureBox.BorderColor = _hoverColor;
+        }
+
+        private void OutputDeviceDropDown_MouseLeave(object sender, EventArgs e)
+        {
+            _outputDeviceDropdownEnter = false;
+            var pictureBox = (FlatComboBox)sender;
+            pictureBox.BorderColor = _controlBackgroundColor;
+        }
+
+        private async void OutputDeviceDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isOutputDeviceChangingFromSystem)
+            {
+                if (_bassService.GetRadioPlaying())
+                {
+                    //Je potreba zavolat i pokud dojde ke zmene mimo aplikaci - jinak bude radio dale hrat pres puvodni zarizeni
+                    await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
+                }
+
+                //Pokud byla zmena provedena mimo aplikaci tak ve funkci nepokracujeme, jinak muze dojit k zacykleni
+                return;
+            }
+
+            _isOutputDeviceChangingFromApplication = true;
+
+            try
+            {
+                if (_outputDeviceIndexes.Item2 == -1)
+                {
+                    _outputDeviceIndexes.Item2 = OutputDeviceDropDown.SelectedIndex;
+                }
+                else
+                {
+                    _outputDeviceIndexes.Item1 = _outputDeviceIndexes.Item2;
+                    _outputDeviceIndexes.Item2 = OutputDeviceDropDown.SelectedIndex;
+                }
+
+                foreach (CoreAudioDevice d in await GetPlaybackDevices())
+                {
+                    if (d.FullName == OutputDeviceDropDown.Text)
+                    {
+                        d.SetAsDefault();
+                        int vol = (int)d.Volume;
+                        if (vol < VolumeSlider.Minimum)
+                        {
+                            vol = VolumeSlider.Minimum;
+                        }
+                        else if (vol > VolumeSlider.Maximum)
+                        {
+                            vol = VolumeSlider.Maximum;
+                        }
+                        VolumeSlider.Value = vol;
+                    }
+                }
+
+                if (_bassService.GetRadioPlaying())
+                {
+                    await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
+                }
+            }
+            finally
+            {
+                _isOutputDeviceChangingFromApplication = false;
+            }
+        }
+
         private void RadioDropDownList_DrawItem(object sender, DrawItemEventArgs e)
         {
             int index = e.Index >= 0 ? e.Index : 0;
@@ -730,68 +884,10 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            e.Graphics.Clear(this.BackColor);
-            ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
-        }
-
-        private async void Form1_Load(object sender, EventArgs e)
-        {
-            await InitializeMediaManager();
-
-            GlobalSystemMediaTransportControlsSession? session = _mediaManager?.GetCurrentSession();
-            if (session != null)
-            {
-                session.MediaPropertiesChanged -= MediaPropertiesChanged;
-                session.MediaPropertiesChanged += MediaPropertiesChanged;
-                MediaControlsUpdateTitleTextBox();
-            }
-        }
-
-        private async Task InitializeMediaManager()
-        {
-            _mediaManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
-            _mediaManager.CurrentSessionChanged += SessionsChanged;
-        }
-
-        private void SessionsChanged(GlobalSystemMediaTransportControlsSessionManager sender, object args)
-        {
-            GlobalSystemMediaTransportControlsSession session = sender.GetCurrentSession();
-            if (session != null)
-            {
-                session.MediaPropertiesChanged -= MediaPropertiesChanged;
-                session.MediaPropertiesChanged += MediaPropertiesChanged;
-            }
-
-            MediaControlsUpdateTitleTextBox();
-        }
-
         private void ThumbnailPictureBox_Paint(object sender, PaintEventArgs e)
         {
             PictureBox pictureBox = (PictureBox)sender;
             ControlPaint.DrawBorder(e.Graphics, pictureBox.ClientRectangle, Color.Black, ButtonBorderStyle.Solid);
-        }
-
-        private void UpdateSourceLabel(string source)
-        {
-            if (SourceLabel.InvokeRequired)
-            {
-                SourceLabel.Invoke((Action)(() => UpdateSourceLabel(source)));
-            }
-            else
-            {
-                SourceLabel.Text = source;
-                if (!_folded && this.WindowState != FormWindowState.Minimized)
-                {
-                    UpdateSourceLabelLocation();
-                }
-            }
-        }
-
-        private void UpdateSourceLabelLocation()
-        {
-            SourceLabel.Location = new Point((this.ClientSize.Width - SourceLabel.Width) / 2, SourceLabel.Location.Y);
         }
 
         private void FoldPictureBox_Click(object sender, EventArgs e)
@@ -809,65 +905,6 @@ namespace ContinuousAudioOverlay
             }
             this.Invalidate();
         }
-
-        private void MoveFormOnElementMouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
-            }
-        }
-
-        private void UpdateRadioTitle(string artist, string title)
-        {
-            UpdateTitleTextBox(artist, title);
-        }
-
-        protected override void OnShown(EventArgs e)
-        {
-            base.OnShown(e);
-            BringToFrontReliably();
-        }
-
-        public void BringToFrontReliably()
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                ShowWindow(this.Handle, SW_RESTORE);
-            }
-            else
-            {
-                ShowWindow(this.Handle, SW_SHOW);
-            }
-
-            this.TopMost = false;
-            this.TopMost = true;
-
-            SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_SHOWWINDOW);
-
-            Activate();
-            SetForegroundWindow(this.Handle);
-        }
-
-        [DllImport("user32.dll")]
-        static extern bool SetWindowPos(
-         IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-
-        [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")] static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-
-        const uint SWP_NOSIZE = 0x0001;
-        const uint SWP_NOMOVE = 0x0002;
-        const uint SWP_NOOWNERZORDER = 0x0200;
-        const uint SWP_SHOWWINDOW = 0x0040;
-
-        const int SW_RESTORE = 9;
-        const int SW_SHOW = 5;
 
         private void SettingsPictureBox_Click(object sender, EventArgs e)
         {
@@ -899,42 +936,30 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            if (!_folded && this.WindowState != FormWindowState.Minimized)
-            {
-                UpdateSourceLabelLocation();
-            }
-        }
+        #endregion
 
-        private async Task<List<CoreAudioDevice>> GetPlaybackDevices()
+        #region Overrides
+
+        protected override void WndProc(ref Message message)
         {
-            if (_playbackDevices != null)
+            if (message.Msg == WM_NCLBUTTONDBLCLK)
             {
-                return _playbackDevices;
+                // Ignore double click, don't move the form to top left after double click
+                return;
             }
 
-            _playbackDevices = await Task.Run(() =>
-            {
-                return GetCoreAudioController().GetPlaybackDevices().ToList();
-            });
+            base.WndProc(ref message);
 
-            return _playbackDevices;
+            if (message.Msg == WM_NCHITTEST && (int)message.Result == HTCLIENT)
+                message.Result = (IntPtr)HTCAPTION;//Must be after base.WndProc call   
         }
 
-        private CoreAudioDevice GetDefaultPlaybackDevice()
+        protected override void OnShown(EventArgs e)
         {
-            return GetCoreAudioController().DefaultPlaybackDevice;
+            base.OnShown(e);
+            BringToFrontReliably();
         }
 
-        private CoreAudioController GetCoreAudioController()
-        {
-            if (_coreAudioController == null)
-            {
-                _coreAudioController = new CoreAudioController();
-            }
-
-            return _coreAudioController;
-        }
+        #endregion
     }
 }

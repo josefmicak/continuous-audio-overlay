@@ -8,6 +8,8 @@ namespace ContinuousAudioOverlay
 {
     public class BassService
     {
+        #region Fields
+
         private Assembly? _bassAssembly;
         private dynamic? _previousTagInfo;
         private static int _streamHandle;
@@ -21,10 +23,18 @@ namespace ContinuousAudioOverlay
         private CancellationTokenSource? _playRadioCts;
         private bool _radioPlaying = false;
 
+        #endregion
+
+        #region Constructor
+
         public BassService()
         {
 
         }
+
+        #endregion
+
+        #region Private methods
 
         private Task LoadBassAssembly(CancellationToken ct = default)
         {
@@ -51,6 +61,54 @@ namespace ContinuousAudioOverlay
                 _previousTagInfo = Activator.CreateInstance(_bassTagsType);
             }, ct);
         }
+
+        private void MetaDataSync(int handle, int channel, int data, IntPtr user)
+        {
+            string artist = string.Empty;
+            string title = string.Empty;
+
+            IntPtr metaPtr = Bass.BASS_ChannelGetTags(channel, BASSTag.BASS_TAG_META);
+            if (metaPtr != IntPtr.Zero)
+            {
+                string? meta = Marshal.PtrToStringAnsi(metaPtr);
+                if (!string.IsNullOrWhiteSpace(meta))
+                {
+                    int startIndex = meta.IndexOf('\'');
+                    int endIndex = meta.LastIndexOf('\'');
+
+                    if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
+                    {
+                        string streamTitle = meta.Substring(startIndex + 1, endIndex - startIndex - 1);
+                        string[] parts = streamTitle.Split(new[] { " - " }, 2, StringSplitOptions.None);
+
+                        artist = parts[0].Trim();
+                        title = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+                    }
+                }
+            }
+
+            OnMetaDataChanged?.Invoke(title, artist);
+        }
+
+        private bool TagInfoPropertiesChanged(dynamic current, dynamic previous)
+        {
+            return current?.title != previous?.title;
+        }
+
+        private string GetXmlFilePath()
+        {
+            string appDataFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ContinuousAudioOverlay");
+
+            Directory.CreateDirectory(appDataFolder);
+
+            return Path.Combine(appDataFolder, "RadioList.xml");
+        }
+
+        #endregion
+
+        #region Methods
 
         public async Task<List<Radio>> GetRadioList()
         {
@@ -122,34 +180,6 @@ namespace ContinuousAudioOverlay
             await PlayRadio(radioURL);
         }
 
-        private void MetaDataSync(int handle, int channel, int data, IntPtr user)
-        {
-            string artist = string.Empty;
-            string title = string.Empty;
-
-            IntPtr metaPtr = Bass.BASS_ChannelGetTags(channel, BASSTag.BASS_TAG_META);
-            if (metaPtr != IntPtr.Zero)
-            {
-                string? meta = Marshal.PtrToStringAnsi(metaPtr);
-                if (!string.IsNullOrWhiteSpace(meta))
-                {
-                    int startIndex = meta.IndexOf('\'');
-                    int endIndex = meta.LastIndexOf('\'');
-
-                    if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
-                    {
-                        string streamTitle = meta.Substring(startIndex + 1, endIndex - startIndex - 1);
-                        string[] parts = streamTitle.Split(new[] { " - " }, 2, StringSplitOptions.None);
-
-                        artist = parts[0].Trim();
-                        title = parts.Length > 1 ? parts[1].Trim() : string.Empty;
-                    }
-                }
-            }
-
-            OnMetaDataChanged?.Invoke(title, artist);
-        }
-
         public void ReleaseBassResources()
         {
             _radioPlaying = false;
@@ -197,11 +227,6 @@ namespace ContinuousAudioOverlay
             {
                 MessageBox.Show("BASS library is not loaded or Bass type is not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private bool TagInfoPropertiesChanged(dynamic current, dynamic previous)
-        {
-            return current?.title != previous?.title;
         }
 
         public (string, string, bool) GetTitleTags()
@@ -337,21 +362,7 @@ namespace ContinuousAudioOverlay
             return _radioPlaying;
         }
 
-        public void SetRadioPlaying(bool value)
-        {
-            _radioPlaying = value;
-        }
-
-        string GetXmlFilePath()
-        {
-            string appDataFolder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "ContinuousAudioOverlay");
-
-            Directory.CreateDirectory(appDataFolder);
-
-            return Path.Combine(appDataFolder, "RadioList.xml");
-        }
+        #endregion
 
     }
 }
