@@ -290,29 +290,25 @@ namespace ContinuousAudioOverlay
 
         private void ChangeBackgroundColorMouseEnter(object sender, EventArgs e)
         {
-            try
+            if (sender is PictureBox pictureBox)
             {
-                var pictureBox = (PictureBox)sender;
                 pictureBox.BackColor = _hoverColor;
             }
-            catch
+            else if (sender is Button button)
             {
-                var pictureBox = (Button)sender;
-                pictureBox.BackColor = _hoverColor;
+                button.BackColor = _hoverColor;
             }
         }
 
         private void ChangeBackgroundColorMouseLeave(object sender, EventArgs e)
         {
-            try
+            if (sender is PictureBox pictureBox)
             {
-                var pictureBox = (PictureBox)sender;
                 pictureBox.BackColor = _controlBackgroundColor;
             }
-            catch
+            else if (sender is Button button)
             {
-                var pictureBox = (Button)sender;
-                pictureBox.BackColor = _controlBackgroundColor;
+                button.BackColor = _controlBackgroundColor;
             }
         }
 
