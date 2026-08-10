@@ -101,12 +101,45 @@ namespace ContinuousAudioOverlay.Helpers
                 }
             }
 
-            //Fallback
+            // Fallback: extract from structured ID format
             if (sourceAppUserModelId.Contains("_"))
             {
                 string[] parts = sourceAppUserModelId.Split('_', '!');
                 if (parts.Length > 1)
                     return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(parts[0]);
+            }
+
+            // Final fallback: get the process name from any process with the closest matching ID
+            try
+            {
+                foreach (Process proc in Process.GetProcesses())
+                {
+                    if (proc.MainWindowHandle != IntPtr.Zero)
+                    {
+                        Guid iid = typeof(IPropertyStore).GUID;
+                        int hr = SHGetPropertyStoreForWindow(proc.MainWindowHandle, ref iid, out var propStore);
+                        if (hr == 0 && propStore != null)
+                        {
+                            using (var pv = new PropVariant())
+                            {
+                                PropertyKey key = PKEY_AppUserModel_ID;
+                                int hr2 = propStore.GetValue(ref key, pv);
+                                if (hr2 == 0)
+                                {
+                                    string? appUserModelId = pv.GetValue();
+                                    // Match by process name from ID if available
+                                    if (!string.IsNullOrEmpty(appUserModelId) && appUserModelId.Contains(sourceAppUserModelId))
+                                    {
+                                        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(proc.ProcessName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
             }
 
             return sourceAppUserModelId ?? "<no source>";
