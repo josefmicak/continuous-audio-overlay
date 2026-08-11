@@ -285,6 +285,8 @@ namespace ContinuousAudioOverlay
         {
             MediaControlsUpdateTitleTextBox(true);
             ReleaseBassResources();
+            titleTextBox.Text = string.Empty;
+            ThumbnailPictureBox.Image = null;
             RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
         }
 
@@ -363,6 +365,10 @@ namespace ContinuousAudioOverlay
             {
                 UpdateTitleTextBox(currentMediaProperties);
             }
+            else
+            {
+                UpdateTitleTextBox(null);
+            }
 
             //Update source label
             GlobalSystemMediaTransportControlsSession? session =
@@ -421,7 +427,7 @@ namespace ContinuousAudioOverlay
             }
         }
 
-        private async void UpdateTitleTextBox(GlobalSystemMediaTransportControlsSessionMediaProperties mediaProperties)
+        private async void UpdateTitleTextBox(GlobalSystemMediaTransportControlsSessionMediaProperties? mediaProperties)
         {
             string title = string.Empty;
             string artist = string.Empty;
