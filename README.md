@@ -1,5 +1,5 @@
 # Continuous Audio Overlay
-A useful tool that enables the user to easily control audio volume, sources, and output devices. It is a Windows Forms application that has been developed using .NET 8.0.
+A useful tool that enables the user to easily control audio volume, sources, and output devices. It is a Windows Forms application that has been developed using .NET 10.0.
 It is especially useful to those that use remote desktop regularly, as it can become tiresome to always have to minimize all the remote desktop windows to adjust audio settings of the host machine.
 
 ## Features
