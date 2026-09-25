@@ -16,7 +16,7 @@ dotnet run --project ContinuousAudioOverlay.csproj
 - Target is `net10.0-windows10.0.22621.0`, x64 only (`PlatformTarget` is x64 because the native `bass.dll` in the repo root is x64). The Windows SDK TFM is what makes `Windows.Media.Control` (WinRT media sessions) available.
 - There is no test project and no linter configured.
 - The `NU1701` warnings about AudioSwitcher being restored for .NET Framework are expected and harmless.
-- The `Bass.Net` reference's `HintPath` points outside the repo (`..\..\..\Desktop\Bass24.Net\...`). The build still resolves it from `Libraries\Bass.Net.dll`, because that file is a `Content` item. Don't remove that item.
+- `Libraries\Bass.Net.dll` is both the compile-time reference (the `Bass.Net` `HintPath`) and a `Content` item copied to `Libraries\` in the output, which is where `BassService` loads it at runtime. Don't remove the `Content` item.
 
 ## Architecture
 

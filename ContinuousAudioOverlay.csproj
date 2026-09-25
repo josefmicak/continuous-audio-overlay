@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <Reference Include="Bass.Net">
-      <HintPath>..\..\..\Desktop\Bass24.Net\core\Bass.Net.dll</HintPath>
+      <HintPath>Libraries\Bass.Net.dll</HintPath>
     </Reference>
   </ItemGroup>
 
