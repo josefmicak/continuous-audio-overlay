@@ -410,6 +410,12 @@ namespace ContinuousAudioOverlay
             }
             else
             {
+                if (!_bassService.GetRadioPlaying())
+                {
+                    //Radio was stopped before these metadata got here (e.g. Stop R right after the station started)
+                    return;
+                }
+
                 if (title == string.Empty && artist == string.Empty)
                 {
                     //Call likely to be removed in the future - for now it's kept for testing purposes

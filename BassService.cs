@@ -311,6 +311,7 @@ namespace ContinuousAudioOverlay
                     _streamHandle = (int?)bassStreamCreateURLMethod?.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null!, IntPtr.Zero }) ?? 0;
 
                     ct.ThrowIfCancellationRequested();
+                    _radioPlaying = true;
 
                     if (_streamHandle != 0)
                     {
@@ -338,7 +339,6 @@ namespace ContinuousAudioOverlay
                         MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
                     }
                     ct.ThrowIfCancellationRequested();
-                    _radioPlaying = true;
                     return true;
                 }, ct);
 
