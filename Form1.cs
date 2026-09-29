@@ -263,7 +263,7 @@ namespace ContinuousAudioOverlay
                 }
             }
 
-            if (_loaded)
+            if (_loaded && _bassService.GetRadioPlaying())
             {
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo? currentMediaPlaybackInfo = GetPlaybackInfo();
                 if (currentMediaPlaybackInfo != null)
