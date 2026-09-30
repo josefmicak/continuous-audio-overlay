@@ -311,10 +311,11 @@ namespace ContinuousAudioOverlay
                     _streamHandle = (int?)bassStreamCreateURLMethod?.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null!, IntPtr.Zero }) ?? 0;
 
                     ct.ThrowIfCancellationRequested();
-                    _radioPlaying = true;
 
                     if (_streamHandle != 0)
                     {
+                        _radioPlaying = true;
+
                         MethodInfo? bassChannelPlayMethod = _bassType?.GetMethod("BASS_ChannelPlay");
                         bassChannelPlayMethod?.Invoke(null, new object[] { _streamHandle, true });
 
@@ -337,6 +338,10 @@ namespace ContinuousAudioOverlay
                         }
 
                         MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
+                    }
+                    else
+                    {
+                        return false;
                     }
                     ct.ThrowIfCancellationRequested();
                     return true;
