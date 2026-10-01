@@ -274,6 +274,11 @@ namespace ContinuousAudioOverlay
                     }
                 }
             }
+            else if (_loaded)
+            {
+                //Radio is not playing - it is neccessary to update media labels to reflect the current state
+                MediaControlsUpdateTitleTextBox();
+            }
         }
 
         private void ReleaseBassResources()
