@@ -250,6 +250,7 @@ namespace ContinuousAudioOverlay
 
             if (radioIndex != RadioDropDownList.Items.Count - 1)
             {
+                _settingsForm?.StopTest();//BASS is shared with Settings - only one of them can play
                 await _bassService.IndexChanged(radioIndex);
                 if (_bassService.GetRadioPlaying())
                 {
@@ -926,6 +927,7 @@ namespace ContinuousAudioOverlay
             {
                 _settingsForm = new SettingsForm();
                 _settingsForm.FormClosed += SettingsForm_FormClosed;
+                _settingsForm.TestStarting += StopRadio;//BASS is shared with Settings - only one of them can play
                 _settingsForm.Show();
             }
             else

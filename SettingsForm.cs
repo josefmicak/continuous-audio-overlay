@@ -15,6 +15,7 @@ namespace ContinuousAudioOverlay
         private bool _radioDropDownListEnter = false;
         private const int HTCAPTION = 0x2;
         private const int WM_NCLBUTTONDOWN = 0xA1;
+        public event Action? TestStarting;
 
         #endregion
 
@@ -108,6 +109,17 @@ namespace ContinuousAudioOverlay
             {
                 _bassService.ReleaseBassResources();
             }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public void StopTest()
+        {
+            ReleaseBassResources();
+            TestAddRadioButton.Text = "Test";
+            TestEditRadioButton.Text = "Test";
         }
 
         #endregion
@@ -298,6 +310,7 @@ namespace ContinuousAudioOverlay
             {
                 TestAddRadioButton.Text = "Stop";
                 TestEditRadioButton.Text = "Test";
+                TestStarting?.Invoke();
                 await _bassService.PlayRadio(AddRadioURLTB.Text);
             }
             else
@@ -313,6 +326,7 @@ namespace ContinuousAudioOverlay
             {
                 TestEditRadioButton.Text = "Stop";
                 TestAddRadioButton.Text = "Test";
+                TestStarting?.Invoke();
                 await _bassService.PlayRadio(EditRadioURLTB.Text);
             }
             else
