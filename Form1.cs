@@ -722,12 +722,12 @@ namespace ContinuousAudioOverlay
 
         private void ReduceVolumePictureBox_Click(object sender, EventArgs e)
         {
-            VolumeSlider.Value -= 5;
+            VolumeSlider.Value = Math.Max(VolumeSlider.Minimum, VolumeSlider.Value - 5);
         }
 
         private void IncreaseVolumePictureBox_Click(object sender, EventArgs e)
         {
-            VolumeSlider.Value += 5;
+            VolumeSlider.Value = Math.Min(VolumeSlider.Maximum, VolumeSlider.Value + 5);
         }
 
         private void OutputDeviceDropDown_DrawItem(object sender, DrawItemEventArgs e)
