@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Xml.Linq;
 using Un4seen.Bass;
 
@@ -70,7 +72,7 @@ namespace ContinuousAudioOverlay
             IntPtr metaPtr = Bass.BASS_ChannelGetTags(channel, BASSTag.BASS_TAG_META);
             if (metaPtr != IntPtr.Zero)
             {
-                string? meta = Marshal.PtrToStringAnsi(metaPtr);
+                string meta = DecodeMetaData(metaPtr);
                 if (!string.IsNullOrWhiteSpace(meta))
                 {
                     int startIndex = meta.IndexOf('\'');
@@ -78,7 +80,7 @@ namespace ContinuousAudioOverlay
 
                     if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
                     {
-                        string streamTitle = meta.Substring(startIndex + 1, endIndex - startIndex - 1);
+                        string streamTitle = WebUtility.HtmlDecode(meta.Substring(startIndex + 1, endIndex - startIndex - 1));
                         string[] parts = streamTitle.Split(new[] { " - " }, 2, StringSplitOptions.None);
 
                         artist = parts[0].Trim();
@@ -88,6 +90,26 @@ namespace ContinuousAudioOverlay
             }
 
             OnMetaDataChanged?.Invoke(title, artist);
+        }
+
+        private static string DecodeMetaData(IntPtr metaPtr)
+        {
+            int length = 0;
+            while (Marshal.ReadByte(metaPtr, length) != 0)
+            {
+                length++;
+            }
+            byte[] bytes = new byte[length];
+            Marshal.Copy(metaPtr, bytes, 0, length);
+
+            string meta = Encoding.UTF8.GetString(bytes);
+            if (meta.Contains((char)0xFFFD))
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                meta = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage).GetString(bytes);
+            }
+
+            return meta;
         }
 
         private bool TagInfoPropertiesChanged(dynamic current, dynamic previous)
