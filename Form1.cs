@@ -87,6 +87,7 @@ namespace ContinuousAudioOverlay
         private SettingsForm? _settingsForm;
         private bool _isOutputDeviceChangingFromSystem = false;
         private bool _isOutputDeviceChangingFromApplication = false;
+        private bool _isVolumeChangingFromSystem = false;
         private static ManualResetEvent mre = new ManualResetEvent(false);
         private static Form? frm;
         
@@ -203,6 +204,9 @@ namespace ContinuousAudioOverlay
                 {
                     OutputDeviceDropDown.SelectedIndex = OutputDeviceDropDown.Items.Count - 1;
                 }
+
+                //Handle volume changes from outside the application
+                d.VolumeChanged.Subscribe(_ => BeginInvoke(new Action(RefreshVolumeSlider)));
             }
         }
 
@@ -239,6 +243,26 @@ namespace ContinuousAudioOverlay
 
                 }));
             });
+        }
+
+        private void RefreshVolumeSlider()
+        {
+            int volume = (int)(GetDefaultPlaybackDevice()?.Volume ?? -1);
+            if (volume < 0)
+            {
+                return;
+            }
+
+            _isVolumeChangingFromSystem = true;
+
+            try
+            {
+                VolumeSlider.Value = volume;
+            }
+            finally
+            {
+                _isVolumeChangingFromSystem = false;
+            }
         }
 
         private async Task ChangeRadioIndex(int radioIndex)
@@ -701,7 +725,11 @@ namespace ContinuousAudioOverlay
 
         private void VolumeSlider_ValueChanged(object sender, EventArgs e)
         {
-            GetDefaultPlaybackDevice().Volume = VolumeSlider.Value;
+            if (!_isVolumeChangingFromSystem)
+            {
+                GetDefaultPlaybackDevice().Volume = VolumeSlider.Value;
+            }
+
             VolumeLabel.Text = VolumeSlider.Value.ToString();
             VolumeLabel.Left = ReduceVolumePictureBox.Right + ((IncreaseVolumePictureBox.Left - ReduceVolumePictureBox.Right - VolumeLabel.Width) / 2);
         }
@@ -777,6 +805,8 @@ namespace ContinuousAudioOverlay
         {
             if (_isOutputDeviceChangingFromSystem)
             {
+                RefreshVolumeSlider();//The new device has its own volume
+
                 if (_bassService.GetRadioPlaying())
                 {
                     //Je potreba zavolat i pokud dojde ke zmene mimo aplikaci - jinak bude radio dale hrat pres puvodni zarizeni
