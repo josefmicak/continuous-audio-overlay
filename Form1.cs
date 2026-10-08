@@ -77,7 +77,6 @@ namespace ContinuousAudioOverlay
         private bool _outputDeviceDropdownEnter = false;
         private bool _radioDropdownEnter = false;
         private GlobalSystemMediaTransportControlsSessionManager? _mediaManager;
-        private bool _muted = false;
         private int _resumeRadioIndex = -1;
         private int _previousRadioIndex = -1;
         private (int, int) _outputDeviceIndexes = (-1, -1);
@@ -109,6 +108,7 @@ namespace ContinuousAudioOverlay
             Shown += async (_, __) => await InitializeCustomFormComponents();
 
             VolumeSlider.Value = (int)GetDefaultPlaybackDevice().Volume;
+            RefreshMuteIcon();
             UpdateSourceLabel("<no source>");
             _bassService.OnMetaDataChanged += UpdateRadioTitle;
         }
@@ -205,8 +205,9 @@ namespace ContinuousAudioOverlay
                     OutputDeviceDropDown.SelectedIndex = OutputDeviceDropDown.Items.Count - 1;
                 }
 
-                //Handle volume changes from outside the application
+                //Handle volume and mute changes from outside the application
                 d.VolumeChanged.Subscribe(_ => BeginInvoke(new Action(RefreshVolumeSlider)));
+                d.MuteChanged.Subscribe(_ => BeginInvoke(new Action(RefreshMuteIcon)));
             }
         }
 
@@ -263,6 +264,16 @@ namespace ContinuousAudioOverlay
             {
                 _isVolumeChangingFromSystem = false;
             }
+        }
+
+        private void RefreshMuteIcon()
+        {
+            UpdateMuteIcon(GetDefaultPlaybackDevice()?.IsMuted ?? false);
+        }
+
+        private void UpdateMuteIcon(bool muted)
+        {
+            MutePictureBox.Image = muted ? Properties.Resources.Mute : Properties.Resources.Unmute;
         }
 
         private async Task ChangeRadioIndex(int radioIndex)
@@ -736,16 +747,11 @@ namespace ContinuousAudioOverlay
 
         private void MutePictureBox_Click(object sender, EventArgs e)
         {
+            //Mute can be changed outside the application, so the real state is used instead of a blind toggle.
+            //It has to be read before the command is sent - the system applies the change with a delay
+            bool wasMuted = GetDefaultPlaybackDevice()?.IsMuted ?? false;
             Send(AppCommands.VolumeMute);
-            _muted = !_muted;
-            if (_muted)
-            {
-                MutePictureBox.Image = Properties.Resources.Mute;
-            }
-            else
-            {
-                MutePictureBox.Image = Properties.Resources.Unmute;
-            }
+            UpdateMuteIcon(!wasMuted);//The command toggles the mute, so the new state is the opposite
         }
 
         private void ReduceVolumePictureBox_Click(object sender, EventArgs e)
@@ -806,6 +812,7 @@ namespace ContinuousAudioOverlay
             if (_isOutputDeviceChangingFromSystem)
             {
                 RefreshVolumeSlider();//The new device has its own volume
+                RefreshMuteIcon();//The new device has its own mute state
 
                 if (_bassService.GetRadioPlaying())
                 {
@@ -846,6 +853,7 @@ namespace ContinuousAudioOverlay
                             vol = VolumeSlider.Maximum;
                         }
                         VolumeSlider.Value = vol;
+                        UpdateMuteIcon(d.IsMuted);//The new device has its own mute state
                     }
                 }
 
