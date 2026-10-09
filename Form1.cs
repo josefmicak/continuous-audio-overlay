@@ -214,7 +214,7 @@ namespace ContinuousAudioOverlay
         private void InitializeCoreAudioController()
         {
             //Metoda slouzi k tomu, aby byly zaznamenany zmeny vystupnich zvukovych zarizeni provedene mimo aplikaci
-            GetCoreAudioController().AudioDeviceChanged.Subscribe(x =>
+            GetCoreAudioController().AudioDeviceChanged.Subscribe(_ =>
             {
                 if (!OutputDeviceDropDown.IsHandleCreated || _isOutputDeviceChangingFromApplication)
                 {
@@ -224,7 +224,8 @@ namespace ContinuousAudioOverlay
 
                 OutputDeviceDropDown.BeginInvoke(new Action(() =>
                 {
-                    int index = OutputDeviceDropDown.Items.IndexOf(x.Device.FullName);
+                    //The event is raised for any device change (state, default communication device...), so the real default device is looked up
+                    int index = OutputDeviceDropDown.Items.IndexOf(GetDefaultPlaybackDevice()?.FullName);
 
                     if (index == -1 || OutputDeviceDropDown.SelectedIndex == index)
                     {
