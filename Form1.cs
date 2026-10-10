@@ -1,4 +1,5 @@
-﻿using AudioSwitcher.AudioApi.CoreAudio;
+﻿using AudioSwitcher.AudioApi;
+using AudioSwitcher.AudioApi.CoreAudio;
 using AudioSwitcher.AudioApi.Observables;
 using ContinuousAudioOverlay.Helpers;
 using System.Runtime.InteropServices;
@@ -196,7 +197,8 @@ namespace ContinuousAudioOverlay
         {
             foreach (CoreAudioDevice d in await GetPlaybackDevices())
             {
-                if (d.IsPlaybackDevice)
+                //Disabled devices cannot be selected, so they are not offered
+                if (d.IsPlaybackDevice && d.State != DeviceState.Disabled)
                 {
                     OutputDeviceDropDown.Items.Add(d.FullName);
                 }
@@ -829,6 +831,8 @@ namespace ContinuousAudioOverlay
 
             try
             {
+                var originalOutputDeviceIndexes = _outputDeviceIndexes;
+
                 if (_outputDeviceIndexes.Item2 == -1)
                 {
                     _outputDeviceIndexes.Item2 = OutputDeviceDropDown.SelectedIndex;
@@ -843,7 +847,16 @@ namespace ContinuousAudioOverlay
                 {
                     if (d.FullName == OutputDeviceDropDown.Text)
                     {
-                        d.SetAsDefault();
+                        if (!d.SetAsDefault())
+                        {
+                            //The device cannot be used (disabled, unplugged...), so the selection returns to the real default device
+                            _outputDeviceIndexes = originalOutputDeviceIndexes;
+                            OutputDeviceDropDown.SelectedIndexChanged -= OutputDeviceDropDown_SelectedIndexChanged;
+                            OutputDeviceDropDown.SelectedIndex = OutputDeviceDropDown.Items.IndexOf(GetDefaultPlaybackDevice()?.FullName);
+                            OutputDeviceDropDown.SelectedIndexChanged += OutputDeviceDropDown_SelectedIndexChanged;
+                            return;
+                        }
+
                         int vol = (int)d.Volume;
                         if (vol < VolumeSlider.Minimum)
                         {
