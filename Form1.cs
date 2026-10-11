@@ -334,6 +334,16 @@ namespace ContinuousAudioOverlay
             RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
         }
 
+        private static int ShiftRadioIndex(int radioIndex, int removedIndex)
+        {
+            if (radioIndex == removedIndex)
+            {
+                return -1;//The remembered station itself was removed
+            }
+
+            return radioIndex > removedIndex ? radioIndex - 1 : radioIndex;
+        }
+
         private void ChangeBackgroundColorMouseEnter(object sender, EventArgs e)
         {
             if (sender is PictureBox pictureBox)
@@ -990,6 +1000,16 @@ namespace ContinuousAudioOverlay
 
         private async void SettingsForm_FormClosed(object? sender, FormClosedEventArgs e)
         {
+            if (_settingsForm != null)
+            {
+                //Removing a station moves the ones below it up, so the remembered indexes have to follow
+                foreach (int removedIndex in _settingsForm.RemovedRadioIndexes)
+                {
+                    _resumeRadioIndex = ShiftRadioIndex(_resumeRadioIndex, removedIndex);
+                    _previousRadioIndex = ShiftRadioIndex(_previousRadioIndex, removedIndex);
+                }
+            }
+
             _settingsForm = null;
             await InitializeRadioList();
         }

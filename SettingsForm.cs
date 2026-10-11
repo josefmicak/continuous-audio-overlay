@@ -16,6 +16,7 @@ namespace ContinuousAudioOverlay
         private const int HTCAPTION = 0x2;
         private const int WM_NCLBUTTONDOWN = 0xA1;
         public event Action? TestStarting;
+        public List<int> RemovedRadioIndexes { get; } = new List<int>();//In the order the stations were removed
 
         #endregion
 
@@ -243,6 +244,7 @@ namespace ContinuousAudioOverlay
             if (result == DialogResult.Yes)
             {
                 _radioList?.RemoveAt(currentIndex);
+                RemovedRadioIndexes.Add(currentIndex);
                 await UpdateRadioList();
                 MessageBox.Show($"Radio \"{radioName}\" removed successfully.",
                     "Radio removed",
