@@ -112,6 +112,7 @@ namespace ContinuousAudioOverlay
             RefreshMuteIcon();
             UpdateSourceLabel("<no source>");
             _bassService.OnMetaDataChanged += UpdateRadioTitle;
+            _bassService.OnStreamEnded += RadioStreamEnded;
         }
 
         #endregion
@@ -642,6 +643,11 @@ namespace ContinuousAudioOverlay
         private void UpdateRadioTitle(string artist, string title)
         {
             UpdateTitleTextBox(artist, title);
+        }
+
+        private void RadioStreamEnded()
+        {
+            BeginInvoke(new Action(StopRadio));
         }
 
         private void BringToFrontReliably()

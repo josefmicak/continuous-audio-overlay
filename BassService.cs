@@ -20,8 +20,10 @@ namespace ContinuousAudioOverlay
         private List<Radio> _radioList = new List<Radio>();
         private bool _bassInitialized = false;
         private SYNCPROC? _metaDataSync;
+        private SYNCPROC? _streamEndSync;
         public delegate void MetaDataChangedHandler(string title, string artist);
         public event MetaDataChangedHandler? OnMetaDataChanged;
+        public event Action? OnStreamEnded;
         private CancellationTokenSource? _playRadioCts;
         private bool _radioPlaying = false;
 
@@ -90,6 +92,11 @@ namespace ContinuousAudioOverlay
             }
 
             OnMetaDataChanged?.Invoke(title, artist);
+        }
+
+        private void StreamEndSync(int handle, int channel, int data, IntPtr user)
+        {
+            OnStreamEnded?.Invoke();
         }
 
         private static string DecodeMetaData(IntPtr metaPtr)
@@ -358,6 +365,15 @@ namespace ContinuousAudioOverlay
                         {
                             throw new InvalidOperationException("Failed to set sync for metadata changes.");
                         }
+
+                        _streamEndSync = new SYNCPROC(StreamEndSync);
+                        Bass.BASS_ChannelSetSync(
+                            _streamHandle,
+                            BASSSync.BASS_SYNC_END,
+                            0,
+                            _streamEndSync,
+                            IntPtr.Zero
+                        );
 
                         MetaDataSync(0, _streamHandle, 0, IntPtr.Zero);
                     }
