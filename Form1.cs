@@ -301,6 +301,12 @@ namespace ContinuousAudioOverlay
                     ThumbnailPictureBox.Image = null;
                     UpdateSourceLabel("Radio");
                 }
+                else if (RadioDropDownList.SelectedIndex == radioIndex)
+                {
+                    //The station could not be started - <no radio> is selected, otherwise the station could not be selected again.
+                    //Skipped when the user has already selected something else in the meantime
+                    RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
+                }
             }
 
             if (_loaded && _bassService.GetRadioPlaying())
