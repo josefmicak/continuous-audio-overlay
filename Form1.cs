@@ -836,6 +836,8 @@ namespace ContinuousAudioOverlay
         {
             if (_isOutputDeviceChangingFromSystem)
             {
+                _outputDeviceIndexes = (_outputDeviceIndexes.Item2, OutputDeviceDropDown.SelectedIndex);
+
                 RefreshVolumeSlider();//The new device has its own volume
                 RefreshMuteIcon();//The new device has its own mute state
 
