@@ -208,10 +208,43 @@ namespace ContinuousAudioOverlay
                     OutputDeviceDropDown.SelectedIndex = OutputDeviceDropDown.Items.Count - 1;
                 }
 
-                //Handle volume and mute changes from outside the application
-                d.VolumeChanged.Subscribe(_ => BeginInvoke(new Action(RefreshVolumeSlider)));
-                d.MuteChanged.Subscribe(_ => BeginInvoke(new Action(RefreshMuteIcon)));
+                SubscribeToDeviceChanges(d);
             }
+        }
+
+        private void SubscribeToDeviceChanges(CoreAudioDevice device)
+        {
+            //Handle volume and mute changes from outside the application
+            device.VolumeChanged.Subscribe(_ => BeginInvoke(new Action(RefreshVolumeSlider)));
+            device.MuteChanged.Subscribe(_ => BeginInvoke(new Action(RefreshMuteIcon)));
+        }
+
+        private void RefreshOutputDeviceList()
+        {
+            //Devices can be enabled or plugged in while the application runs, so the list is loaded again
+            List<CoreAudioDevice> devices = GetCoreAudioController().GetPlaybackDevices().ToList();
+            foreach (CoreAudioDevice d in devices.Except(_playbackDevices ?? new List<CoreAudioDevice>()))
+            {
+                SubscribeToDeviceChanges(d);
+            }
+            _playbackDevices = devices;
+
+            string[] deviceNames = devices.Where(d => d.IsPlaybackDevice && d.State != DeviceState.Disabled).Select(d => d.FullName).ToArray();
+            if (deviceNames.SequenceEqual(OutputDeviceDropDown.Items.Cast<string>()))
+            {
+                return;
+            }
+
+            string? selectedDevice = OutputDeviceDropDown.SelectedItem as string;
+            string? previousDevice = _outputDeviceIndexes.Item1 != -1 ? OutputDeviceDropDown.Items[_outputDeviceIndexes.Item1] as string : null;
+
+            OutputDeviceDropDown.SelectedIndexChanged -= OutputDeviceDropDown_SelectedIndexChanged;
+            OutputDeviceDropDown.Items.Clear();
+            OutputDeviceDropDown.Items.AddRange(deviceNames);
+            OutputDeviceDropDown.SelectedIndex = OutputDeviceDropDown.Items.IndexOf(selectedDevice);
+            OutputDeviceDropDown.SelectedIndexChanged += OutputDeviceDropDown_SelectedIndexChanged;
+
+            _outputDeviceIndexes = (OutputDeviceDropDown.Items.IndexOf(previousDevice), OutputDeviceDropDown.SelectedIndex);
         }
 
         private void InitializeCoreAudioController()
@@ -219,7 +252,8 @@ namespace ContinuousAudioOverlay
             //Metoda slouzi k tomu, aby byly zaznamenany zmeny vystupnich zvukovych zarizeni provedene mimo aplikaci
             GetCoreAudioController().AudioDeviceChanged.Subscribe(_ =>
             {
-                if (!OutputDeviceDropDown.IsHandleCreated || _isOutputDeviceChangingFromApplication)
+                //Before the startup load finishes there is nothing to refresh - the load itself reads the current devices
+                if (!_loaded || _isOutputDeviceChangingFromApplication)
                 {
                     //Pokud zmenu provedl uzivatel v aplikaci, neni potreba, aby zde byly provadeny jakekoli zmeny
                     return;
@@ -227,6 +261,8 @@ namespace ContinuousAudioOverlay
 
                 OutputDeviceDropDown.BeginInvoke(new Action(() =>
                 {
+                    RefreshOutputDeviceList();
+
                     //The event is raised for any device change (state, default communication device...), so the real default device is looked up
                     int index = OutputDeviceDropDown.Items.IndexOf(GetDefaultPlaybackDevice()?.FullName);
 
