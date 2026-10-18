@@ -88,6 +88,7 @@ namespace ContinuousAudioOverlay
         private bool _isOutputDeviceChangingFromSystem = false;
         private bool _isOutputDeviceChangingFromApplication = false;
         private bool _isVolumeChangingFromSystem = false;
+        private bool _keepRadioPlaying = false;
         private static ManualResetEvent mre = new ManualResetEvent(false);
         private static Form? frm;
         
@@ -167,10 +168,14 @@ namespace ContinuousAudioOverlay
         private async Task InitializeRadioList()
         {
             List<Radio> radioList = await _bassService.GetRadioList();
+            //The playing station stays selected without being restarted, so reloading the list does not stop the radio
+            int playingRadioIndex = _bassService.GetRadioPlaying() ? _resumeRadioIndex : -1;
+            _keepRadioPlaying = playingRadioIndex != -1;
             RadioDropDownList.Items.Clear();
             RadioDropDownList.Items.AddRange(radioList.Select(radio => radio.RadioName).ToArray());
             RadioDropDownList.Items.Add("<no radio>");
-            RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
+            RadioDropDownList.SelectedIndex = playingRadioIndex != -1 ? playingRadioIndex : RadioDropDownList.Items.Count - 1;
+            _keepRadioPlaying = false;
         }
 
         private static void Send(AppCommands cmd)
@@ -747,6 +752,11 @@ namespace ContinuousAudioOverlay
 
         private async void RadioDropDownList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_keepRadioPlaying)
+            {
+                return;
+            }
+
             await ChangeRadioIndex(RadioDropDownList.SelectedIndex);
         }
 
