@@ -255,7 +255,11 @@ namespace ContinuousAudioOverlay
 
         private void RadioDropDownList_DrawItem(object sender, DrawItemEventArgs e)
         {
-            int index = e.Index >= 0 ? e.Index : 0;
+            if (e.Index < 0)
+            {
+                e.DrawBackground();
+                return;
+            }
             SolidBrush brush;
             if (_radioDropDownListEnter || RadioDropDownList.DroppedDown)
             {
@@ -268,7 +272,7 @@ namespace ContinuousAudioOverlay
             e.DrawBackground();
             if (RadioDropDownList.Items.Count > 0)
             {
-                e.Graphics.DrawString(RadioDropDownList.Items[index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
+                e.Graphics.DrawString(RadioDropDownList.Items[e.Index]?.ToString(), e.Font ?? Control.DefaultFont, brush, e.Bounds, StringFormat.GenericDefault);
             }
             e.DrawFocusRectangle();
         }
