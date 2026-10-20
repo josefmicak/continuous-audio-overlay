@@ -193,6 +193,14 @@ namespace ContinuousAudioOverlay
 
         private async void EditRadioButton_Click(object sender, EventArgs e)
         {
+            if (RadioDropDownList.SelectedIndex == -1)
+            {
+                MessageBox.Show("Error: Unable to edit radio. No radio selected.",
+                    "Radio not edited",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
             if (string.IsNullOrEmpty(EditRadioNameTB.Text))
             {
                 MessageBox.Show("Error: Unable to edit radio. Please ensure that a name is entered for the radio.",
