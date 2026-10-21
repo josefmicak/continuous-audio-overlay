@@ -319,6 +319,14 @@ namespace ContinuousAudioOverlay
 
         private async void TestAddRadioButton_Click(object sender, EventArgs e)
         {
+            if (TestAddRadioButton.Text == "Test" && string.IsNullOrEmpty(AddRadioURLTB.Text))
+            {
+                MessageBox.Show("Error: Unable to test radio. Please ensure that a URL is entered for the radio.",
+                    "Radio not tested",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
             ReleaseBassResources();
             if (TestAddRadioButton.Text == "Test")
             {
@@ -326,6 +334,10 @@ namespace ContinuousAudioOverlay
                 TestEditRadioButton.Text = "Test";
                 TestStarting?.Invoke();
                 await _bassService.PlayRadio(AddRadioURLTB.Text);
+                if (!_bassService.GetRadioPlaying())
+                {
+                    TestAddRadioButton.Text = "Test";
+                }
             }
             else
             {
@@ -335,6 +347,14 @@ namespace ContinuousAudioOverlay
 
         private async void TestEditRadioButton_Click(object sender, EventArgs e)
         {
+            if (TestEditRadioButton.Text == "Test" && string.IsNullOrEmpty(EditRadioURLTB.Text))
+            {
+                MessageBox.Show("Error: Unable to test radio. Please ensure that a URL is entered for the radio.",
+                    "Radio not tested",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
             ReleaseBassResources();
             if (TestEditRadioButton.Text == "Test")
             {
@@ -342,6 +362,10 @@ namespace ContinuousAudioOverlay
                 TestAddRadioButton.Text = "Test";
                 TestStarting?.Invoke();
                 await _bassService.PlayRadio(EditRadioURLTB.Text);
+                if (!_bassService.GetRadioPlaying())
+                {
+                    TestEditRadioButton.Text = "Test";
+                }
             }
             else
             {
