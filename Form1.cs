@@ -1054,6 +1054,10 @@ namespace ContinuousAudioOverlay
             }
             else
             {
+                if (_settingsForm.WindowState == FormWindowState.Minimized)
+                {
+                    _settingsForm.WindowState = FormWindowState.Normal;
+                }
                 _settingsForm.BringToFront();
             }
         }
