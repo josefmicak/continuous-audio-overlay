@@ -337,9 +337,10 @@ namespace ContinuousAudioOverlay
                     }
 
                     MethodInfo? bassStreamCreateURLMethod = _bassType?.GetMethod("BASS_StreamCreateURL");
-                    _streamHandle = (int?)bassStreamCreateURLMethod?.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null!, IntPtr.Zero }) ?? 0;
+                    int streamHandle = (int?)bassStreamCreateURLMethod?.Invoke(null, new object[] { radioURL, 0, BASSFlag.BASS_DEFAULT, null!, IntPtr.Zero }) ?? 0;
 
                     ct.ThrowIfCancellationRequested();
+                    _streamHandle = streamHandle;//Must be after ThrowIfCancellationRequested, otherwise canceled start could overwrite the handle of the station that replaced it
 
                     if (_streamHandle != 0)
                     {

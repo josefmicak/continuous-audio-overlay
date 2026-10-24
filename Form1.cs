@@ -332,6 +332,11 @@ namespace ContinuousAudioOverlay
             {
                 _settingsForm?.StopTest();//BASS is shared with Settings - only one of them can play
                 await _bassService.IndexChanged(radioIndex);
+                if (RadioDropDownList.SelectedIndex != radioIndex)
+                {
+                    return;//Another station was selected while this one was starting - the newer call handles the rest
+                }
+
                 if (_bassService.GetRadioPlaying())
                 {
                     if (radioIndex != _resumeRadioIndex)//Remember previous station in case radio is stopped
@@ -342,10 +347,9 @@ namespace ContinuousAudioOverlay
                     ThumbnailPictureBox.Image = null;
                     UpdateSourceLabel("Radio");
                 }
-                else if (RadioDropDownList.SelectedIndex == radioIndex)
+                else
                 {
-                    //The station could not be started - <no radio> is selected, otherwise the station could not be selected again.
-                    //Skipped when the user has already selected something else in the meantime
+                    //The station could not be started - <no radio> is selected, otherwise the station could not be selected again
                     RadioDropDownList.SelectedIndex = RadioDropDownList.Items.Count - 1;
                 }
             }
