@@ -1019,8 +1019,6 @@ namespace ContinuousAudioOverlay
                         Send(AppCommands.MediaPause);
                     }
                 }
-
-                UpdateTitleTextBox(string.Empty, string.Empty);
             }
         }
 
