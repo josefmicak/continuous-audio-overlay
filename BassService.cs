@@ -78,7 +78,10 @@ namespace ContinuousAudioOverlay
                 if (!string.IsNullOrWhiteSpace(meta))
                 {
                     int startIndex = meta.IndexOf('\'');
-                    int endIndex = meta.LastIndexOf('\'');
+                    // End at the first "';" so fields after StreamTitle (e.g. StreamUrl) are not included
+                    int endIndex = meta.IndexOf("';", startIndex + 1, StringComparison.Ordinal);
+                    if (endIndex == -1)
+                        endIndex = meta.LastIndexOf('\'');
 
                     if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
                     {
