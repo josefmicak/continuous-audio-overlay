@@ -109,7 +109,7 @@ namespace ContinuousAudioOverlay
 
             Shown += async (_, __) => await InitializeCustomFormComponents();
 
-            VolumeSlider.Value = (int)GetDefaultPlaybackDevice().Volume;
+            VolumeSlider.Value = (int)(GetDefaultPlaybackDevice()?.Volume ?? 0);
             RefreshMuteIcon();
             UpdateSourceLabel("<no source>");
             _bassService.OnMetaDataChanged += UpdateRadioTitle;
@@ -813,7 +813,7 @@ namespace ContinuousAudioOverlay
         {
             if (!_isVolumeChangingFromSystem)
             {
-                GetDefaultPlaybackDevice().Volume = VolumeSlider.Value;
+                GetDefaultPlaybackDevice()?.Volume = VolumeSlider.Value;
             }
 
             VolumeLabel.Text = VolumeSlider.Value.ToString();
