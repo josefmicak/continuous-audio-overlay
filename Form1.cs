@@ -114,6 +114,8 @@ namespace ContinuousAudioOverlay
             UpdateSourceLabel("<no source>");
             _bassService.OnMetaDataChanged += UpdateRadioTitle;
             _bassService.OnStreamEnded += RadioStreamEnded;
+            OutputDeviceDropDown.MouseWheel += DropDown_MouseWheel;
+            RadioDropDownList.MouseWheel += DropDown_MouseWheel;
         }
 
         #endregion
@@ -996,6 +998,15 @@ namespace ContinuousAudioOverlay
             var pictureBox = (FlatComboBox)sender;
             pictureBox.BorderColor = _controlBackgroundColor;
             _radioDropdownEnter = false;
+        }
+
+        private void DropDown_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            //Prevent mousewheel from changing radio stations or output devices when the dropdown is not open
+            if (sender is FlatComboBox { DroppedDown: false })
+            {
+                ((HandledMouseEventArgs)e).Handled = true;
+            }
         }
 
         private void ResumeRadioButton_Click(object sender, EventArgs e)
