@@ -768,6 +768,7 @@ namespace ContinuousAudioOverlay
 
         private void PauseRadioButton_Click(object sender, EventArgs e)
         {
+            _settingsForm?.StopTest();
             StopRadio();
         }
 
