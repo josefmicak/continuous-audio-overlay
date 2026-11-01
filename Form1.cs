@@ -110,6 +110,7 @@ namespace ContinuousAudioOverlay
             Shown += async (_, __) => await InitializeCustomFormComponents();
 
             VolumeSlider.Value = (int)(GetDefaultPlaybackDevice()?.Volume ?? 0);
+            UpdateVolumeLabel();
             RefreshMuteIcon();
             UpdateSourceLabel("<no source>");
             _bassService.OnMetaDataChanged += UpdateRadioTitle;
@@ -311,6 +312,12 @@ namespace ContinuousAudioOverlay
             {
                 _isVolumeChangingFromSystem = false;
             }
+        }
+
+        private void UpdateVolumeLabel()
+        {
+            VolumeLabel.Text = VolumeSlider.Value.ToString();
+            VolumeLabel.Left = ReduceVolumePictureBox.Right + ((IncreaseVolumePictureBox.Left - ReduceVolumePictureBox.Right - VolumeLabel.Width) / 2);
         }
 
         private void RefreshMuteIcon()
@@ -819,8 +826,7 @@ namespace ContinuousAudioOverlay
                 GetDefaultPlaybackDevice()?.Volume = VolumeSlider.Value;
             }
 
-            VolumeLabel.Text = VolumeSlider.Value.ToString();
-            VolumeLabel.Left = ReduceVolumePictureBox.Right + ((IncreaseVolumePictureBox.Left - ReduceVolumePictureBox.Right - VolumeLabel.Width) / 2);
+            UpdateVolumeLabel();
         }
 
         private void MutePictureBox_Click(object sender, EventArgs e)
